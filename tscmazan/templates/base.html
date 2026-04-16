@@ -16,7 +16,7 @@
     <meta name="description" content="{{ page.search_description }}">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#C2571A">
+    <meta name="theme-color" content="#2057b2">
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
     <link rel="apple-touch-icon" href="{% static 'images/logo-256.png' %}">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,7 +28,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -36,71 +36,41 @@
             theme: {
                 extend: {
                     colors: {
-                        // Palette provençale TSC Mazan
-                        'terre-cuite': {
-                            50: '#FDF6EC',
-                            100: '#FAE8D0',
-                            200: '#F5CFA1',
-                            300: '#EFAF6A',
-                            400: '#E88E3A',
-                            500: '#C2571A',
-                            600: '#A44A16',
-                            700: '#813B12',
-                            800: '#5E2C0E',
-                            900: '#3D1D09',
+                        'bleu': {
+                            50: '#eef4fb',
+                            100: '#d4e4f7',
+                            200: '#a9c9ef',
+                            300: '#6fa5e3',
+                            400: '#3b80d1',
+                            500: '#2057b2',
+                            600: '#1a4690',
+                            700: '#15376f',
+                            800: '#0f2750',
+                            900: '#0a1a35',
+                            950: '#060f1f',
                         },
-                        'olive': {
-                            50: '#F4F6EF',
-                            100: '#E4E9D9',
-                            200: '#C9D3B4',
-                            300: '#A7B886',
-                            400: '#859D5A',
-                            500: '#5C7A2E',
-                            600: '#4A6425',
-                            700: '#3A4E1D',
-                            800: '#2B3916',
-                            900: '#1D260F',
+                        'or': {
+                            50: '#fefaec',
+                            100: '#fdf0c8',
+                            200: '#fbe08d',
+                            300: '#f9cc52',
+                            400: '#f5b820',
+                            500: '#d4960a',
+                            600: '#a87308',
+                            700: '#7d540b',
+                            800: '#5e4010',
+                            900: '#3e2b0e',
                         },
-                        'ocre': {
-                            50: '#FFF9EB',
-                            100: '#FFEFC2',
-                            200: '#FFE08A',
-                            300: '#FFCE4D',
-                            400: '#F5B820',
-                            500: '#D4960A',
-                            600: '#B07806',
-                            700: '#8A5C08',
-                            800: '#6B470D',
-                            900: '#4A3210',
-                        },
-                        'lavande': {
-                            50: '#F5F3F7',
-                            100: '#E8E3EF',
-                            200: '#D1C7DF',
-                            300: '#B5A4C9',
-                            400: '#9A82B4',
-                            500: '#7B5E9B',
-                            600: '#644C7E',
-                            700: '#4E3B63',
-                            800: '#3A2C4A',
-                            900: '#271E33',
-                        },
-                        'ciel': {
-                            50: '#EFF6FB',
-                            100: '#D8EAF5',
-                            200: '#B0D5EB',
-                            300: '#7FBCDE',
-                            400: '#4FA0CE',
-                            500: '#2E7EB0',
-                            600: '#24658E',
-                            700: '#1C4F6F',
-                            800: '#163B52',
-                            900: '#102938',
+                        'sable': {
+                            50: '#faf8f5',
+                            100: '#f2ede6',
+                            200: '#e5dcd0',
+                            300: '#d2c4b0',
                         },
                     },
                     fontFamily: {
                         'display': ['"Bebas Neue"', 'system-ui', 'sans-serif'],
-                        'body': ['Inter', 'system-ui', 'sans-serif'],
+                        'body': ['"DM Sans"', 'system-ui', 'sans-serif'],
                     },
                 },
             },
@@ -108,81 +78,76 @@
     </script>
 
     <style>
-        /* Smooth scrolling */
         html { scroll-behavior: smooth; }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(24px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .animate-fade-in-up {
-            animation: fadeInUp 0.7s ease-out forwards;
-        }
-        .animate-delay-100 { animation-delay: 0.1s; }
-        .animate-delay-200 { animation-delay: 0.2s; }
-        .animate-delay-300 { animation-delay: 0.3s; }
+        .anim-up { opacity: 0; animation: slideUp 0.7s ease-out forwards; }
+        .anim-d1 { animation-delay: 0.1s; }
+        .anim-d2 { animation-delay: 0.2s; }
+        .anim-d3 { animation-delay: 0.3s; }
 
-        /* Hero overlay gradient */
-        .hero-overlay {
-            background: linear-gradient(
-                to bottom,
-                rgba(0,0,0,0.2) 0%,
-                rgba(0,0,0,0.5) 60%,
-                rgba(0,0,0,0.7) 100%
+        .hero-gradient {
+            background: linear-gradient(160deg, rgba(15,39,80,0.6) 0%, rgba(32,87,178,0.35) 50%, rgba(15,39,80,0.7) 100%);
+        }
+
+        /* Subtle diagonal texture */
+        .bg-diagonal {
+            background-image: repeating-linear-gradient(
+                135deg, transparent, transparent 35px,
+                rgba(32,87,178,0.02) 35px, rgba(32,87,178,0.02) 70px
             );
         }
     </style>
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/tscmazan.css' %}">
-
     {% block extra_css %}{% endblock %}
 </head>
 
-<body class="font-body text-gray-800 bg-terre-cuite-50 antialiased {% block body_class %}{% endblock %}">
+<body class="font-body text-gray-800 bg-white antialiased {% block body_class %}{% endblock %}">
     {% wagtailuserbar %}
 
     <!-- Top bar -->
-    <div class="bg-terre-cuite-800 text-terre-cuite-100 text-sm hidden lg:block">
+    <div class="bg-bleu-900 text-bleu-200 text-sm hidden lg:block">
         <div class="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
             <div class="flex items-center gap-6">
                 <a href="tel:{{ settings.home.SiteSettings.telephone }}" class="hover:text-white transition flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
                     {{ settings.home.SiteSettings.telephone }}
                 </a>
                 <a href="mailto:{{ settings.home.SiteSettings.email|urlencode }}" class="hover:text-white transition flex items-center gap-1.5">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                     {{ settings.home.SiteSettings.email }}
                 </a>
             </div>
             <div class="flex items-center gap-4">
                 <a href="{{ settings.home.SiteSettings.facebook_url }}" target="_blank" rel="noopener" class="hover:text-white transition" aria-label="Facebook">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
+                {% if settings.home.SiteSettings.instagram_url %}
                 <a href="{{ settings.home.SiteSettings.instagram_url }}" target="_blank" rel="noopener" class="hover:text-white transition" aria-label="Instagram">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                 </a>
+                {% endif %}
             </div>
         </div>
     </div>
 
     <!-- Navigation -->
-    <nav class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-50" id="main-nav">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="flex items-center justify-between h-20">
+    <nav class="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50" id="main-nav">
+        <div class="max-w-7xl mx-auto px-4 md:px-6">
+            <div class="flex items-center justify-between h-16 md:h-[4.5rem]">
                 <!-- Logo -->
                 <a href="/" class="flex items-center gap-3 shrink-0">
-                    <img src="{% static 'images/logo-64.png' %}" alt="TSC Mazan" class="w-14 h-14 rounded-full">
-                    <div class="hidden sm:block">
-                        <div class="font-display font-bold text-terre-cuite-800 text-lg leading-tight">TSC Mazan</div>
-                        <div class="text-xs text-terre-cuite-500 font-medium tracking-wide">Tennis Club</div>
-                    </div>
+                    <img src="{% static 'images/logo-club-original.png' %}" alt="Tennis Club Mazan" class="h-10 md:h-12 w-auto">
                 </a>
 
                 <!-- Desktop menu -->
                 <div class="hidden lg:flex items-center gap-1">
                     {% for item in menu_items %}
-                    <a href="{{ item.url }}" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition"
+                    <a href="{{ item.url }}" class="px-3 py-2 text-[13px] font-semibold text-gray-600 hover:text-bleu-600 transition rounded-md hover:bg-bleu-50"
                        {% if item.open_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
                     {% endfor %}
                 </div>
@@ -190,13 +155,11 @@
                 <!-- CTA + Mobile toggle -->
                 <div class="flex items-center gap-3">
                     <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                       class="hidden md:inline-flex items-center gap-2 bg-terre-cuite-500 hover:bg-terre-cuite-600 text-white font-semibold text-sm px-5 py-2.5 rounded-full transition shadow-lg shadow-terre-cuite-500/25">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                       class="hidden md:inline-flex items-center gap-2 bg-bleu-500 hover:bg-bleu-600 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition shadow-md shadow-bleu-500/20">
                         Réserver un court
                     </a>
 
-                    <!-- Mobile menu button -->
-                    <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-lg hover:bg-terre-cuite-50 transition" aria-label="Menu">
+                    <button id="mobile-menu-btn" class="lg:hidden p-2 rounded-md hover:bg-gray-100 transition" aria-label="Menu">
                         <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path id="menu-icon-open" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
                             <path id="menu-icon-close" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -208,15 +171,14 @@
 
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white">
-            <div class="px-6 py-4 space-y-1">
+            <div class="px-4 py-4 space-y-1">
                 {% for item in menu_items %}
-                <a href="{{ item.url }}" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition"
+                <a href="{{ item.url }}" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-bleu-50 hover:text-bleu-600 transition"
                    {% if item.open_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
                 {% endfor %}
                 <div class="pt-3">
                     <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                       class="flex items-center justify-center gap-2 bg-terre-cuite-500 hover:bg-terre-cuite-600 text-white font-semibold text-sm px-5 py-3 rounded-full transition w-full">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                       class="flex items-center justify-center gap-2 bg-bleu-500 hover:bg-bleu-600 text-white font-semibold text-sm px-5 py-3 rounded-lg transition w-full">
                         Réserver un court
                     </a>
                 </div>
@@ -230,27 +192,21 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-terre-cuite-900 text-terre-cuite-200">
-        <div class="max-w-7xl mx-auto px-6 py-16">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-                <!-- Club info -->
+    <footer class="bg-bleu-950 text-bleu-300">
+        <div class="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12">
                 <div>
-                    <div class="flex items-center gap-3 mb-6">
-                        <img src="{% static 'images/logo-64.png' %}" alt="TSC Mazan" class="w-12 h-12 rounded-full">
-                        <div>
-                            <div class="font-display font-bold text-white text-lg">TSC Mazan</div>
-                            <div class="text-xs text-terre-cuite-400">Tennis Sporting Club Mazanais</div>
-                        </div>
+                    <div class="flex items-center gap-3 mb-5">
+                        <img src="{% static 'images/logo-club-original.png' %}" alt="TSC Mazan" class="h-10 w-auto brightness-0 invert opacity-90">
                     </div>
-                    <p class="text-sm text-terre-cuite-300 leading-relaxed">
-                        L'esprit sportif, le respect, dans un cadre accueillant, familial et festif au coeur du Vaucluse.
+                    <p class="text-sm text-bleu-400 leading-relaxed">
+                        Tennis Sporting Club Mazanais — l'esprit sportif au pied du Ventoux.
                     </p>
                 </div>
 
-                <!-- Navigation -->
                 <div>
-                    <h3 class="font-display font-bold text-white text-lg mb-6">Navigation</h3>
-                    <ul class="space-y-3 text-sm">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-bleu-500 mb-5">Navigation</h3>
+                    <ul class="space-y-2.5 text-sm">
                         <li><a href="/le-club/" class="hover:text-white transition">Le Club</a></li>
                         <li><a href="/actualites/" class="hover:text-white transition">Actualités</a></li>
                         <li><a href="/ecole-de-tennis/" class="hover:text-white transition">École de Tennis</a></li>
@@ -259,56 +215,45 @@
                     </ul>
                 </div>
 
-                <!-- Contact -->
                 <div>
-                    <h3 class="font-display font-bold text-white text-lg mb-6">Contact</h3>
-                    <ul class="space-y-3 text-sm">
-                        <li class="flex items-start gap-2">
-                            <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            Mazan, Vaucluse (84)
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                            <a href="tel:{{ settings.home.SiteSettings.telephone }}" class="hover:text-white transition">{{ settings.home.SiteSettings.telephone }}</a>
-                        </li>
-                        <li class="flex items-center gap-2">
-                            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                            <a href="mailto:{{ settings.home.SiteSettings.email|urlencode }}" class="hover:text-white transition">{{ settings.home.SiteSettings.email }}</a>
-                        </li>
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-bleu-500 mb-5">Contact</h3>
+                    <ul class="space-y-2.5 text-sm">
+                        <li>Mazan, Vaucluse (84)</li>
+                        <li><a href="tel:{{ settings.home.SiteSettings.telephone }}" class="hover:text-white transition">{{ settings.home.SiteSettings.telephone }}</a></li>
+                        <li><a href="mailto:{{ settings.home.SiteSettings.email|urlencode }}" class="hover:text-white transition">{{ settings.home.SiteSettings.email }}</a></li>
                     </ul>
+                    <div class="flex items-center gap-3 mt-4">
+                        <a href="{{ settings.home.SiteSettings.facebook_url }}" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-bleu-900 hover:bg-bleu-800 flex items-center justify-center transition" aria-label="Facebook">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        </a>
+                        {% if settings.home.SiteSettings.instagram_url %}
+                        <a href="{{ settings.home.SiteSettings.instagram_url }}" target="_blank" rel="noopener" class="w-9 h-9 rounded-lg bg-bleu-900 hover:bg-bleu-800 flex items-center justify-center transition" aria-label="Instagram">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
 
-                <!-- Liens rapides -->
                 <div>
-                    <h3 class="font-display font-bold text-white text-lg mb-6">Accès rapide</h3>
-                    <div class="space-y-3">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-bleu-500 mb-5">Accès rapide</h3>
+                    <div class="space-y-2.5">
                         <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                           class="flex items-center gap-2 bg-terre-cuite-500 hover:bg-terre-cuite-400 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition w-full">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                           class="flex items-center gap-2 bg-bleu-500 hover:bg-bleu-400 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition w-full">
                             Réserver un court
                         </a>
                         <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                           class="flex items-center gap-2 bg-olive-600 hover:bg-olive-500 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition w-full">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                           class="flex items-center gap-2 bg-or-500 hover:bg-or-400 text-white font-semibold text-sm px-4 py-2.5 rounded-lg transition w-full">
                             Prendre ma licence
-                        </a>
-                    </div>
-                    <div class="flex items-center gap-3 mt-6">
-                        <a href="{{ settings.home.SiteSettings.facebook_url }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-terre-cuite-800 hover:bg-terre-cuite-700 flex items-center justify-center transition" aria-label="Facebook">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                        </a>
-                        <a href="{{ settings.home.SiteSettings.instagram_url }}" target="_blank" rel="noopener" class="w-10 h-10 rounded-full bg-terre-cuite-800 hover:bg-terre-cuite-700 flex items-center justify-center transition" aria-label="Instagram">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
                         </a>
                     </div>
                 </div>
             </div>
 
-            <div class="mt-12 pt-8 border-t border-terre-cuite-800 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-terre-cuite-400">
-                <p>&copy; {% now "Y" %} Tennis Sporting Club Mazanais. Tous droits réservés.</p>
+            <div class="mt-12 pt-8 border-t border-bleu-900 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-bleu-600">
+                <p>&copy; {% now "Y" %} Tennis Sporting Club Mazanais</p>
                 <div class="flex gap-6">
-                    <a href="/mentions-legales/" class="hover:text-white transition">Mentions légales</a>
-                    <a href="/politique-confidentialite/" class="hover:text-white transition">Confidentialité</a>
+                    <a href="/mentions-legales/" class="hover:text-bleu-300 transition">Mentions légales</a>
+                    <a href="/politique-confidentialite/" class="hover:text-bleu-300 transition">Confidentialité</a>
                 </div>
             </div>
         </div>
@@ -335,60 +280,26 @@
                 <div style="font-weight:600; font-size:0.85rem; color:#333;">TSC Mazan</div>
                 <div style="font-size:0.7rem; color:#999;">Ajouter à l'écran d'accueil</div>
             </div>
-            <button id="pwa-install" style="background:#C2571A; color:white; border:none; padding:0.5rem 1rem; border-radius:0.4rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit;">Installer</button>
+            <button id="pwa-install" style="background:#2057b2; color:white; border:none; padding:0.5rem 1rem; border-radius:0.4rem; font-size:0.8rem; font-weight:600; cursor:pointer; font-family:inherit;">Installer</button>
             <button id="pwa-dismiss" style="background:none; border:none; color:#999; font-size:1.2rem; cursor:pointer; padding:0.25rem;">&times;</button>
         </div>
     </div>
 
     <script>
-        // PWA Install prompt
         let deferredPrompt;
         const banner = document.getElementById('pwa-banner');
         const installBtn = document.getElementById('pwa-install');
         const dismissBtn = document.getElementById('pwa-dismiss');
-
-        // Déjà installée ? On masque tout
         var isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
         if (isInstalled) { banner.remove(); }
-
         window.addEventListener('beforeinstallprompt', function(e) {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!localStorage.getItem('pwa-dismissed')) {
-                banner.style.display = 'block';
-            }
+            e.preventDefault(); deferredPrompt = e;
+            if (!localStorage.getItem('pwa-dismissed')) { banner.style.display = 'block'; }
         });
-
-        if (installBtn) {
-            installBtn.addEventListener('click', function() {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then(function(result) {
-                        deferredPrompt = null;
-                        banner.style.display = 'none';
-                    });
-                }
-            });
-        }
-
-        if (dismissBtn) {
-            dismissBtn.addEventListener('click', function() {
-                banner.style.display = 'none';
-                localStorage.setItem('pwa-dismissed', '1');
-            });
-        }
-
-        // iOS: show instructions (beforeinstallprompt doesn't fire on Safari)
+        if (installBtn) { installBtn.addEventListener('click', function() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(function() { deferredPrompt = null; banner.style.display = 'none'; }); } }); }
+        if (dismissBtn) { dismissBtn.addEventListener('click', function() { banner.style.display = 'none'; localStorage.setItem('pwa-dismissed', '1'); }); }
         if (/iPhone|iPad/.test(navigator.userAgent) && !isInstalled) {
-            if (!localStorage.getItem('pwa-dismissed')) {
-                banner.style.display = 'block';
-                if (installBtn) {
-                    installBtn.textContent = 'Comment faire ?';
-                    installBtn.addEventListener('click', function() {
-                        alert('Tapez sur le bouton Partager (carré avec flèche) puis "Sur l\'écran d\'accueil"');
-                    });
-                }
-            }
+            if (!localStorage.getItem('pwa-dismissed')) { banner.style.display = 'block'; if (installBtn) { installBtn.textContent = 'Comment faire ?'; installBtn.addEventListener('click', function() { alert('Tapez sur Partager puis "Sur l\'écran d\'accueil"'); }); } }
         }
     </script>
 
