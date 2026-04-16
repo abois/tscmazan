@@ -347,6 +347,10 @@
         const installBtn = document.getElementById('pwa-install');
         const dismissBtn = document.getElementById('pwa-dismiss');
 
+        // Déjà installée ? On masque tout
+        var isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+        if (isInstalled) { banner.remove(); }
+
         window.addEventListener('beforeinstallprompt', function(e) {
             e.preventDefault();
             deferredPrompt = e;
@@ -374,8 +378,8 @@
             });
         }
 
-        // iOS: show instructions since beforeinstallprompt doesn't fire
-        if (/iPhone|iPad/.test(navigator.userAgent) && !window.navigator.standalone) {
+        // iOS: show instructions (beforeinstallprompt doesn't fire on Safari)
+        if (/iPhone|iPad/.test(navigator.userAgent) && !isInstalled) {
             if (!localStorage.getItem('pwa-dismissed')) {
                 banner.style.display = 'block';
                 if (installBtn) {
