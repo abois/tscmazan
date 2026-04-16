@@ -26,14 +26,14 @@
             {% endif %}
             <div class="mt-6 md:mt-8 flex flex-col sm:flex-row flex-wrap gap-3 anim-up anim-d2">
                 <a href="{{ page.hero_cta_url }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center justify-center gap-2.5 bg-white text-bleu-700 font-bold px-7 py-3.5 md:px-9 md:py-4 rounded-xl text-sm md:text-base transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transform group">
-                    <svg class="w-5 h-5 text-bleu-500 group-hover:text-bleu-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                   class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-bleu-500 to-bleu-600 text-white font-bold px-7 py-3.5 md:px-9 md:py-4 rounded-xl text-sm md:text-base transition shadow-lg shadow-bleu-700/40 hover:shadow-xl hover:shadow-bleu-600/50 hover:-translate-y-0.5 transform border border-bleu-400/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     {{ page.hero_cta_texte }}
                 </a>
                 {% if page.hero_cta2_texte %}
                 <a href="{{ page.hero_cta2_url }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center justify-center gap-2.5 bg-white text-bleu-700 font-bold px-7 py-3.5 md:px-9 md:py-4 rounded-xl text-sm md:text-base transition shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transform group">
-                    <svg class="w-5 h-5 text-bleu-500 group-hover:text-bleu-600 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                   class="inline-flex items-center justify-center gap-2.5 bg-white/15 hover:bg-white/25 backdrop-blur-md text-white font-bold px-7 py-3.5 md:px-9 md:py-4 rounded-xl text-sm md:text-base transition border border-white/30 hover:-translate-y-0.5 transform shadow-lg shadow-black/10">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     {{ page.hero_cta2_texte }}
                 </a>
                 {% endif %}
