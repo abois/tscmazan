@@ -1,0 +1,6 @@
+Django>=6,<6.1
+wagtail>=7.3,<7.4
+django-pwa>=2.0,<3
+whitenoise>=6,<7
+gunicorn>=25,<26
+pillow>=12,<13
