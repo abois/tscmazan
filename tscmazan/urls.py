@@ -6,11 +6,12 @@ from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView, TemplateView
 
 from search import views as search_views
 
 urlpatterns = [
+    path("favicon.ico", RedirectView.as_view(url="/static/images/favicon.ico", permanent=True)),
     path("django-admin/", admin.site.urls),
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
