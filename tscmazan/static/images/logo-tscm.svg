@@ -15,23 +15,29 @@
   <!-- Bordure intérieure -->
   <circle cx="256" cy="256" r="232" fill="none" stroke="#F5CFA1" stroke-width="1" opacity="0.25"/>
 
+  <!-- Ventoux en filigrane -->
+  <g opacity="0.1">
+    <path d="M 60 310 L 100 285 L 130 290 L 160 270 L 190 255 L 220 240 L 245 228 L 256 222 L 267 228 L 290 240 L 320 255 L 350 270 L 380 285 L 410 290 L 440 300 L 452 310 Z" fill="white"/>
+    <path d="M 240 230 L 248 225 L 256 222 L 264 225 L 272 232 L 264 234 L 256 236 L 248 234 Z" fill="white" opacity="0.6"/>
+  </g>
+
   <!-- TSC -->
-  <text x="256" y="225" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="140" fill="white" letter-spacing="12">TSC</text>
+  <text x="256" y="210" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="130" fill="white" letter-spacing="12">TSC</text>
 
   <!-- Ligne gauche -->
-  <line x1="90" y1="260" x2="225" y2="260" stroke="#F5B820" stroke-width="3" stroke-linecap="round"/>
+  <line x1="90" y1="248" x2="222" y2="248" stroke="#F5B820" stroke-width="2.5" stroke-linecap="round"/>
 
   <!-- Balle -->
-  <circle cx="256" cy="260" r="14" fill="#F5B820"/>
+  <circle cx="256" cy="248" r="12" fill="#F5B820"/>
   <!-- Coutures balle -->
-  <path d="M248 250 Q256 261, 251 272" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
-  <path d="M264 250 Q256 261, 261 272" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M249 240 Q256 249, 252 258" fill="none" stroke="white" stroke-width="1.2" opacity="0.5"/>
+  <path d="M263 240 Q256 249, 260 258" fill="none" stroke="white" stroke-width="1.2" opacity="0.5"/>
 
   <!-- Ligne droite -->
-  <line x1="287" y1="260" x2="422" y2="260" stroke="#F5B820" stroke-width="3" stroke-linecap="round"/>
+  <line x1="290" y1="248" x2="422" y2="248" stroke="#F5B820" stroke-width="2.5" stroke-linecap="round"/>
 
   <!-- MAZAN -->
-  <text x="256" y="330" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="86" fill="white" letter-spacing="16">MAZAN</text>
+  <text x="256" y="330" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80" fill="white" letter-spacing="18">MAZAN</text>
 
   <!-- Texte arc haut -->
   <path id="arc-top" d="M 80 256 A 176 176 0 0 1 432 256" fill="none"/>
