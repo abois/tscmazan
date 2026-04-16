@@ -2,7 +2,7 @@
 {% load wagtailcore_tags wagtailimages_tags %}
 
 {% block content %}
-<section class="bg-gradient-to-br from-ocre-700 to-ocre-800 py-12 md:py-24">
+<section class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-12 md:py-24">
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
         {% if page.intro %}
@@ -11,13 +11,13 @@
     </div>
 </section>
 
-<section class="py-10 md:py-20">
+<section class="py-10 md:py-20 bg-sable-50">
     <div class="max-w-7xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
         {% for album in albums %}
         <div>
             <div class="flex items-end justify-between mb-4 md:mb-6">
                 <div>
-                    <h2 class="font-display text-xl md:text-2xl font-bold text-terre-cuite-800">{{ album.titre }}</h2>
+                    <h2 class="font-display text-xl md:text-2xl font-bold text-bleu-800">{{ album.titre }}</h2>
                     {% if album.description %}
                     <p class="mt-1 text-sm text-gray-500">{{ album.description }}</p>
                     {% endif %}

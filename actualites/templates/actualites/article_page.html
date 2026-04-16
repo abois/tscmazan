@@ -3,10 +3,10 @@
 
 {% block content %}
 <article>
-    <header class="bg-gradient-to-br from-terre-cuite-700 to-terre-cuite-800 py-16 md:py-24">
+    <header class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-16 md:py-24">
         <div class="max-w-4xl mx-auto px-4 md:px-6">
             {% if page.date %}
-            <time class="text-terre-cuite-200 text-sm font-medium">{{ page.date|date:"j F Y" }}</time>
+            <time class="text-bleu-200 text-sm font-medium">{{ page.date|date:"j F Y" }}</time>
             {% endif %}
             <h1 class="mt-2 font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
             {% if page.intro %}
@@ -22,14 +22,14 @@
     </div>
     {% endif %}
 
-    <section class="py-12 md:py-20">
+    <section class="py-12 md:py-20 bg-sable-50">
         <div class="max-w-3xl mx-auto px-4 md:px-6">
             <div class="prose prose-lg max-w-none text-gray-600">{{ page.contenu|richtext }}</div>
         </div>
     </section>
 
-    <nav class="max-w-3xl mx-auto px-4 md:px-6 pb-12">
-        <a href="{{ page.get_parent.url }}" class="inline-flex items-center gap-2 text-terre-cuite-600 font-semibold hover:text-terre-cuite-700 transition">
+    <nav class="max-w-3xl mx-auto px-4 md:px-6 pb-12 bg-sable-50">
+        <a href="{{ page.get_parent.url }}" class="inline-flex items-center gap-2 text-bleu-600 font-semibold hover:text-bleu-700 transition">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             Retour aux actualités
         </a>
