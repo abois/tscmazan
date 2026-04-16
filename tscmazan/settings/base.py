@@ -192,7 +192,7 @@ STORAGES = {
 # PWA
 PWA_APP_NAME = "TSC Mazan"
 PWA_APP_DESCRIPTION = "Tennis Sporting Club Mazanais — Réservation, actualités et vie du club"
-PWA_APP_THEME_COLOR = "#C2571A"
+PWA_APP_THEME_COLOR = "#2057b2"
 PWA_APP_BACKGROUND_COLOR = "#FFFFFF"
 PWA_APP_DISPLAY = "standalone"
 PWA_APP_SCOPE = "/"
@@ -201,14 +201,14 @@ PWA_APP_START_URL = "/"
 PWA_APP_STATUS_BAR_COLOR = "default"
 PWA_APP_LANG = "fr-FR"
 PWA_APP_ICONS = [
-    {"src": "/static/images/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png"},
-    {"src": "/static/images/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png"},
-    {"src": "/static/images/icons/icon-128x128.png", "sizes": "128x128", "type": "image/png"},
-    {"src": "/static/images/icons/icon-144x144.png", "sizes": "144x144", "type": "image/png"},
-    {"src": "/static/images/icons/icon-152x152.png", "sizes": "152x152", "type": "image/png"},
-    {"src": "/static/images/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
-    {"src": "/static/images/icons/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "any"},
-    {"src": "/static/images/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/static/images/icons/icon-72x72.png", "sizes": "72x72", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-96x96.png", "sizes": "96x96", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-128x128.png", "sizes": "128x128", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-144x144.png", "sizes": "144x144", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-152x152.png", "sizes": "152x152", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-384x384.png", "sizes": "384x384", "type": "image/png", "purpose": "any maskable"},
+    {"src": "/static/images/icons/icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"},
 ]
 PWA_APP_ICONS_APPLE = [
     {"src": "/static/images/icons/icon-152x152.png", "sizes": "152x152"},
