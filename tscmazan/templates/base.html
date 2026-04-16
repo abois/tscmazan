@@ -181,16 +181,10 @@
 
                 <!-- Desktop menu -->
                 <div class="hidden lg:flex items-center gap-1">
-                    {% block nav_items %}
-                    <a href="/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Accueil</a>
-                    <a href="/le-club/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Le Club</a>
-                    <a href="/actualites/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Actualités</a>
-                    <a href="/ecole-de-tennis/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">École de Tennis</a>
-                    <a href="/tarifs/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Tarifs</a>
-                    <a href="/resultats/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Résultats</a>
-                    <a href="/galerie/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Galerie</a>
-                    <a href="/contact/" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition">Contact</a>
-                    {% endblock %}
+                    {% for item in menu_items %}
+                    <a href="{{ item.url }}" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-700 hover:text-terre-cuite-600 hover:bg-terre-cuite-50 transition"
+                       {% if item.open_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
+                    {% endfor %}
                 </div>
 
                 <!-- CTA + Mobile toggle -->
@@ -215,14 +209,10 @@
         <!-- Mobile menu -->
         <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-100 bg-white">
             <div class="px-6 py-4 space-y-1">
-                <a href="/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Accueil</a>
-                <a href="/le-club/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Le Club</a>
-                <a href="/actualites/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Actualités</a>
-                <a href="/ecole-de-tennis/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">École de Tennis</a>
-                <a href="/tarifs/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Tarifs</a>
-                <a href="/resultats/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Résultats</a>
-                <a href="/galerie/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Galerie</a>
-                <a href="/contact/" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition">Contact</a>
+                {% for item in menu_items %}
+                <a href="{{ item.url }}" class="block px-4 py-3 rounded-lg text-sm font-semibold text-gray-700 hover:bg-terre-cuite-50 hover:text-terre-cuite-600 transition"
+                   {% if item.open_new_tab %}target="_blank" rel="noopener"{% endif %}>{{ item.label }}</a>
+                {% endfor %}
                 <div class="pt-3">
                     <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
                        class="flex items-center justify-center gap-2 bg-terre-cuite-500 hover:bg-terre-cuite-600 text-white font-semibold text-sm px-5 py-3 rounded-full transition w-full">

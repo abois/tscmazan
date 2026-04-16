@@ -1,0 +1,139 @@
+{% extends "gestion/base_gestion.html" %}
+
+{% block title %}Menu du site{% endblock %}
+
+{% block header_left %}
+<a href="{% url 'gestion:dashboard' %}" class="header-back">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Retour
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="list-header">
+    <h1 class="page-title">Menu du site</h1>
+    <button onclick="openModal()" class="btn-add">+ Ajouter</button>
+</div>
+
+<p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.25rem;">
+    Glissez les éléments pour les réordonner.
+</p>
+
+<!-- Liste drag & drop -->
+<div id="menu-list">
+    {% for item in items %}
+    <div class="menu-item" data-id="{{ item.pk }}">
+        <div class="menu-drag">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"><path stroke-linecap="round" d="M8 6h.01M8 12h.01M8 18h.01M16 6h.01M16 12h.01M16 18h.01"/></svg>
+        </div>
+        <div class="menu-info">
+            <div class="menu-label">{{ item.label }}</div>
+            <div class="menu-url">{{ item.url }}</div>
+        </div>
+        <div class="menu-actions">
+            {% if item.is_visible %}
+            <span class="menu-badge menu-badge--on">ON</span>
+            {% else %}
+            <span class="menu-badge menu-badge--off">OFF</span>
+            {% endif %}
+            <a href="{% url 'gestion:editer_menu_item' item.pk %}" class="menu-edit">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            </a>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Modal ajout -->
+<div id="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:100; display:none; align-items:flex-end; justify-content:center;" onclick="if(event.target===this)closeModal()">
+    <div id="modal-content" style="background:var(--bg-card); border-radius:1rem 1rem 0 0; width:100%; max-width:480px; padding:1.5rem; box-shadow:0 -4px 24px rgba(0,0,0,0.1); transform:translateY(100%); transition:transform 0.25s ease;">
+        <div style="width:36px; height:4px; background:var(--border); border-radius:2px; margin:0 auto 1.25rem;"></div>
+        <h2 style="font-size:1.1rem; font-weight:600; margin-bottom:1.25rem;">Ajouter au menu</h2>
+        <form method="POST" action="{% url 'gestion:ajouter_menu_item' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Texte affiché</label>
+                <input type="text" name="label" class="form-input" placeholder="Ex: Mentions légales" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">URL de la page</label>
+                <input type="text" name="url" class="form-input" placeholder="Ex: /mentions-legales/" required>
+            </div>
+            <button type="submit" class="btn-submit">Ajouter</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openModal() {
+    var o = document.getElementById('modal-overlay');
+    o.style.display = 'flex';
+    setTimeout(function(){ document.getElementById('modal-content').style.transform = 'translateY(0)'; }, 10);
+}
+function closeModal() {
+    document.getElementById('modal-content').style.transform = 'translateY(100%)';
+    setTimeout(function(){ document.getElementById('modal-overlay').style.display = 'none'; }, 250);
+}
+</script>
+
+<style>
+    .menu-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.75rem 0.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        margin-bottom: 0.4rem;
+        cursor: grab;
+        transition: box-shadow 0.15s;
+        touch-action: none;
+    }
+    .menu-item:active { cursor: grabbing; }
+    .menu-item.gu-mirror {
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        opacity: 0.95;
+    }
+    .gu-transit { opacity: 0.3; }
+    .menu-drag { flex-shrink: 0; cursor: grab; padding: 0.25rem; }
+    .menu-info { flex: 1; min-width: 0; }
+    .menu-label { font-weight: 500; font-size: 0.875rem; }
+    .menu-url { font-size: 0.7rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .menu-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+    .menu-badge {
+        font-size: 0.6rem; font-weight: 700; padding: 0.15rem 0.4rem;
+        border-radius: 3px; letter-spacing: 0.05em;
+    }
+    .menu-badge--on { background: #dcfce7; color: #16a34a; }
+    .menu-badge--off { background: #fef2f2; color: #dc2626; }
+    .menu-edit { color: var(--text-muted); padding: 0.3rem; }
+    .menu-edit:hover { color: var(--accent); }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
+<script>
+    var drake = dragula([document.getElementById('menu-list')], {
+        direction: 'vertical',
+        mirrorContainer: document.getElementById('menu-list'),
+    });
+
+    drake.on('drop', function() {
+        var items = document.querySelectorAll('.menu-item');
+        var order = [];
+        items.forEach(function(el, i) {
+            order.push(el.dataset.id);
+        });
+
+        fetch('{% url "gestion:reorder_menu" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({order: order}),
+        });
+    });
+</script>
+{% endblock %}

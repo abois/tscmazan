@@ -201,3 +201,21 @@ class SiteSettings(BaseGenericSetting):
 
     class Meta:
         verbose_name = "Paramètres du site"
+
+
+class MenuItem(models.Model):
+    """Élément du menu de navigation, ordonnable."""
+
+    label = models.CharField(max_length=50, verbose_name="Texte affiché")
+    url = models.CharField(max_length=200, help_text="Ex: /le-club/ ou https://tenup.fft.fr")
+    sort_order = models.IntegerField(default=0)
+    is_visible = models.BooleanField(default=True, verbose_name="Visible")
+    open_new_tab = models.BooleanField(default=False, verbose_name="Ouvrir dans un nouvel onglet")
+
+    class Meta:
+        ordering = ["sort_order"]
+        verbose_name = "Élément de menu"
+        verbose_name_plural = "Éléments de menu"
+
+    def __str__(self):
+        return self.label

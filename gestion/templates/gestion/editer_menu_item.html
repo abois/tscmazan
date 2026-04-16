@@ -1,0 +1,43 @@
+{% extends "gestion/base_gestion.html" %}
+
+{% block title %}Modifier : {{ item.label }}{% endblock %}
+
+{% block header_left %}
+<a href="{% url 'gestion:gerer_menu' %}" class="header-back">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Retour
+</a>
+{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Modifier : {{ item.label }}</h1>
+
+<form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+        <label class="form-label">Texte affiché</label>
+        <input type="text" name="label" value="{{ item.label }}" class="form-input" required>
+    </div>
+    <div class="form-group">
+        <label class="form-label">URL</label>
+        <input type="text" name="url" value="{{ item.url }}" class="form-input" required>
+    </div>
+    <div class="form-group" style="display:flex; gap:1.5rem;">
+        <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.85rem; color:var(--text-label); cursor:pointer;">
+            <input type="checkbox" name="is_visible" {% if item.is_visible %}checked{% endif %}> Visible
+        </label>
+        <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.85rem; color:var(--text-label); cursor:pointer;">
+            <input type="checkbox" name="open_new_tab" {% if item.open_new_tab %}checked{% endif %}> Nouvel onglet
+        </label>
+    </div>
+    <button type="submit" class="btn-submit">Enregistrer</button>
+</form>
+
+<form method="POST" style="margin-top:2rem;" onsubmit="return confirm('Supprimer cet élément du menu ?')">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="delete">
+    <button type="submit" style="width:100%; padding:0.7rem; background:none; border:1px solid #e5d5d5; border-radius:var(--radius); color:#dc2626; font-size:0.85rem; font-weight:500; cursor:pointer; font-family:inherit;">
+        Supprimer du menu
+    </button>
+</form>
+{% endblock %}

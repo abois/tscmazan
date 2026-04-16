@@ -12,7 +12,7 @@ from actualites.models import ActualitesIndexPage, ArticlePage
 from club.models import Palmares
 from galerie.models import Album, AlbumPhoto
 
-from home.models import HomePage, SiteSettings
+from home.models import HomePage, MenuItem, SiteSettings
 from .forms import AlbumForm, ArticleForm, PageForm, PalmaresForm, SettingsForm
 
 # Pages éditables avec leurs icônes
@@ -389,6 +389,58 @@ def parametres(request):
         "icone": "⚙️",
         "bouton": "Enregistrer",
     })
+
+
+# ── Menu ───────────────────────────────────────────
+
+@login_required(login_url=LOGIN_URL)
+def gerer_menu(request):
+    return render(request, "gestion/menu.html", {
+        "items": MenuItem.objects.all(),
+    })
+
+
+@login_required(login_url=LOGIN_URL)
+def ajouter_menu_item(request):
+    if request.method == "POST":
+        last = MenuItem.objects.order_by("-sort_order").first()
+        order = (last.sort_order + 10) if last else 0
+        MenuItem.objects.create(
+            label=request.POST["label"],
+            url=request.POST["url"],
+            sort_order=order,
+        )
+    return redirect("gestion:gerer_menu")
+
+
+@login_required(login_url=LOGIN_URL)
+def editer_menu_item(request, pk):
+    item = get_object_or_404(MenuItem, pk=pk)
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "delete":
+            item.delete()
+            return redirect("gestion:gerer_menu")
+        item.label = request.POST.get("label", item.label)
+        item.url = request.POST.get("url", item.url)
+        item.is_visible = request.POST.get("is_visible") == "on"
+        item.open_new_tab = request.POST.get("open_new_tab") == "on"
+        item.save()
+        return redirect("gestion:gerer_menu")
+    return render(request, "gestion/editer_menu_item.html", {"item": item})
+
+
+@login_required(login_url=LOGIN_URL)
+def reorder_menu(request):
+    import json
+    if request.method == "POST":
+        data = json.loads(request.body)
+        for i, pk in enumerate(data.get("order", [])):
+            MenuItem.objects.filter(pk=int(pk)).update(sort_order=i * 10)
+        from django.http import JsonResponse
+        return JsonResponse({"ok": True})
+    from django.http import JsonResponse
+    return JsonResponse({"error": "POST only"}, status=405)
 
 
 # ── Succès ─────────────────────────────────────────
