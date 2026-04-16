@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Gestion{% endblock %} — TSC Mazan</title>
+    <meta name="theme-color" content="#C2571A">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #f9f5f1;
+            color: #333;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .header {
+            background: #C2571A;
+            color: white;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header a { color: white; text-decoration: none; }
+        .header-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .header-back {
+            font-size: 0.8rem;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .container { padding: 1.25rem; max-width: 600px; margin: 0 auto; }
+
+        /* Dashboard */
+        .welcome { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; }
+        .action-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.1rem 1.25rem;
+            background: white;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            color: #333;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .action-card:active { transform: scale(0.98); }
+        .action-icon { font-size: 1.6rem; }
+        .action-label { font-weight: 600; font-size: 0.95rem; }
+        .action-desc { font-size: 0.75rem; color: #999; margin-top: 0.15rem; }
+        .section-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #aaa;
+            margin: 1.5rem 0 0.75rem;
+        }
+        .recent-item {
+            display: block;
+            padding: 0.7rem 0;
+            border-bottom: 1px solid #f0ebe5;
+            text-decoration: none;
+            color: #555;
+            font-size: 0.85rem;
+        }
+        .recent-item strong { color: #333; }
+
+        /* Forms */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
+            color: #444;
+        }
+        .form-help {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 0.25rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid #e0d8d0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            background: white;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #C2571A;
+            box-shadow: 0 0 0 3px rgba(194,87,26,0.1);
+        }
+        textarea.form-input { resize: vertical; min-height: 120px; }
+        select.form-input { cursor: pointer; }
+        input[type="file"].form-input {
+            padding: 0.6rem;
+            font-size: 0.85rem;
+        }
+        .form-errors {
+            color: #c0392b;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: #C2571A;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: background 0.2s;
+            -webkit-appearance: none;
+        }
+        .btn-submit:active { background: #A44A16; }
+
+        /* Success */
+        .success-card {
+            text-align: center;
+            padding: 3rem 1.5rem;
+        }
+        .success-icon { font-size: 3rem; margin-bottom: 1rem; }
+        .success-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .success-desc { color: #888; font-size: 0.9rem; margin-bottom: 2rem; }
+        .btn-back {
+            display: inline-block;
+            padding: 0.7rem 1.5rem;
+            background: #C2571A;
+            color: white;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .logout-link {
+            font-size: 0.75rem;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% block header_left %}
+        <a href="/gestion/" class="header-title">
+            <img src="{% static 'images/logo-64.png' %}" alt="" style="width:28px; height:28px; border-radius:50%;">
+            TSC Mazan
+        </a>
+        {% endblock %}
+        <div style="display:flex; align-items:center; gap:1rem;">
+            <a href="/" class="logout-link">Voir le site</a>
+            <a href="/admin/logout/" class="logout-link">Déconnexion</a>
+        </div>
+    </div>
+
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof CKEDITOR === 'undefined') return;
+            CKEDITOR.config.versionCheck = false;
+            document.querySelectorAll('textarea.ckeditor').forEach(function(el) {
+                CKEDITOR.replace(el.id || el.name, {
+                    language: 'fr',
+                    toolbar: [
+                        ['Bold', 'Italic'],
+                        ['NumberedList', 'BulletedList'],
+                        ['Link', 'Unlink'],
+                        ['Format'],
+                        ['Undo', 'Redo']
+                    ],
+                    format_tags: 'p;h3;h4',
+                    removePlugins: 'elementspath,about',
+                    resize_enabled: true,
+                    height: 200,
+                    contentsCss: 'body { font-family: Inter, sans-serif; font-size: 14px; padding: 10px; line-height: 1.6; }',
+                });
+            });
+        });
+    </script>
+</body>
+</html>

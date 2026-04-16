@@ -1,0 +1,37 @@
+{% extends "gestion/base_gestion.html" %}
+
+{% block title %}{{ titre_page }}{% endblock %}
+
+{% block header_left %}
+<a href="{% url 'gestion:dashboard' %}" class="header-back">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Retour
+</a>
+{% endblock %}
+
+{% block content %}
+<div style="margin-top: 0.5rem;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;">
+        <h1 style="font-size: 1.3rem; font-weight: 700;">{{ icone }} {{ titre_page }}</h1>
+        <a href="{{ ajouter_url }}" style="background:#C2571A; color:white; padding:0.5rem 1rem; border-radius:0.4rem; text-decoration:none; font-size:0.8rem; font-weight:600;">
+            + {{ ajouter_label }}
+        </a>
+    </div>
+
+    {% for item in items %}
+    <a href="{{ item.edit_url }}" style="display:flex; align-items:center; justify-content:space-between; padding:0.85rem 0; border-bottom:1px solid #f0ebe5; text-decoration:none; color:#333;">
+        <div>
+            <div style="font-weight:600; font-size:0.9rem;">{{ item.titre }}</div>
+            {% if item.sous_titre %}
+            <div style="font-size:0.75rem; color:#999; margin-top:0.15rem;">{{ item.sous_titre }}</div>
+            {% endif %}
+        </div>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
+    </a>
+    {% empty %}
+    <div style="text-align:center; padding:2rem; color:#ccc;">
+        Aucun élément pour le moment.
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

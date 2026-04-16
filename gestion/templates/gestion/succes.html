@@ -1,0 +1,12 @@
+{% extends "gestion/base_gestion.html" %}
+
+{% block title %}{{ titre }}{% endblock %}
+
+{% block content %}
+<div class="success-card">
+    <div class="success-icon">✅</div>
+    <div class="success-title">{{ titre }}</div>
+    <div class="success-desc">{{ description }}</div>
+    <a href="{% url 'gestion:dashboard' %}" class="btn-back">Retour à l'accueil</a>
+</div>
+{% endblock %}

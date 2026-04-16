@@ -5,10 +5,6 @@ from modelcluster.models import ClusterableModel
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.fields import RichTextField
 from wagtail.models import Orderable, Page
-from wagtail.snippets.models import register_snippet
-
-
-@register_snippet
 class Album(ClusterableModel):
     """Un album photo, géré comme snippet indépendant."""
 

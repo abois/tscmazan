@@ -7,7 +7,6 @@ from wagtail.fields import RichTextField, StreamField
 from wagtail.admin.panels import FieldPanel, InlinePanel, MultiFieldPanel
 from wagtail.blocks import CharBlock, StructBlock, RichTextBlock
 from wagtail.images.blocks import ImageChooserBlock
-from wagtail.snippets.models import register_snippet
 
 
 class DirigeantBlock(StructBlock):
@@ -138,7 +137,6 @@ NIVEAU_CHOICES = [
 ]
 
 
-@register_snippet
 class Palmares(models.Model):
     """Une entrée au palmarès — un titre, une année. Simple."""
 
@@ -171,7 +169,6 @@ class Palmares(models.Model):
         return f"{self.annee} — {self.titre}"
 
 
-@register_snippet
 class Competition(ClusterableModel):
     """Une compétition avec ses matchs."""
 

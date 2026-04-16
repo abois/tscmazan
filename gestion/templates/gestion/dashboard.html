@@ -1,0 +1,76 @@
+{% extends "gestion/base_gestion.html" %}
+
+{% block title %}Gestion{% endblock %}
+
+{% block content %}
+<div style="margin-top: 0.5rem;">
+    <div class="welcome">Bonjour !</div>
+    <div class="subtitle">Que souhaitez-vous faire ?</div>
+
+    <a href="{% url 'gestion:nouvelle_actu' %}" class="action-card">
+        <span class="action-icon">📝</span>
+        <div>
+            <div class="action-label">Publier une actu</div>
+            <div class="action-desc">Article avec photo</div>
+        </div>
+    </a>
+
+    <a href="{% url 'gestion:ajouter_photos' %}" class="action-card">
+        <span class="action-icon">📸</span>
+        <div>
+            <div class="action-label">Ajouter des photos</div>
+            <div class="action-desc">Créer un album</div>
+        </div>
+    </a>
+
+    <a href="{% url 'gestion:ajouter_palmares' %}" class="action-card">
+        <span class="action-icon">🏆</span>
+        <div>
+            <div class="action-label">Ajouter un résultat</div>
+            <div class="action-desc">Palmarès du club</div>
+        </div>
+    </a>
+
+    <div class="section-title">Gérer le contenu</div>
+    <a href="{% url 'gestion:liste_actus' %}" class="action-card" style="padding:0.8rem 1rem;">
+        <span>📝</span>
+        <div>
+            <div class="action-label" style="font-size:0.85rem;">Actualités</div>
+            <div class="action-desc">{{ recent_articles|length }} article{{ recent_articles|length|pluralize:"s" }}</div>
+        </div>
+    </a>
+    <a href="{% url 'gestion:liste_albums' %}" class="action-card" style="padding:0.8rem 1rem;">
+        <span>📸</span>
+        <div>
+            <div class="action-label" style="font-size:0.85rem;">Albums photos</div>
+            <div class="action-desc">{{ recent_albums|length }} album{{ recent_albums|length|pluralize:"s" }}</div>
+        </div>
+    </a>
+    <a href="{% url 'gestion:liste_palmares' %}" class="action-card" style="padding:0.8rem 1rem;">
+        <span>🏆</span>
+        <div>
+            <div class="action-label" style="font-size:0.85rem;">Palmarès</div>
+            <div class="action-desc">{{ recent_palmares|length }} résultat{{ recent_palmares|length|pluralize:"s" }}</div>
+        </div>
+    </a>
+
+    <div class="section-title">Pages du site</div>
+    {% for page in pages %}
+    <a href="{% url 'gestion:editer_page' page.pk %}" class="action-card" style="padding:0.8rem 1rem;">
+        <span>{{ page.icone }}</span>
+        <div>
+            <div class="action-label" style="font-size:0.85rem;">{{ page.title }}</div>
+        </div>
+    </a>
+    {% endfor %}
+
+    <div class="section-title">Paramètres</div>
+    <a href="{% url 'gestion:parametres' %}" class="action-card" style="padding:0.8rem 1rem;">
+        <span>⚙️</span>
+        <div>
+            <div class="action-label" style="font-size:0.85rem;">Paramètres du site</div>
+            <div class="action-desc">Téléphone, email, lien Tenup, réseaux sociaux</div>
+        </div>
+    </a>
+</div>
+{% endblock %}
