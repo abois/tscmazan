@@ -37,17 +37,17 @@
   <line x1="290" y1="248" x2="422" y2="248" stroke="#F5B820" stroke-width="2.5" stroke-linecap="round"/>
 
   <!-- MAZAN -->
-  <text x="256" y="330" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="80" fill="white" letter-spacing="18">MAZAN</text>
+  <text x="256" y="320" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="72" fill="white" letter-spacing="16">MAZAN</text>
 
   <!-- Texte arc haut -->
-  <path id="arc-top" d="M 80 256 A 176 176 0 0 1 432 256" fill="none"/>
-  <text font-family="Arial, Helvetica, sans-serif" font-size="20" fill="white" letter-spacing="6" opacity="0.5" font-weight="600">
+  <path id="arc-top" d="M 72 256 A 184 184 0 0 1 440 256" fill="none"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="white" letter-spacing="6" opacity="0.45" font-weight="600">
     <textPath href="#arc-top" startOffset="50%" text-anchor="middle">TENNIS SPORTING CLUB</textPath>
   </text>
 
   <!-- Texte arc bas -->
-  <path id="arc-bot" d="M 88 272 A 176 176 0 0 0 424 272" fill="none"/>
-  <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="white" letter-spacing="5" opacity="0.4" font-weight="600">
+  <path id="arc-bot" d="M 80 290 A 190 190 0 0 0 432 290" fill="none"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="16" fill="white" letter-spacing="5" opacity="0.35" font-weight="600">
     <textPath href="#arc-bot" startOffset="50%" text-anchor="middle">MAZANAIS &#x2022; VAUCLUSE</textPath>
   </text>
 </svg>
