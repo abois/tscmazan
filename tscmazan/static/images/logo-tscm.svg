@@ -1,96 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#C2571A"/>
-      <stop offset="100%" style="stop-color:#943F11"/>
-    </linearGradient>
-    <linearGradient id="inner" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#A44A16"/>
-      <stop offset="100%" style="stop-color:#813B12"/>
-    </linearGradient>
-    <linearGradient id="ball" x1="30%" y1="20%" x2="70%" y2="80%">
-      <stop offset="0%" style="stop-color:#FFD04A"/>
-      <stop offset="100%" style="stop-color:#D4960A"/>
-    </linearGradient>
-    <linearGradient id="sky" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#FDF6EC" stop-opacity="0.12"/>
-      <stop offset="100%" style="stop-color:#FDF6EC" stop-opacity="0.03"/>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#D06020"/>
+      <stop offset="100%" stop-color="#A04010"/>
     </linearGradient>
   </defs>
 
-  <!-- Cercle extérieur -->
-  <circle cx="200" cy="200" r="196" fill="url(#bg)"/>
-  <circle cx="200" cy="200" r="186" fill="none" stroke="#FDF6EC" stroke-width="2.5" opacity="0.85"/>
-  <circle cx="200" cy="200" r="178" fill="none" stroke="#FDF6EC" stroke-width="0.8" opacity="0.3"/>
+  <!-- Fond cercle -->
+  <circle cx="256" cy="256" r="252" fill="url(#g1)"/>
 
-  <!-- Anneau intérieur -->
-  <circle cx="200" cy="200" r="168" fill="url(#inner)"/>
+  <!-- Bordure extérieure -->
+  <circle cx="256" cy="256" r="240" fill="none" stroke="#F5CFA1" stroke-width="2.5" opacity="0.6"/>
 
-  <!-- Mont Ventoux en filigrane -->
-  <g opacity="0.12">
-    <!-- Silhouette du Ventoux -->
-    <path d="M 60 235
-             L 95 215
-             L 120 220
-             L 145 200
-             L 165 195
-             L 180 178
-             L 195 165
-             L 205 155
-             L 210 158
-             L 220 165
-             L 235 178
-             L 250 190
-             L 270 200
-             L 295 210
-             L 320 218
-             L 340 235
-             Z"
-         fill="#FDF6EC"/>
-    <!-- Sommet enneigé -->
-    <path d="M 190 170
-             L 195 165
-             L 205 155
-             L 210 158
-             L 218 168
-             L 210 172
-             L 200 175
-             Z"
-         fill="#FDF6EC" opacity="0.6"/>
-  </g>
+  <!-- Bordure intérieure -->
+  <circle cx="256" cy="256" r="232" fill="none" stroke="#F5CFA1" stroke-width="1" opacity="0.25"/>
 
-  <!-- Ligne d'horizon subtile -->
-  <path d="M 55 235 Q 200 228, 345 235" fill="none" stroke="#FDF6EC" stroke-width="0.5" opacity="0.15"/>
+  <!-- TSC -->
+  <text x="256" y="225" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="140" fill="white" letter-spacing="12">TSC</text>
 
-  <!-- Texte en arc haut - TENNIS SPORTING CLUB -->
-  <path id="topArc" d="M 55 200 A 145 145 0 0 1 345 200" fill="none"/>
-  <text font-family="'Bebas Neue', sans-serif" font-size="18" fill="#FDF6EC" letter-spacing="7" opacity="0.9">
-    <textPath href="#topArc" startOffset="50%" text-anchor="middle">TENNIS SPORTING CLUB</textPath>
+  <!-- Ligne gauche -->
+  <line x1="90" y1="260" x2="225" y2="260" stroke="#F5B820" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Balle -->
+  <circle cx="256" cy="260" r="14" fill="#F5B820"/>
+  <!-- Coutures balle -->
+  <path d="M248 250 Q256 261, 251 272" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  <path d="M264 250 Q256 261, 261 272" fill="none" stroke="white" stroke-width="1.5" opacity="0.5"/>
+
+  <!-- Ligne droite -->
+  <line x1="287" y1="260" x2="422" y2="260" stroke="#F5B820" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- MAZAN -->
+  <text x="256" y="330" text-anchor="middle" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="86" fill="white" letter-spacing="16">MAZAN</text>
+
+  <!-- Texte arc haut -->
+  <path id="arc-top" d="M 80 256 A 176 176 0 0 1 432 256" fill="none"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="20" fill="white" letter-spacing="6" opacity="0.5" font-weight="600">
+    <textPath href="#arc-top" startOffset="50%" text-anchor="middle">TENNIS SPORTING CLUB</textPath>
   </text>
 
-  <!-- Texte en arc bas - MAZANAIS • VAUCLUSE -->
-  <path id="bottomArc" d="M 62 218 A 145 145 0 0 0 338 218" fill="none"/>
-  <text font-family="'Bebas Neue', sans-serif" font-size="16" fill="#FDF6EC" letter-spacing="5" opacity="0.85">
-    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">MAZANAIS &#x2022; VAUCLUSE</textPath>
+  <!-- Texte arc bas -->
+  <path id="arc-bot" d="M 88 272 A 176 176 0 0 0 424 272" fill="none"/>
+  <text font-family="Arial, Helvetica, sans-serif" font-size="18" fill="white" letter-spacing="5" opacity="0.4" font-weight="600">
+    <textPath href="#arc-bot" startOffset="50%" text-anchor="middle">MAZANAIS &#x2022; VAUCLUSE</textPath>
   </text>
-
-  <!-- TSC - Texte principal en Bebas Neue -->
-  <text x="200" y="193" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="88" fill="#FDF6EC" letter-spacing="16">TSC</text>
-
-  <!-- Ligne décorative + balle -->
-  <line x1="120" y1="210" x2="180" y2="210" stroke="#F5B820" stroke-width="1.5" opacity="0.7" stroke-linecap="round"/>
-  <line x1="220" y1="210" x2="280" y2="210" stroke="#F5B820" stroke-width="1.5" opacity="0.7" stroke-linecap="round"/>
-
-  <!-- Balle de tennis -->
-  <circle cx="200" cy="210" r="11" fill="url(#ball)"/>
-  <path d="M 193 202 Q 200 212, 195 220" fill="none" stroke="#FDF6EC" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
-  <path d="M 207 202 Q 200 212, 205 220" fill="none" stroke="#FDF6EC" stroke-width="1.3" stroke-linecap="round" opacity="0.5"/>
-
-  <!-- MAZAN en Bebas Neue -->
-  <text x="200" y="252" text-anchor="middle" font-family="'Bebas Neue', sans-serif" font-size="48" fill="#FDF6EC" letter-spacing="18">MAZAN</text>
-
-  <!-- Points décoratifs -->
-  <circle cx="170" cy="270" r="2" fill="#F5B820" opacity="0.5"/>
-  <circle cx="200" cy="270" r="2" fill="#F5B820" opacity="0.5"/>
-  <circle cx="230" cy="270" r="2" fill="#F5B820" opacity="0.5"/>
 </svg>
