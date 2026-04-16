@@ -10,28 +10,31 @@
 {% endblock %}
 
 {% block content %}
-<div style="margin-top: 0.5rem;">
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;">
-        <h1 style="font-size: 1.3rem; font-weight: 700;">{{ icone }} {{ titre_page }}</h1>
-        <a href="{{ ajouter_url }}" style="background:#C2571A; color:white; padding:0.5rem 1rem; border-radius:0.4rem; text-decoration:none; font-size:0.8rem; font-weight:600;">
-            + {{ ajouter_label }}
-        </a>
-    </div>
-
-    {% for item in items %}
-    <a href="{{ item.edit_url }}" style="display:flex; align-items:center; justify-content:space-between; padding:0.85rem 0; border-bottom:1px solid #f0ebe5; text-decoration:none; color:#333;">
-        <div>
-            <div style="font-weight:600; font-size:0.9rem;">{{ item.titre }}</div>
-            {% if item.sous_titre %}
-            <div style="font-size:0.75rem; color:#999; margin-top:0.15rem;">{{ item.sous_titre }}</div>
-            {% endif %}
-        </div>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="2" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg>
-    </a>
-    {% empty %}
-    <div style="text-align:center; padding:2rem; color:#ccc;">
-        Aucun élément pour le moment.
-    </div>
-    {% endfor %}
+<div class="list-header">
+    <h1 class="page-title">{{ titre_page }}</h1>
+    <a href="{{ ajouter_url }}" class="btn-add">+ {{ ajouter_label }}</a>
 </div>
+
+{% for item in items %}
+<div class="list-item" style="display:flex; align-items:center; gap:0.5rem;">
+    <a href="{{ item.edit_url }}" style="flex:1; text-decoration:none; color:var(--text);">
+        <div class="list-item-title">{{ item.titre }}</div>
+        {% if item.sous_titre %}
+        <div class="list-item-sub">{{ item.sous_titre }}</div>
+        {% endif %}
+    </a>
+    {% if item.view_url %}
+    <a href="{{ item.view_url }}" target="_blank" title="Voir sur le site" style="color:var(--text-muted); padding:0.4rem; flex-shrink:0;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+    </a>
+    {% endif %}
+    <a href="{{ item.edit_url }}" style="color:var(--text-muted); padding:0.4rem; flex-shrink:0;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+</div>
+{% empty %}
+<div style="text-align:center; padding:3rem; color:var(--text-muted); font-size:0.85rem;">
+    Aucun élément pour le moment.
+</div>
+{% endfor %}
 {% endblock %}

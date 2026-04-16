@@ -79,7 +79,7 @@ def liste_actus(request):
     return render(request, "gestion/liste.html", {
         "titre_page": "Actualités",
         "icone": "📝",
-        "items": [{"titre": a.title, "sous_titre": a.date.strftime("%d/%m/%Y"), "edit_url": f"/gestion/editer-actu/{a.pk}/"} for a in articles],
+        "items": [{"titre": a.title, "sous_titre": a.date.strftime("%d/%m/%Y"), "edit_url": f"/gestion/editer-actu/{a.pk}/", "view_url": a.url} for a in articles],
         "ajouter_url": "/gestion/nouvelle-actu/",
         "ajouter_label": "Nouvelle actu",
     })

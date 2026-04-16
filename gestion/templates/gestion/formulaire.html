@@ -11,60 +11,57 @@
 {% endblock %}
 
 {% block content %}
-<div style="margin-top: 0.5rem;">
-    <div style="font-size: 2rem; margin-bottom: 0.25rem;">{{ icone }}</div>
-    <h1 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem;">{{ titre_page }}</h1>
+<h1 class="page-title">{{ titre_page }}</h1>
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
 
-        {% for field in form %}
-        <div class="form-group">
-            <label class="form-label" for="{{ field.id_for_label }}">
-                {{ field.label }}{% if field.field.required %} *{% endif %}
-            </label>
+    {% for field in form %}
+    <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">
+            {{ field.label }}{% if field.field.required %} *{% endif %}
+        </label>
 
-            {% with wtype=field|widget_type %}
-            {% if wtype == "file" %}
-                <input type="file"
-                    name="{{ field.html_name }}"
-                    id="{{ field.id_for_label }}"
-                    class="form-input"
-                    {% if field.field.widget.attrs.accept %}accept="{{ field.field.widget.attrs.accept }}"{% endif %}
-                    {% if field.field.widget.attrs.allow_multiple_selected %}multiple{% endif %}>
-            {% elif wtype == "textarea" %}
-                <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}"
-                    class="form-input"
-                    placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
-                    rows="{{ field.field.widget.attrs.rows|default:'4' }}"
-                    {% if field.field.required %}required{% endif %}>{{ field.value|default:"" }}</textarea>
-            {% elif wtype == "select" %}
-                <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-input">
-                    {% for val, label in field.field.choices %}
-                    <option value="{{ val }}" {% if val == field.value %}selected{% endif %}>{{ label }}</option>
-                    {% endfor %}
-                </select>
-            {% else %}
-                <input type="{{ field.field.widget.input_type|default:'text' }}"
-                    name="{{ field.html_name }}"
-                    id="{{ field.id_for_label }}"
-                    value="{{ field.value|default:'' }}"
-                    class="form-input"
-                    placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
-                    {% if field.field.required %}required{% endif %}>
-            {% endif %}
-            {% endwith %}
+        {% with wtype=field|widget_type %}
+        {% if wtype == "file" %}
+            <input type="file"
+                name="{{ field.html_name }}"
+                id="{{ field.id_for_label }}"
+                class="form-input"
+                {% if field.field.widget.attrs.accept %}accept="{{ field.field.widget.attrs.accept }}"{% endif %}
+                {% if field.field.widget.attrs.allow_multiple_selected %}multiple{% endif %}>
+        {% elif wtype == "textarea" %}
+            <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}"
+                class="form-input"
+                placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                rows="{{ field.field.widget.attrs.rows|default:'5' }}"
+                {% if field.field.required %}required{% endif %}>{{ field.value|default:"" }}</textarea>
+        {% elif wtype == "select" %}
+            <select name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-input">
+                {% for val, label in field.field.choices %}
+                <option value="{{ val }}" {% if val == field.value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <input type="{{ field.field.widget.input_type|default:'text' }}"
+                name="{{ field.html_name }}"
+                id="{{ field.id_for_label }}"
+                value="{{ field.value|default:'' }}"
+                class="form-input"
+                placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
+                {% if field.field.required %}required{% endif %}>
+        {% endif %}
+        {% endwith %}
 
-            {% if field.help_text %}
-            <div class="form-help">{{ field.help_text }}</div>
-            {% endif %}
-            {% if field.errors %}
-            <div class="form-errors">{{ field.errors.0 }}</div>
-            {% endif %}
-        </div>
-        {% endfor %}
+        {% if field.help_text %}
+        <div class="form-help">{{ field.help_text }}</div>
+        {% endif %}
+        {% if field.errors %}
+        <div class="form-errors">{{ field.errors.0 }}</div>
+        {% endif %}
+    </div>
+    {% endfor %}
 
-        <button type="submit" class="btn-submit">{{ bouton }}</button>
-    </form>
-</div>
+    <button type="submit" class="btn-submit">{{ bouton }}</button>
+</form>
 {% endblock %}

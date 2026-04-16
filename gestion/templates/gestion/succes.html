@@ -4,7 +4,9 @@
 
 {% block content %}
 <div class="success-card">
-    <div class="success-icon">✅</div>
+    <div class="success-check">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+    </div>
     <div class="success-title">{{ titre }}</div>
     <div class="success-desc">{{ description }}</div>
     <a href="{% url 'gestion:dashboard' %}" class="btn-back">Retour à l'accueil</a>
