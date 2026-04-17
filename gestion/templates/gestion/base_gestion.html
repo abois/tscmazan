@@ -57,8 +57,9 @@
         }
         .header-title img { border: 2px solid var(--border); }
         .header-back {
-            font-size: 0.8rem;
-            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
             display: flex;
             align-items: center;
             gap: 0.25rem;
@@ -74,6 +75,16 @@
         .header-right a:hover { color: white; }
 
         .container { padding: 1.5rem 1.25rem 3rem; max-width: 640px; margin: 0 auto; }
+
+        .breadcrumb {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+        }
+        .breadcrumb:hover { text-decoration: underline; }
 
         /* Dashboard */
         .welcome { font-size: 1.4rem; font-weight: 300; color: var(--text-muted); margin-bottom: 1.5rem; }
@@ -233,12 +244,10 @@
 </head>
 <body>
     <div class="header">
-        {% block header_left %}
         <a href="/gestion/" class="header-title">
             <img src="{% static 'images/logo-64.png' %}" alt="" style="width:26px; height:26px; border-radius:50%;">
-            TSC Mazan
+            <span class="header-title-text">TSC Mazan</span>
         </a>
-        {% endblock %}
         <div class="header-right">
             <a href="/">Site</a>
             <a href="/admin/logout/">Quitter</a>
@@ -262,7 +271,7 @@
                     removePlugins: 'elementspath,about,format,stylescombo',
                     resize_enabled: true,
                     height: 200,
-                    contentsCss: 'body { font-family: Inter, sans-serif; font-size: 14px; padding: 10px; line-height: 1.6; color: #2d2a26; } a { color: #C2571A; }',
+                    contentsCss: 'body { font-family: DM Sans, Inter, sans-serif; font-size: 15px; padding: 12px 16px; line-height: 1.7; color: #374151; } a { color: #2057b2; } p { margin: 0 0 1em; } h3 { font-size: 1.25em; font-weight: 700; margin: 1.5em 0 0.5em; color: #1e3a5f; } h4 { font-size: 1.1em; font-weight: 600; margin: 1.2em 0 0.4em; color: #1e3a5f; } ul, ol { margin: 0.5em 0 1em 1.5em; } li { margin: 0.3em 0; } strong { font-weight: 600; }',
                 });
             });
         });

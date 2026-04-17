@@ -10,7 +10,7 @@ from wagtail.images.models import Image
 
 from actualites.models import ActualitesIndexPage, ArticlePage
 from club.models import Palmares
-from galerie.models import Album, AlbumPhoto
+from galerie.models import Album, AlbumPhoto, GaleriePage
 
 from home.models import HomePage, MenuItem, SiteSettings
 from .forms import AlbumForm, ArticleForm, PageForm, PalmaresForm, SettingsForm
@@ -42,26 +42,33 @@ def _upload_image(file, title):
 
 # ── Dashboard ──────────────────────────────────────
 
+# Pages qui ont une gestion dédiée → URL directe au lieu de editer_page
+PAGE_REDIRECTS = {
+    "ActualitesIndexPage": "/gestion/actus/",
+    "ResultatsPage": "/gestion/palmares/",
+}
+
+
 @login_required(login_url=LOGIN_URL)
 def dashboard(request):
-    from wagtail.models import Page as WagtailPage
-
     home = HomePage.objects.first()
     pages = []
     if home:
+        # Homepage en premier
+        pages.append({
+            "pk": home.pk,
+            "title": "Page d'accueil",
+            "url": f"/gestion/page/{home.pk}/",
+        })
         for child in home.get_children().live():
             cls_name = child.specific.__class__.__name__
+            # Soit gestion dédiée, soit éditeur de page
+            url = PAGE_REDIRECTS.get(cls_name, f"/gestion/page/{child.pk}/")
             pages.append({
                 "pk": child.pk,
                 "title": child.title,
-                "icone": PAGE_ICONS.get(cls_name, "📄"),
+                "url": url,
             })
-        # Ajouter la homepage elle-même en premier
-        pages.insert(0, {
-            "pk": home.pk,
-            "title": "Page d'accueil",
-            "icone": "🏠",
-        })
 
     return render(request, "gestion/dashboard.html", {
         "recent_articles": ArticlePage.objects.live().order_by("-date")[:5],
@@ -82,7 +89,12 @@ def liste_actus(request):
         "items": [{"titre": a.title, "sous_titre": a.date.strftime("%d/%m/%Y"), "edit_url": f"/gestion/editer-actu/{a.pk}/", "view_url": a.url} for a in articles],
         "ajouter_url": "/gestion/nouvelle-actu/",
         "ajouter_label": "Nouvelle actu",
+        "retour_url": "/gestion/",
+        "retour_label": "Accueil",
     })
+
+
+
 
 
 @login_required(login_url=LOGIN_URL)
@@ -121,6 +133,8 @@ def nouvelle_actu(request):
         "titre_page": "Publier une actu",
         "icone": "📝",
         "bouton": "Publier l'article",
+        "retour_url": "/gestion/actus/",
+        "retour_label": "Actualités",
     })
 
 
@@ -154,6 +168,8 @@ def editer_actu(request, pk):
         "titre_page": "Modifier l'article",
         "icone": "📝",
         "bouton": "Enregistrer",
+        "retour_url": "/gestion/actus/",
+        "retour_label": "Actualités",
     })
 
 
@@ -168,6 +184,8 @@ def liste_palmares(request):
         "items": [{"titre": f"{p.annee} — {p.titre}", "sous_titre": p.get_categorie_display(), "edit_url": f"/gestion/editer-palmares/{p.pk}/"} for p in items],
         "ajouter_url": "/gestion/ajouter-palmares/",
         "ajouter_label": "Nouveau résultat",
+        "retour_url": "/gestion/",
+        "retour_label": "Accueil",
     })
 
 
@@ -195,6 +213,8 @@ def ajouter_palmares(request):
         "titre_page": "Ajouter un résultat",
         "icone": "🏆",
         "bouton": "Enregistrer",
+        "retour_url": "/gestion/palmares/",
+        "retour_label": "Palmarès",
     })
 
 
@@ -224,6 +244,8 @@ def editer_palmares(request, pk):
         "titre_page": "Modifier le palmarès",
         "icone": "🏆",
         "bouton": "Enregistrer",
+        "retour_url": "/gestion/palmares/",
+        "retour_label": "Palmarès",
     })
 
 
@@ -238,6 +260,8 @@ def liste_albums(request):
         "items": [{"titre": a.titre, "sous_titre": f"{a.photos.count()} photos", "edit_url": f"/gestion/editer-album/{a.pk}/"} for a in albums],
         "ajouter_url": "/gestion/ajouter-photos/",
         "ajouter_label": "Nouvel album",
+        "retour_url": f"/gestion/page/{GaleriePage.objects.first().pk}/" if GaleriePage.objects.exists() else "/gestion/",
+        "retour_label": "Galerie",
     })
 
 
@@ -262,6 +286,8 @@ def ajouter_photos(request):
         "titre_page": "Ajouter des photos",
         "icone": "📸",
         "bouton": "Créer l'album",
+        "retour_url": "/gestion/albums/",
+        "retour_label": "Albums",
     })
 
 
@@ -289,7 +315,16 @@ def editer_album(request, pk):
         "titre_page": f"Modifier : {album.titre}",
         "icone": "📸",
         "bouton": "Enregistrer",
+        "retour_url": "/gestion/albums/",
+        "retour_label": "Albums",
     })
+
+
+@login_required(login_url=LOGIN_URL)
+def supprimer_photo(request, photo_pk, album_pk):
+    photo = get_object_or_404(AlbumPhoto, pk=photo_pk, album_id=album_pk)
+    photo.delete()
+    return redirect("gestion:editer_album", pk=album_pk)
 
 
 # ── Pages statiques ────────────────────────────────
@@ -331,6 +366,9 @@ PAGE_FIELDS = {
         ("telephone", "Téléphone", "text"),
         ("email", "Email", "text"),
     ],
+    "GaleriePage": [
+        ("intro", "Texte d'introduction de la galerie", "ckeditor"),
+    ],
 }
 
 
@@ -358,6 +396,7 @@ def editer_page(request, pk):
         "page_obj": page,
         "titre_page": f"Modifier : {page.title}",
         "fields": [(name, label, ftype, getattr(page, name, "")) for name, label, ftype in fields],
+        "is_galerie": cls_name == "GaleriePage",
     })
 
 

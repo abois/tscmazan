@@ -18,6 +18,7 @@ urlpatterns = [
     path("ajouter-photos/", views.ajouter_photos, name="ajouter_photos"),
     path("albums/", views.liste_albums, name="liste_albums"),
     path("editer-album/<int:pk>/", views.editer_album, name="editer_album"),
+    path("supprimer-photo/<int:photo_pk>/<int:album_pk>/", views.supprimer_photo, name="supprimer_photo"),
     # Pages du site
     path("page/<int:pk>/", views.editer_page, name="editer_page"),
     # Menu

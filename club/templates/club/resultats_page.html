@@ -105,34 +105,27 @@
                     {% if comp.matchs.exists %}
                     <div class="overflow-x-auto -mx-4 md:mx-0">
                         <table class="w-full text-sm">
-                            <thead>
-                                <tr class="border-b-2 border-bleu-100">
-                                    <th class="text-left py-3 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Tour</th>
-                                    <th class="text-left py-3 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Joueur / Équipe</th>
-                                    <th class="text-left py-3 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Adversaire</th>
-                                    <th class="text-center py-3 px-3 text-xs font-bold text-gray-500 uppercase tracking-wider">Score</th>
-                                    <th class="text-center py-3 px-3 w-10"></th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-50">
+                            <tbody class="divide-y divide-gray-100">
                                 {% for match in comp.matchs.all %}
-                                <tr class="hover:bg-bleu-50/50 transition">
-                                    <td class="py-3 px-3"><span class="font-medium text-gray-700">{{ match.tour|default:"—" }}</span></td>
+                                <tr class="hover:bg-bleu-50/30 transition">
                                     <td class="py-3 px-3">
-                                        <span class="font-semibold text-gray-900">{{ match.joueur_equipe }}</span>
-                                        {% if match.adversaire %}<div class="text-xs text-gray-400 sm:hidden">vs {{ match.adversaire }}</div>{% endif %}
+                                        <div class="font-semibold text-sm text-gray-800">{{ match.adversaire|default:"À définir" }}</div>
+                                        {% if match.tour %}<div class="text-[11px] text-gray-400 mt-0.5">{{ match.tour }}</div>{% endif %}
                                     </td>
-                                    <td class="py-3 px-3 text-gray-600 hidden sm:table-cell">{{ match.adversaire|default:"—" }}</td>
-                                    <td class="py-3 px-3 text-center">
+                                    <td class="py-3 px-3 text-center whitespace-nowrap">
                                         {% if match.score %}
-                                        <span class="font-mono font-bold {% if match.victoire %}text-bleu-600{% else %}text-gray-500{% endif %}">{{ match.score }}</span>
-                                        {% else %}<span class="text-gray-300">—</span>{% endif %}
+                                        <span class="font-display text-lg tracking-wider {% if match.victoire %}text-bleu-600{% else %}text-gray-400{% endif %}">{{ match.score }}</span>
+                                        {% else %}
+                                        <span class="text-[11px] font-medium text-bleu-400 bg-bleu-50 px-2 py-0.5 rounded-full">À venir</span>
+                                        {% endif %}
                                     </td>
-                                    <td class="py-3 px-3 text-center">
+                                    <td class="py-3 px-2 text-center w-8">
                                         {% if match.victoire %}
-                                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-or-100">
-                                            <svg class="w-4 h-4 text-bleu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-bleu-100">
+                                            <svg class="w-3.5 h-3.5 text-bleu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
                                         </span>
+                                        {% elif match.score %}
+                                        <span class="text-xs text-gray-300">—</span>
                                         {% endif %}
                                     </td>
                                 </tr>

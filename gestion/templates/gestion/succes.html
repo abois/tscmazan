@@ -9,6 +9,9 @@
     </div>
     <div class="success-title">{{ titre }}</div>
     <div class="success-desc">{{ description }}</div>
-    <a href="{% url 'gestion:dashboard' %}" class="btn-back">Retour à l'accueil</a>
+    <div style="display:flex; flex-direction:column; gap:0.75rem; align-items:center;">
+        <a href="{% url 'gestion:dashboard' %}" class="btn-back">Accueil gestion</a>
+        <a href="/" style="font-size:0.8rem; color:var(--text-muted); text-decoration:none;">Voir le site →</a>
+    </div>
 </div>
 {% endblock %}

@@ -2,15 +2,9 @@
 
 {% block title %}{{ titre_page }}{% endblock %}
 
-{% block header_left %}
-<a href="{% url 'gestion:dashboard' %}" class="header-back">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-    Retour
-</a>
-{% endblock %}
-
 {% block content %}
 <div style="margin-top: 0.5rem;">
+    <a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">← {{ retour_label|default:"Accueil" }}</a>
     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
         <h1 class="page-title" style="margin-bottom:0;">{{ titre_page }}</h1>
         {% if page_obj.url %}
@@ -42,5 +36,20 @@
 
         <button type="submit" class="btn-submit">Enregistrer</button>
     </form>
+
+    {% if is_galerie %}
+    <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
+        <a href="{% url 'gestion:liste_albums' %}" class="card">
+            <div class="card-icon card-icon--slate">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+            </div>
+            <div class="card-text">
+                <div class="card-label">Gérer les albums photos</div>
+                <div class="card-desc">Ajouter, modifier ou supprimer des albums</div>
+            </div>
+            <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
+        </a>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}

@@ -3,57 +3,92 @@
 
 {% block title %}{{ titre_page }}{% endblock %}
 
-{% block header_left %}
-<a href="{% url 'gestion:liste_albums' %}" class="header-back">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-    Retour
-</a>
-{% endblock %}
-
 {% block content %}
-<div style="margin-top: 0.5rem;">
-    <div style="font-size: 2rem; margin-bottom: 0.25rem;">{{ icone }}</div>
-    <h1 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem;">{{ titre_page }}</h1>
+<a href="{{ retour_url|default:'/gestion/albums/' }}" class="breadcrumb">← {{ retour_label|default:"Albums" }}</a>
+<h1 class="page-title">{{ titre_page }}</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label class="form-label">Titre de l'album *</label>
+        <input type="text" name="titre" value="{{ form.titre.value|default:'' }}" class="form-input" placeholder="Ex: Open de Mazan 2025" required>
+    </div>
+
+    <div class="form-group">
+        <label class="form-label">Date de l'événement</label>
+        <input type="date" name="date" value="{{ form.date.value|default:'' }}" class="form-input">
+    </div>
 
     <!-- Photos existantes -->
-    {% if album.photos.exists %}
-    <div style="margin-bottom:1.5rem;">
-        <div class="section-title">Photos actuelles ({{ album.photos.count }})</div>
-        <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:0.4rem;">
+    {% if album and album.photos.exists %}
+    <div class="form-group">
+        <label class="form-label">Photos actuelles ({{ album.photos.count }})</label>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.35rem; margin-top:0.5rem;">
             {% for photo in album.photos.all %}
                 {% image photo.image fill-200x200 as thumb %}
-                <img src="{{ thumb.url }}" alt="" style="width:100%; aspect-ratio:1; object-fit:cover; border-radius:0.3rem;">
+                <div style="position:relative; aspect-ratio:1; border-radius:0.4rem; overflow:hidden;">
+                    <img src="{{ thumb.url }}" alt="" style="width:100%; height:100%; object-fit:cover;">
+                    <button type="button" onclick="if(confirm('Supprimer cette photo ?'))window.location='/gestion/supprimer-photo/{{ photo.pk }}/{{ album.pk }}/'"
+                        style="position:absolute; top:4px; right:4px; width:24px; height:24px; border-radius:50%; background:rgba(0,0,0,0.6); border:none; color:white; font-size:14px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
+                        &times;
+                    </button>
+                </div>
             {% endfor %}
         </div>
     </div>
     {% endif %}
 
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-
-        {% for field in form %}
-        <div class="form-group">
-            <label class="form-label" for="{{ field.id_for_label }}">
-                {{ field.label }}{% if field.field.required %} *{% endif %}
-            </label>
-            {% with wtype=field|widget_type %}
-            {% if wtype == "file" %}
-                <input type="file" name="{{ field.html_name }}" id="{{ field.id_for_label }}" class="form-input"
-                    accept="image/*" multiple>
-                <div class="form-help">Ajoutez de nouvelles photos à l'album</div>
-            {% else %}
-                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.html_name }}" id="{{ field.id_for_label }}"
-                    value="{{ field.value|default:'' }}" class="form-input"
-                    placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}">
-            {% endif %}
-            {% endwith %}
-            {% if field.errors %}
-            <div class="form-errors">{{ field.errors.0 }}</div>
-            {% endif %}
+    <!-- Upload zone -->
+    <div class="form-group">
+        <label class="form-label">{% if album %}Ajouter des photos{% else %}Photos *{% endif %}</label>
+        <div id="drop-zone" style="border:2px dashed var(--border); border-radius:var(--radius); padding:2rem 1rem; text-align:center; cursor:pointer; transition:border-color 0.2s, background 0.2s;">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin:0 auto 0.75rem;"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>
+            <div style="font-weight:500; font-size:0.9rem; color:var(--text);">Appuyez pour choisir des photos</div>
+            <div style="font-size:0.75rem; color:var(--text-muted); margin-top:0.25rem;">ou glissez-les ici</div>
+            <input type="file" name="photos" id="file-input" accept="image/*" multiple
+                   style="position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%;">
         </div>
-        {% endfor %}
+        <div id="preview" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:0.35rem; margin-top:0.75rem;"></div>
+    </div>
 
-        <button type="submit" class="btn-submit">{{ bouton }}</button>
-    </form>
-</div>
+    <button type="submit" class="btn-submit">{{ bouton }}</button>
+</form>
+
+<style>
+    #drop-zone { position: relative; }
+    #drop-zone.dragover { border-color: var(--accent); background: rgba(32,87,178,0.04); }
+</style>
+
+<script>
+    var zone = document.getElementById('drop-zone');
+    var input = document.getElementById('file-input');
+    var preview = document.getElementById('preview');
+
+    zone.addEventListener('dragover', function(e) { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', function() { zone.classList.remove('dragover'); });
+    zone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        input.files = e.dataTransfer.files;
+        showPreview(e.dataTransfer.files);
+    });
+
+    input.addEventListener('change', function() { showPreview(this.files); });
+
+    function showPreview(files) {
+        preview.innerHTML = '';
+        zone.querySelector('div:first-of-type').textContent = files.length + ' photo' + (files.length > 1 ? 's' : '') + ' sélectionnée' + (files.length > 1 ? 's' : '');
+        Array.from(files).forEach(function(file) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var div = document.createElement('div');
+                div.style.cssText = 'aspect-ratio:1; border-radius:0.4rem; overflow:hidden;';
+                div.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;">';
+                preview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+</script>
 {% endblock %}
