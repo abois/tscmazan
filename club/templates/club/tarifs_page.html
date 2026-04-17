@@ -6,7 +6,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
         {% if page.intro %}
-        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl">{{ page.intro|richtext }}</div>
+        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
         {% endif %}
     </div>
 </section>
@@ -14,7 +14,8 @@
 <section class="py-12 md:py-20 bg-sable-50">
     <div class="max-w-4xl mx-auto px-4 md:px-6">
         <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 prose prose-lg max-w-none
-                    prose-table:w-full prose-th:bg-bleu-50 prose-th:p-3 prose-td:p-3 prose-table:border prose-th:border prose-td:border">
+                    prose-table:w-full prose-th:bg-bleu-50 prose-th:p-3 prose-td:p-3 prose-table:border prose-th:border prose-td:border"
+             data-edit-field="contenu" data-edit-page="{{ page.pk }}">
             {{ page.contenu|richtext }}
         </div>
 

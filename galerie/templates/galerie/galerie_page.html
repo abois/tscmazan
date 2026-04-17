@@ -6,7 +6,8 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
         {% if page.intro %}
-        <div class="mt-3 md:mt-4 text-sm md:text-lg text-white/80 max-w-2xl">{{ page.intro|richtext }}</div>
+        <div class="mt-3 md:mt-4 text-sm md:text-lg text-white/80 max-w-2xl"
+             data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
         {% endif %}
     </div>
 </section>
@@ -14,7 +15,7 @@
 <section class="py-10 md:py-20 bg-sable-50">
     <div class="max-w-7xl mx-auto px-4 md:px-6 space-y-12 md:space-y-16">
         {% for album in albums %}
-        <div>
+        <div data-album-id="{{ album.pk }}">
             <div class="flex items-end justify-between mb-4 md:mb-6">
                 <div>
                     <h2 class="font-display text-xl md:text-2xl font-bold text-bleu-800">{{ album.titre }}</h2>
@@ -22,20 +23,41 @@
                     <p class="mt-1 text-sm text-gray-500">{{ album.description }}</p>
                     {% endif %}
                 </div>
-                {% if album.date %}
-                <span class="text-xs md:text-sm text-gray-400 font-medium shrink-0">{{ album.date|date:"F Y" }}</span>
-                {% endif %}
+                <div class="flex items-center gap-3">
+                    {% if album.date %}
+                    <span class="text-xs md:text-sm text-gray-400 font-medium shrink-0">{{ album.date|date:"F Y" }}</span>
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                    <a href="/gestion/editer-album/{{ album.pk }}/" class="gallery-edit-btn" style="display:none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+                    </a>
+                    {% endif %}
+                </div>
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 md:gap-3">
                 {% for photo in album.photos.all %}
                     {% image photo.image fill-400x400 as thumb %}
                     {% image photo.image max-1200x1200 as full_img %}
-                    <a href="{{ full_img.url }}" class="aspect-square overflow-hidden rounded-lg group" target="_blank"
-                       title="{{ photo.legende }}">
-                        <img src="{{ thumb.url }}" alt="{{ photo.legende }}"
-                             class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy">
-                    </a>
+                    <div class="aspect-square overflow-hidden rounded-lg relative group">
+                        <a href="{{ full_img.url }}" class="lightbox-link" data-album="{{ album.pk }}" title="{{ photo.legende }}">
+                            <img src="{{ thumb.url }}" alt="{{ photo.legende }}"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-500" loading="lazy">
+                        </a>
+                        {% if request.user.is_authenticated %}
+                        <button class="gallery-delete-btn" data-photo="{{ photo.pk }}" data-album="{{ album.pk }}"
+                            style="display:none; position:absolute; top:6px; right:6px; width:28px; height:28px; border-radius:50%; background:rgba(220,38,38,0.85); border:none; color:white; font-size:16px; cursor:pointer; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+                            &times;
+                        </button>
+                        {% endif %}
+                    </div>
                 {% endfor %}
+                {% if request.user.is_authenticated %}
+                <label class="gallery-add-btn aspect-square rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center cursor-pointer hover:border-bleu-400 hover:bg-bleu-50/50 transition" style="display:none;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-400"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                    <span style="font-size:0.7rem; color:#999; margin-top:0.25rem;">Ajouter</span>
+                    <input type="file" accept="image/*" multiple class="gallery-file-input" data-album="{{ album.pk }}" style="display:none;">
+                </label>
+                {% endif %}
             </div>
         </div>
         {% empty %}
@@ -46,4 +68,156 @@
         {% endfor %}
     </div>
 </section>
+
+<!-- Lightbox -->
+<div id="lightbox" style="display:none; position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.92); touch-action:none;">
+    <img id="lb-img" style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); max-width:90vw; max-height:85vh; object-fit:contain; border-radius:4px;">
+    <div id="lb-caption" style="position:absolute; bottom:1.5rem; left:50%; transform:translateX(-50%); color:white; font-size:0.8rem; opacity:0.6; text-align:center; max-width:80vw;"></div>
+    <button id="lb-close" style="position:absolute; top:1rem; right:1rem; background:none; border:none; color:white; font-size:2rem; cursor:pointer; opacity:0.7; z-index:10;">&times;</button>
+    <button id="lb-prev" style="position:absolute; top:50%; left:0.75rem; transform:translateY(-50%); background:rgba(255,255,255,0.1); border:none; color:white; font-size:1.5rem; cursor:pointer; width:44px; height:44px; border-radius:50%; backdrop-filter:blur(4px);">&#8249;</button>
+    <button id="lb-next" style="position:absolute; top:50%; right:0.75rem; transform:translateY(-50%); background:rgba(255,255,255,0.1); border:none; color:white; font-size:1.5rem; cursor:pointer; width:44px; height:44px; border-radius:50%; backdrop-filter:blur(4px);">&#8250;</button>
+    <div id="lb-counter" style="position:absolute; top:1.2rem; left:50%; transform:translateX(-50%); color:white; font-size:0.75rem; opacity:0.5;"></div>
+</div>
+<script>
+(function() {
+    var lb = document.getElementById('lightbox');
+    var lbImg = document.getElementById('lb-img');
+    var lbCaption = document.getElementById('lb-caption');
+    var lbCounter = document.getElementById('lb-counter');
+    var links = [];
+    var current = 0;
+
+    document.querySelectorAll('.lightbox-link').forEach(function(a) {
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            var albumId = this.dataset.album;
+            links = Array.from(document.querySelectorAll('.lightbox-link[data-album="' + albumId + '"]'));
+            current = links.indexOf(this);
+            show();
+        });
+    });
+
+    function show() {
+        lbImg.src = links[current].href;
+        lbCaption.textContent = links[current].title || '';
+        lbCounter.textContent = (current + 1) + ' / ' + links.length;
+        lb.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    function hide() {
+        lb.style.display = 'none';
+        document.body.style.overflow = '';
+        lbImg.src = '';
+    }
+
+    document.getElementById('lb-close').addEventListener('click', hide);
+    lb.addEventListener('click', function(e) { if (e.target === lb) hide(); });
+
+    document.getElementById('lb-prev').addEventListener('click', function(e) {
+        e.stopPropagation();
+        current = (current - 1 + links.length) % links.length;
+        show();
+    });
+
+    document.getElementById('lb-next').addEventListener('click', function(e) {
+        e.stopPropagation();
+        current = (current + 1) % links.length;
+        show();
+    });
+
+    // Swipe mobile
+    var touchStartX = 0;
+    lb.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; });
+    lb.addEventListener('touchend', function(e) {
+        var diff = e.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) { current = (current - 1 + links.length) % links.length; }
+            else { current = (current + 1) % links.length; }
+            show();
+        }
+    });
+
+    // Clavier
+    document.addEventListener('keydown', function(e) {
+        if (lb.style.display === 'none') return;
+        if (e.key === 'Escape') hide();
+        if (e.key === 'ArrowLeft') { current = (current - 1 + links.length) % links.length; show(); }
+        if (e.key === 'ArrowRight') { current = (current + 1) % links.length; show(); }
+    });
+})();
+</script>
+
+{% if request.user.is_authenticated %}
+<script>
+// Gallery live edit — activé quand le mode édition est ON (via live-edit.js)
+// On observe le changement de mode via MutationObserver sur la barre d'édition
+document.addEventListener('DOMContentLoaded', function() {
+    var editBtns = document.querySelectorAll('.gallery-edit-btn');
+    var deleteBtns = document.querySelectorAll('.gallery-delete-btn');
+    var addBtns = document.querySelectorAll('.gallery-add-btn');
+
+    // Toggle gallery edit elements when edit mode changes
+    window._galleryEditToggle = function(on) {
+        editBtns.forEach(function(b) { b.style.display = on ? 'flex' : 'none'; });
+        deleteBtns.forEach(function(b) { b.style.display = on ? 'flex' : 'none'; });
+        addBtns.forEach(function(b) { b.style.display = on ? 'flex' : 'none'; });
+    };
+
+    // Si le mode édition est déjà actif (persisté depuis une autre page), activer
+    if (localStorage.getItem('live-edit-mode') === '1') {
+        window._galleryEditToggle(true);
+    }
+
+    // Delete photo
+    deleteBtns.forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!confirm('Supprimer cette photo ?')) return;
+            var photoPk = this.dataset.photo;
+            var albumPk = this.dataset.album;
+            fetch('/gestion/supprimer-photo/' + photoPk + '/' + albumPk + '/', {
+                method: 'GET',
+            }).then(function() {
+                btn.closest('.aspect-square').remove();
+            });
+        });
+    });
+
+    // Add photos
+    document.querySelectorAll('.gallery-file-input').forEach(function(input) {
+        input.addEventListener('change', function() {
+            var albumPk = this.dataset.album;
+            var files = this.files;
+            if (!files.length) return;
+
+            var formData = new FormData();
+            for (var i = 0; i < files.length; i++) {
+                formData.append('photos', files[i]);
+            }
+            formData.append('album_pk', albumPk);
+
+            var csrfToken = '';
+            var cookies = document.cookie.split(';');
+            for (var j = 0; j < cookies.length; j++) {
+                var c = cookies[j].trim();
+                if (c.startsWith('csrftoken=')) { csrfToken = c.substring(10); break; }
+            }
+
+            fetch('/gestion/live-add-photos/', {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                body: formData,
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.ok) {
+                    window.location.reload();
+                }
+            });
+        });
+    });
+});
+</script>
+{% endif %}
 {% endblock %}

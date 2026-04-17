@@ -7,7 +7,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
         {% if page.intro %}
-        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl">{{ page.intro|richtext }}</div>
+        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
         {% endif %}
     </div>
 </section>
@@ -18,11 +18,11 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
             <div class="lg:col-span-2">
-                <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800">{{ page.president_titre }}</h2>
+                <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800" data-edit-field="president_titre" data-edit-page="{{ page.pk }}">{{ page.president_titre }}</h2>
                 {% if page.president_nom %}
-                <p class="mt-2 text-bleu-500 font-semibold">{{ page.president_nom }}</p>
+                <p class="mt-2 text-bleu-500 font-semibold" data-edit-field="president_nom" data-edit-page="{{ page.pk }}">{{ page.president_nom }}</p>
                 {% endif %}
-                <div class="mt-6 prose prose-lg text-gray-600">{{ page.president_texte|richtext }}</div>
+                <div class="mt-6 prose prose-lg text-gray-600" data-edit-field="president_texte" data-edit-page="{{ page.pk }}">{{ page.president_texte|richtext }}</div>
             </div>
             {% if page.president_photo %}
             <div>

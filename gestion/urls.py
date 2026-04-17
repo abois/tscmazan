@@ -28,6 +28,9 @@ urlpatterns = [
     path("menu/reorder/", views.reorder_menu, name="reorder_menu"),
     # Paramètres
     path("parametres/", views.parametres, name="parametres"),
+    # Live edit
+    path("live-edit/", views.live_edit, name="live_edit"),
+    path("live-add-photos/", views.live_add_photos, name="live_add_photos"),
     # Succès
     path("succes/<str:type>/", views.succes, name="succes"),
 ]

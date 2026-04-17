@@ -6,7 +6,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
         {% if page.intro %}
-        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl">{{ page.intro|richtext }}</div>
+        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
         {% endif %}
     </div>
 </section>
@@ -15,7 +15,7 @@
     <div class="max-w-7xl mx-auto px-4 md:px-6">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12">
             <div class="lg:col-span-3">
-                <div class="prose prose-lg max-w-none text-gray-600">{{ page.contenu|richtext }}</div>
+                <div class="prose prose-lg max-w-none text-gray-600" data-edit-field="contenu" data-edit-page="{{ page.pk }}">{{ page.contenu|richtext }}</div>
             </div>
             {% if page.image %}
             <div class="lg:col-span-2">
@@ -32,7 +32,8 @@
     <div class="max-w-4xl mx-auto px-4 md:px-6">
         <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800 mb-8">Horaires & Tarifs cours</h2>
         <div class="prose prose-lg max-w-none
-                    prose-table:w-full prose-th:bg-bleu-50 prose-th:p-3 prose-td:p-3 prose-table:border prose-th:border prose-td:border prose-table:rounded-lg">
+                    prose-table:w-full prose-th:bg-bleu-50 prose-th:p-3 prose-td:p-3 prose-table:border prose-th:border prose-td:border prose-table:rounded-lg"
+             data-edit-field="horaires" data-edit-page="{{ page.pk }}">
             {{ page.horaires|richtext }}
         </div>
     </div>

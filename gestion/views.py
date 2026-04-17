@@ -482,6 +482,67 @@ def reorder_menu(request):
     return JsonResponse({"error": "POST only"}, status=405)
 
 
+# ── Live Edit ──────────────────────────────────────
+
+@login_required(login_url=LOGIN_URL)
+def live_edit(request):
+    import json
+    from django.http import JsonResponse
+    from wagtail.models import Page as WagtailPage
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    data = json.loads(request.body)
+    fields = data.get("fields", {})
+
+    for field_name, info in fields.items():
+        page_pk = info.get("page")
+        value = info.get("value", "")
+        if not page_pk:
+            continue
+        try:
+            page = WagtailPage.objects.get(pk=int(page_pk)).specific
+            if hasattr(page, field_name):
+                setattr(page, field_name, value)
+                page.save_revision().publish()
+        except WagtailPage.DoesNotExist:
+            continue
+
+    # Sauvegarder les settings modifiés
+    settings_data = data.get("settings", {})
+    if settings_data:
+        site_settings = SiteSettings.objects.first()
+        if site_settings:
+            for field_name, value in settings_data.items():
+                if hasattr(site_settings, field_name):
+                    setattr(site_settings, field_name, value)
+            site_settings.save()
+
+    return JsonResponse({"ok": True})
+
+
+@login_required(login_url=LOGIN_URL)
+def live_add_photos(request):
+    from django.http import JsonResponse
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    album_pk = request.POST.get("album_pk")
+    files = request.FILES.getlist("photos")
+    if not album_pk or not files:
+        return JsonResponse({"error": "Missing data"}, status=400)
+
+    album = get_object_or_404(Album, pk=int(album_pk))
+    start = album.photos.count()
+    for i, f in enumerate(files):
+        img = _upload_image(f, f"{album.titre} - {start + i + 1}")
+        AlbumPhoto.objects.create(album=album, image=img, sort_order=start + i)
+
+    return JsonResponse({"ok": True, "count": len(files)})
+
+
 # ── Succès ─────────────────────────────────────────
 
 @login_required(login_url=LOGIN_URL)
