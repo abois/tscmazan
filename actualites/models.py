@@ -57,6 +57,16 @@ class ArticlePage(Page):
         FieldPanel("contenu"),
     ]
 
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["related_articles"] = (
+            ArticlePage.objects.live()
+            .sibling_of(self)
+            .exclude(pk=self.pk)
+            .order_by("-date")[:3]
+        )
+        return context
+
     class Meta:
         verbose_name = "Article"
 

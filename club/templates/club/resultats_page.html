@@ -1,67 +1,82 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
 
+{% block body_class %}page-resultats{% endblock %}
+
 {% block content %}
-<!-- Header -->
-<section class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-12 md:py-24">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
+
+<!-- ───────── Hero ───────── -->
+<section class="relative overflow-hidden bg-gradient-to-br from-bleu-900 via-bleu-800 to-bleu-950 text-white py-16 md:py-24">
+    <div class="absolute inset-0 bg-diagonal opacity-40"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-or-400/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+    <div class="absolute bottom-0 left-0 w-80 h-80 bg-bleu-500/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 md:px-6">
+        <span class="anim-up inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-300 mb-4">Sportif</span>
+        <h1 class="anim-up anim-d1 font-display text-5xl sm:text-6xl md:text-7xl leading-[0.95] tracking-tight mb-4 md:mb-6">Résultats & palmarès</h1>
         {% if page.intro %}
-        <div class="mt-3 md:mt-4 text-sm md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
+        <div class="anim-up anim-d2 max-w-2xl text-base md:text-xl text-bleu-100 leading-relaxed [&_p]:mb-3 [&_p:last-child]:mb-0 [&_strong]:text-or-300 [&_strong]:font-semibold">
+            {{ page.intro|richtext }}
+        </div>
         {% endif %}
 
-        <div class="mt-6 md:mt-8 flex flex-wrap gap-2 md:gap-3">
+        <div class="anim-up anim-d3 mt-8 flex flex-wrap gap-2 md:gap-3">
             {% if palmares_list %}
-            <a href="#palmares" class="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-semibold backdrop-blur-sm border border-white/20 transition">Palmarès</a>
+            <a href="#palmares" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white text-sm font-semibold border border-white/20 transition">Palmarès</a>
             {% endif %}
             {% if competitions_list %}
-            <a href="#competitions" class="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-semibold backdrop-blur-sm border border-white/20 transition">Compétitions</a>
+            <a href="#competitions" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white text-sm font-semibold border border-white/20 transition">Compétitions</a>
             {% endif %}
             {% if page.equipes_texte %}
-            <a href="#equipes" class="px-4 py-2 rounded-full bg-white/15 hover:bg-white/25 text-white text-sm font-semibold backdrop-blur-sm border border-white/20 transition">Équipes</a>
+            <a href="#equipes" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white text-sm font-semibold border border-white/20 transition">Équipes</a>
             {% endif %}
             {% if page.lien_fft %}
-            <a href="{{ page.lien_fft }}" target="_blank" rel="noopener" class="px-4 py-2 rounded-full bg-bleu-500 hover:bg-bleu-400 text-white text-sm font-semibold transition">
-                Voir sur Tenup <svg class="w-3.5 h-3.5 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            <a href="{{ page.lien_fft }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-or-400 hover:bg-or-300 text-bleu-900 text-sm font-semibold transition">
+                Voir sur Tenup
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </a>
             {% endif %}
         </div>
     </div>
 </section>
 
-<!-- Palmares -->
+<!-- ───────── Palmarès ───────── -->
 {% if palmares_list %}
-<section id="palmares" class="py-10 md:py-20 bg-sable-50">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <div class="flex items-center gap-3 mb-8 md:mb-12">
-            <div class="w-10 h-10 md:w-12 md:h-12 bg-or-100 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-or-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+<section id="palmares" class="py-20 md:py-28 bg-sable-50 relative scroll-mt-16">
+    <div class="absolute inset-0 bg-diagonal opacity-30"></div>
+    <div class="relative max-w-5xl mx-auto px-4 md:px-6">
+        <div class="flex items-center gap-4 mb-12 md:mb-16">
+            <div class="w-14 h-14 rounded-2xl bg-or-100 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-or-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-4.5A3.375 3.375 0 0019.125 10.875h0a3.375 3.375 0 00-3.375-3.375H8.25A3.375 3.375 0 004.875 10.875h0a3.375 3.375 0 003.375 3.375v4.5m0 0h9"/></svg>
             </div>
-            <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800">Palmarès du club</h2>
+            <div>
+                <span class="block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-600 mb-1">Palmarès</span>
+                <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">Nos titres et podiums</h2>
+            </div>
         </div>
 
         <div class="relative">
             <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-bleu-200 md:-translate-x-px"></div>
             <div class="space-y-6 md:space-y-0">
                 {% for entry in palmares_list %}
-                <div class="relative flex items-start gap-4 md:gap-0 {% cycle '' 'md:flex-row-reverse' %}">
+                <div class="relative flex items-start gap-4 md:gap-0 {% cycle '' 'md:flex-row-reverse' as palmares_cycle %}">
                     <div class="absolute left-4 md:left-1/2 w-3 h-3 bg-bleu-500 rounded-full ring-4 ring-bleu-100 -translate-x-1/2 mt-5 z-10"></div>
                     <div class="w-8 shrink-0 md:hidden"></div>
                     <div class="flex-1 md:w-[calc(50%-2rem)] {% cycle 'md:pr-12 md:text-right' 'md:pl-12' %}">
-                        <div class="bg-gradient-to-br from-bleu-50 to-white border border-bleu-100 rounded-xl p-4 md:p-6 hover:shadow-lg transition">
+                        <div class="bg-white border border-sable-200 rounded-2xl p-5 md:p-6 hover:shadow-lg hover:border-bleu-200 transition-all">
                             <span class="inline-block px-3 py-1 bg-or-100 text-or-700 rounded-full text-xs font-bold uppercase tracking-wider mb-3">{{ entry.annee }}</span>
-                            <h3 class="font-display text-base md:text-lg font-bold text-gray-900">{{ entry.titre }}</h3>
-                            <div class="mt-2 flex flex-wrap gap-2 {% cycle 'md:justify-end' '' %}">
+                            <h3 class="font-display text-xl md:text-2xl text-bleu-900 leading-tight">{{ entry.titre }}</h3>
+                            <div class="mt-3 flex flex-wrap gap-2 {% cycle 'md:justify-end' '' %}">
                                 {% if entry.categorie %}
-                                <span class="px-2.5 py-0.5 bg-or-100 text-bleu-700 rounded text-xs font-medium">{{ entry.get_categorie_display }}</span>
+                                <span class="px-2.5 py-0.5 bg-bleu-50 text-bleu-700 rounded-full text-xs font-semibold">{{ entry.get_categorie_display }}</span>
                                 {% endif %}
                                 {% if entry.niveau %}
-                                <span class="px-2.5 py-0.5 bg-bleu-100 text-bleu-700 rounded text-xs font-medium">{{ entry.get_niveau_display }}</span>
+                                <span class="px-2.5 py-0.5 bg-or-50 text-or-700 rounded-full text-xs font-semibold">{{ entry.get_niveau_display }}</span>
                                 {% endif %}
                             </div>
                             {% if entry.photo %}
-                                {% image entry.photo fill-400x250 as palm_img %}
-                                <img src="{{ palm_img.url }}" alt="{{ entry.titre }}" class="mt-4 rounded-lg w-full object-cover" loading="lazy">
+                                {% image entry.photo fill-500x300 as palm_img %}
+                                <img src="{{ palm_img.url }}" alt="{{ entry.titre }}" class="mt-4 rounded-xl w-full object-cover" loading="lazy">
                             {% endif %}
                         </div>
                     </div>
@@ -74,55 +89,58 @@
 </section>
 {% endif %}
 
-<!-- Competitions -->
+<!-- ───────── Compétitions (sync Tenup) ───────── -->
 {% if competitions_list %}
-<section id="competitions" class="py-10 md:py-20 bg-bleu-50/30">
+<section id="competitions" class="py-20 md:py-28 scroll-mt-16">
     <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <div class="flex items-center gap-3 mb-8 md:mb-12">
-            <div class="w-10 h-10 md:w-12 md:h-12 bg-bleu-100 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-bleu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <div class="flex items-center gap-4 mb-12 md:mb-16">
+            <div class="w-14 h-14 rounded-2xl bg-bleu-50 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-bleu-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
-            <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800">Compétitions</h2>
+            <div>
+                <span class="block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-bleu-500 mb-1">Compétitions</span>
+                <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">Saisons en cours</h2>
+            </div>
         </div>
 
         <div class="space-y-6 md:space-y-8">
             {% for comp in competitions_list %}
-            <div class="bg-white rounded-xl md:rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-bleu-600 to-bleu-700 p-4 md:p-6">
-                    <h3 class="font-display text-lg md:text-xl font-bold text-white">{{ comp.titre }}</h3>
+            <article class="bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-bleu-900/5 border border-sable-200 overflow-hidden">
+                <header class="bg-gradient-to-r from-bleu-900 to-bleu-800 p-5 md:p-7 text-white">
+                    <h3 class="font-display text-2xl md:text-3xl leading-tight">{{ comp.titre }}</h3>
                     {% if comp.date_debut %}
                     <p class="mt-1 text-sm text-bleu-200">
                         {{ comp.date_debut|date:"F Y" }}{% if comp.date_fin %} — {{ comp.date_fin|date:"F Y" }}{% endif %}
                     </p>
                     {% endif %}
-                </div>
+                </header>
 
-                <div class="p-4 md:p-6">
+                <div class="p-5 md:p-8">
                     {% if comp.description %}
-                    <div class="prose prose-sm text-gray-600 mb-5">{{ comp.description|richtext }}</div>
+                    <div class="text-sm md:text-base text-gray-600 leading-relaxed mb-6 [&_p]:mb-3 [&_p:last-child]:mb-0">{{ comp.description|richtext }}</div>
                     {% endif %}
 
                     {% if comp.matchs.exists %}
-                    <div class="overflow-x-auto -mx-4 md:mx-0">
+                    <div class="overflow-x-auto -mx-5 md:mx-0">
                         <table class="w-full text-sm">
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-sable-200">
                                 {% for match in comp.matchs.all %}
-                                <tr class="hover:bg-bleu-50/30 transition">
-                                    <td class="py-3 px-3">
-                                        <div class="font-semibold text-sm text-gray-800">{{ match.adversaire|default:"À définir" }}</div>
-                                        {% if match.tour %}<div class="text-[11px] text-gray-400 mt-0.5">{{ match.tour }}</div>{% endif %}
+                                <tr class="hover:bg-sable-50 transition">
+                                    <td class="py-4 px-4 md:px-6">
+                                        <div class="font-semibold text-sm md:text-base text-bleu-900">{{ match.adversaire|default:"À définir" }}</div>
+                                        {% if match.tour %}<div class="text-xs text-gray-400 mt-0.5 uppercase tracking-wider font-semibold">{{ match.tour }}</div>{% endif %}
                                     </td>
-                                    <td class="py-3 px-3 text-center whitespace-nowrap">
+                                    <td class="py-4 px-4 md:px-6 text-center whitespace-nowrap">
                                         {% if match.score %}
-                                        <span class="font-display text-lg tracking-wider {% if match.victoire %}text-bleu-600{% else %}text-gray-400{% endif %}">{{ match.score }}</span>
+                                        <span class="font-display text-xl md:text-2xl tracking-wide {% if match.victoire %}text-bleu-700{% else %}text-gray-400{% endif %}">{{ match.score }}</span>
                                         {% else %}
-                                        <span class="text-[11px] font-medium text-bleu-400 bg-bleu-50 px-2 py-0.5 rounded-full">À venir</span>
+                                        <span class="text-[11px] font-semibold text-bleu-500 bg-bleu-50 px-3 py-1 rounded-full uppercase tracking-wider">À venir</span>
                                         {% endif %}
                                     </td>
-                                    <td class="py-3 px-2 text-center w-8">
+                                    <td class="py-4 px-4 md:px-6 text-right w-16">
                                         {% if match.victoire %}
-                                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-bleu-100">
-                                            <svg class="w-3.5 h-3.5 text-bleu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-bleu-100">
+                                            <svg class="w-4 h-4 text-bleu-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                         </span>
                                         {% elif match.score %}
                                         <span class="text-xs text-gray-300">—</span>
@@ -135,75 +153,74 @@
                     </div>
                     {% endif %}
                 </div>
-            </div>
+            </article>
             {% endfor %}
         </div>
     </div>
 </section>
 {% endif %}
 
-<!-- Résultats par équipes -->
+<!-- ───────── Équipes ───────── -->
 {% if page.equipes_texte %}
-<section id="equipes" class="py-10 md:py-20 bg-sable-50">
+<section id="equipes" class="edit-section py-20 md:py-28 bg-sable-50 scroll-mt-16">
+    {% if request.user.is_authenticated %}
+    <a href="/gestion/page/{{ page.pk }}/" class="edit-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+        Modifier
+    </a>
+    {% endif %}
     <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <div class="flex items-center gap-3 mb-8 md:mb-12">
-            <div class="w-10 h-10 md:w-12 md:h-12 bg-bleu-100 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 md:w-6 md:h-6 text-bleu-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+        <div class="flex items-center gap-4 mb-12 md:mb-16">
+            <div class="w-14 h-14 rounded-2xl bg-bleu-100 flex items-center justify-center shrink-0">
+                <svg class="w-7 h-7 text-bleu-700" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
             </div>
-            <h2 class="font-display text-2xl md:text-3xl font-bold text-bleu-800">Nos équipes</h2>
+            <div>
+                <span class="block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-bleu-500 mb-1">Équipes</span>
+                <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">Nos équipes engagées</h2>
+            </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 equipes-grid">
+        <div class="equipes-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
+             data-edit-field="equipes_texte" data-edit-page="{{ page.pk }}">
             {{ page.equipes_texte|richtext }}
         </div>
         <style>
-            .equipes-grid h3 {
-                font-family: 'Bebas Neue', system-ui, sans-serif;
-                font-size: 1.25rem;
-                color: #2057b2;
-                letter-spacing: 0.05em;
-                padding-bottom: 0.5rem;
-                border-bottom: 2px solid #d4e4f7;
-                margin-bottom: 0.75rem;
-            }
-            .equipes-grid p {
-                font-size: 0.85rem;
-                color: #6b7280;
-                line-height: 1.6;
-            }
-            .equipes-grid > h3, .equipes-grid > p {
-                background: white;
-                padding: 1.25rem;
-                border-radius: 0.75rem;
-                border: 1px solid #e5e7eb;
-            }
-            /* Regrouper h3 + p dans des blocs visuels */
             .equipes-grid > h3 {
-                margin-bottom: -0.25rem;
-                border-radius: 0.75rem 0.75rem 0 0;
+                font-family: 'Bebas Neue', system-ui, sans-serif;
+                font-size: 1.5rem;
+                line-height: 1.2;
+                color: #15376f;
+                background: white;
+                padding: 1.25rem 1.5rem 0.75rem;
+                border-radius: 1rem 1rem 0 0;
+                border: 1px solid #e5dcd0;
                 border-bottom: none;
-                padding-bottom: 0.75rem;
+                margin-bottom: -0.25rem;
             }
             .equipes-grid > h3 + p {
-                border-radius: 0 0 0.75rem 0.75rem;
-                border-top: none;
-                padding-top: 0;
+                background: white;
+                border-radius: 0 0 1rem 1rem;
+                border: 1px solid #e5dcd0;
+                border-top: 2px solid #d4e4f7;
+                padding: 1rem 1.5rem 1.25rem;
+                font-size: 0.9rem;
+                color: #4b5563;
+                line-height: 1.65;
+            }
+            .equipes-grid > p {
+                background: white;
+                padding: 1.25rem 1.5rem;
+                border-radius: 1rem;
+                border: 1px solid #e5dcd0;
+                font-size: 0.9rem;
+                color: #4b5563;
+                line-height: 1.65;
             }
         </style>
     </div>
 </section>
 {% endif %}
 
-<!-- CTA -->
-<section class="py-12 md:py-16 bg-gradient-to-r from-bleu-50 to-bleu-50">
-    <div class="max-w-4xl mx-auto px-4 md:px-6 text-center">
-        <h2 class="font-display text-xl md:text-2xl font-bold text-bleu-800">Envie de rejoindre nos équipes ?</h2>
-        <p class="mt-2 text-sm md:text-base text-gray-500">Que vous soyez compétiteur confirmé ou joueur loisir, le TSC Mazan vous accueille.</p>
-        <div class="mt-6 flex flex-col sm:flex-row justify-center gap-3">
-            <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 bg-bleu-500 hover:bg-bleu-600 text-white font-semibold px-6 py-3 rounded-full text-sm transition">S'inscrire au club</a>
-            <a href="/contact/"
-               class="inline-flex items-center justify-center gap-2 bg-white border-2 border-bleu-200 hover:border-bleu-400 text-bleu-700 font-semibold px-6 py-3 rounded-full text-sm transition">Nous contacter</a>
-        </div>
-    </div>
-</section>
+<!-- ───────── CTA ───────── -->
+{% include "includes/cta_band.html" with eyebrow="Envie de compétition ?" title="Rejoignez nos équipes" subtitle="Du loisir à la compétition régionale, il y a une équipe pour vous. Venez discuter avec l'un de nos capitaines à l'occasion d'un entraînement." button_label="Nous contacter" button_url="/contact/?sujet=equipes" button_secondary_label="Voir sur Tenup" button_secondary_url=page.lien_fft %}
+
 {% endblock %}

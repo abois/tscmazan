@@ -1,119 +1,116 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailimages_tags %}
 
+{% block body_class %}page-actus{% endblock %}
+
 {% block content %}
-<!-- Header -->
-<section class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-12 md:py-24">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
-        {% if page.intro %}
-        <div class="mt-3 md:mt-4 text-sm md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
-        {% endif %}
-    </div>
-</section>
 
-<!-- Articles -->
-<section class="py-8 md:py-16 bg-sable-50">
+<!-- ───────── Hero ───────── -->
+{% include "includes/page_header.html" with eyebrow="La vie du club" title="Actualités" subtitle=page.intro|richtext %}
+
+<!-- ───────── Liste articles ───────── -->
+<section class="py-16 md:py-24 bg-sable-50">
     <div class="max-w-7xl mx-auto px-4 md:px-6">
 
-        {% if articles %}
-        <!-- Article mis en avant (le plus récent) -->
+    {% if articles %}
+
+        {% if articles.number == 1 %}
+        <!-- Article vedette (uniquement page 1) -->
         {% with featured=articles.0 %}
-        {% if forloop.first or articles.number == 1 %}
-        <article class="mb-8 md:mb-12 bg-white rounded-xl md:rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition group">
-            <div class="grid grid-cols-1 md:grid-cols-2">
-                {% if featured.specific.image %}
-                    {% image featured.specific.image fill-800x500 as feat_img %}
-                    <div class="aspect-video md:aspect-auto overflow-hidden">
-                        <img src="{{ feat_img.url }}" alt="{{ featured.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="eager">
+        {% with featured_specific=featured.specific %}
+        <a href="{% pageurl featured %}" class="group block mb-12 md:mb-16">
+            <article class="bg-white rounded-3xl overflow-hidden border border-sable-200 hover:border-bleu-200 hover:shadow-2xl hover:shadow-bleu-900/5 transition-all duration-300">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    {% if featured_specific.image %}
+                        {% image featured_specific.image fill-960x640 as feat_img %}
+                        <div class="aspect-[16/10] lg:aspect-auto overflow-hidden">
+                            <img src="{{ feat_img.url }}" alt="{{ featured.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="eager">
+                        </div>
+                    {% else %}
+                        <div class="aspect-[16/10] lg:aspect-auto bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 flex items-center justify-center min-h-[300px]">
+                            <svg class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </div>
+                    {% endif %}
+                    <div class="p-7 md:p-12 flex flex-col justify-center">
+                        <div class="flex items-center gap-3 mb-4 text-xs font-semibold uppercase tracking-wider">
+                            <span class="text-or-600">À la une</span>
+                            <span class="text-gray-300">•</span>
+                            {% if featured_specific.date %}
+                            <time class="text-gray-400">{{ featured_specific.date|date:"j F Y" }}</time>
+                            {% endif %}
+                        </div>
+                        <h2 class="font-display text-3xl md:text-5xl leading-[1.05] tracking-tight text-bleu-900 group-hover:text-bleu-600 transition mb-4">
+                            {{ featured.title }}
+                        </h2>
+                        {% if featured_specific.intro %}
+                        <p class="text-base md:text-lg text-gray-600 leading-relaxed line-clamp-3 mb-6">{{ featured_specific.intro }}</p>
+                        {% endif %}
+                        <span class="inline-flex items-center gap-2 text-bleu-600 font-semibold text-sm group-hover:text-bleu-800 transition">
+                            Lire l'article
+                            <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </span>
                     </div>
-                {% else %}
-                    <div class="aspect-video md:aspect-auto bg-gradient-to-br from-bleu-300 to-bleu-300 min-h-[250px]"></div>
-                {% endif %}
-                <div class="p-5 md:p-10 flex flex-col justify-center">
-                    {% if featured.specific.date %}
-                    <time class="text-xs md:text-sm text-bleu-500 font-semibold uppercase tracking-wide">{{ featured.specific.date|date:"j F Y" }}</time>
-                    {% endif %}
-                    <h2 class="mt-2 md:mt-3 font-display text-xl md:text-3xl font-bold text-gray-900 group-hover:text-bleu-600 transition leading-tight">
-                        <a href="{% pageurl featured %}">{{ featured.title }}</a>
-                    </h2>
-                    {% if featured.specific.intro %}
-                    <p class="mt-2 md:mt-4 text-sm md:text-base text-gray-500 line-clamp-3">{{ featured.specific.intro }}</p>
-                    {% endif %}
-                    <a href="{% pageurl featured %}" class="mt-4 md:mt-6 inline-flex items-center gap-2 text-bleu-600 font-semibold text-sm hover:text-bleu-700 transition">
-                        Lire la suite
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-            </div>
-        </article>
-        {% endif %}
-        {% endwith %}
-
-        <!-- Grille d'articles -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {% for article in articles %}
-            {% if not forloop.first or articles.number != 1 %}
-            <article class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition group">
-                {% if article.specific.image %}
-                    {% image article.specific.image fill-480x270 as article_img %}
-                    <div class="aspect-video overflow-hidden">
-                        <img src="{{ article_img.url }}" alt="{{ article.title }}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" loading="lazy">
-                    </div>
-                {% else %}
-                    <div class="aspect-video bg-gradient-to-br from-bleu-200 to-bleu-200"></div>
-                {% endif %}
-                <div class="p-4 md:p-5">
-                    {% if article.specific.date %}
-                    <time class="text-xs text-bleu-500 font-semibold uppercase tracking-wide">{{ article.specific.date|date:"j F Y" }}</time>
-                    {% endif %}
-                    <h3 class="mt-1.5 font-display font-bold text-base text-gray-900 group-hover:text-bleu-600 transition leading-snug">
-                        <a href="{% pageurl article %}">{{ article.title }}</a>
-                    </h3>
-                    {% if article.specific.intro %}
-                    <p class="mt-1.5 text-xs md:text-sm text-gray-500 line-clamp-2">{{ article.specific.intro }}</p>
-                    {% endif %}
                 </div>
             </article>
-            {% endif %}
+        </a>
+        {% endwith %}
+        {% endwith %}
+        {% endif %}
+
+        <!-- Grille -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {% for article in articles %}
+                {% if not forloop.first or articles.number != 1 %}
+                    {% with article_specific=article.specific %}
+                        {% if article_specific.image %}
+                            {% image article_specific.image fill-600x450 as article_img %}
+                            {% include "includes/card.html" with title=article.title description=article_specific.intro image_url=article_img.url link_url=article.url date=article_specific.date|date:"j F Y" tag="Actualité" %}
+                        {% else %}
+                            {% include "includes/card.html" with title=article.title description=article_specific.intro link_url=article.url date=article_specific.date|date:"j F Y" tag="Actualité" %}
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
             {% endfor %}
         </div>
 
         <!-- Pagination -->
         {% if articles.has_other_pages %}
-        <nav class="mt-10 md:mt-14 flex justify-center items-center gap-2" aria-label="Pagination">
+        <nav class="mt-14 md:mt-20 flex justify-center items-center gap-2 flex-wrap" aria-label="Pagination">
             {% if articles.has_previous %}
             <a href="?page={{ articles.previous_page_number }}"
-               class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-bleu-50 hover:border-bleu-300 hover:text-bleu-600 transition">
-                <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-sable-200 bg-white text-sm font-semibold text-gray-600 hover:border-bleu-300 hover:text-bleu-600 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 Précédent
             </a>
             {% endif %}
 
             {% for num in articles.paginator.page_range %}
                 {% if num == articles.number %}
-                <span class="px-4 py-2 rounded-lg bg-bleu-500 text-white text-sm font-bold">{{ num }}</span>
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-bleu-600 text-white text-sm font-bold">{{ num }}</span>
                 {% elif num > articles.number|add:"-3" and num < articles.number|add:"3" %}
-                <a href="?page={{ num }}" class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-bleu-50 hover:border-bleu-300 transition">{{ num }}</a>
+                <a href="?page={{ num }}" class="inline-flex items-center justify-center w-10 h-10 rounded-lg border border-sable-200 bg-white text-sm font-semibold text-gray-600 hover:border-bleu-300 hover:text-bleu-600 transition">{{ num }}</a>
                 {% endif %}
             {% endfor %}
 
             {% if articles.has_next %}
             <a href="?page={{ articles.next_page_number }}"
-               class="px-4 py-2 rounded-lg border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-bleu-50 hover:border-bleu-300 hover:text-bleu-600 transition">
+               class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-sable-200 bg-white text-sm font-semibold text-gray-600 hover:border-bleu-300 hover:text-bleu-600 transition">
                 Suivant
-                <svg class="w-4 h-4 inline ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
             </a>
             {% endif %}
         </nav>
         {% endif %}
 
-        {% else %}
-        <div class="text-center py-16 text-gray-400">
-            <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+    {% else %}
+        <div class="text-center py-20 text-gray-400">
+            <svg class="w-20 h-20 mx-auto mb-6 text-sable-300" fill="none" stroke="currentColor" stroke-width="1.3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
             <p class="text-lg">Aucune actualité pour le moment.</p>
+            <p class="text-sm mt-2">Revenez bientôt pour suivre la vie du club.</p>
         </div>
-        {% endif %}
+    {% endif %}
+
     </div>
 </section>
+
 {% endblock %}
