@@ -1,94 +1,182 @@
 {% extends "base.html" %}
 {% load wagtailcore_tags wagtailsettings_tags %}
 
+{% block body_class %}page-contact{% endblock %}
+
 {% block content %}
-<section class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-16 md:py-24">
+
+<!-- ───────── Hero ───────── -->
+{% include "includes/page_header.html" with eyebrow="Nous écrire" title="Contact" subtitle=page.intro|richtext %}
+
+<!-- ───────── Contenu ───────── -->
+<section class="py-16 md:py-24 bg-sable-50">
     <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
-        {% if page.intro %}
-        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
-        {% endif %}
-    </div>
-</section>
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 md:gap-12">
 
-<section class="py-12 md:py-20 bg-sable-50">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
-            <!-- Coordonnées -->
-            <div class="space-y-6">
-                <h2 class="font-display text-xl md:text-2xl font-bold text-bleu-800">Coordonnées</h2>
-
-                {% if page.adresse %}
-                <div class="flex items-start gap-3">
-                    <svg class="w-6 h-6 text-bleu-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    <p class="text-gray-700 whitespace-pre-line">{{ page.adresse }}</p>
+            <!-- Colonne infos -->
+            <aside class="lg:col-span-2 space-y-8">
+                <div>
+                    <span class="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-bleu-500 mb-3">Le club</span>
+                    <h2 class="font-display text-3xl md:text-4xl leading-tight text-bleu-900">Coordonnées</h2>
                 </div>
+
+                <div class="space-y-5">
+                    {% if page.adresse %}
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-bleu-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-bleu-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-bleu-500 mb-1">Adresse</p>
+                            <p class="text-gray-700 whitespace-pre-line text-sm md:text-base leading-relaxed">{{ page.adresse }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if page.telephone %}
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-or-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-or-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-bleu-500 mb-1">Téléphone</p>
+                            <a href="tel:{{ page.telephone }}" class="text-gray-700 hover:text-bleu-600 text-sm md:text-base transition">{{ page.telephone }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if page.email %}
+                    <div class="flex items-start gap-4">
+                        <div class="w-11 h-11 rounded-xl bg-bleu-50 flex items-center justify-center shrink-0">
+                            <svg class="w-5 h-5 text-bleu-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-bleu-500 mb-1">Email</p>
+                            <a href="mailto:{{ page.email }}" class="text-gray-700 hover:text-bleu-600 text-sm md:text-base transition">{{ page.email }}</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if page.latitude and page.longitude %}
+                <div class="rounded-2xl overflow-hidden border border-sable-200 bg-white aspect-[4/3]">
+                    <iframe
+                        src="https://www.openstreetmap.org/export/embed.html?bbox={{ page.longitude|add:-0.005 }}%2C{{ page.latitude|add:-0.003 }}%2C{{ page.longitude|add:0.005 }}%2C{{ page.latitude|add:0.003 }}&layer=mapnik&marker={{ page.latitude }}%2C{{ page.longitude }}"
+                        class="w-full h-full border-0" loading="lazy" title="Plan du club"></iframe>
+                </div>
+                <a href="https://www.openstreetmap.org/?mlat={{ page.latitude }}&mlon={{ page.longitude }}#map=17/{{ page.latitude }}/{{ page.longitude }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-bleu-600 hover:text-bleu-800 font-semibold text-sm transition">
+                    Ouvrir dans OpenStreetMap
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
                 {% endif %}
 
-                {% if page.telephone %}
-                <div class="flex items-center gap-3">
-                    <svg class="w-6 h-6 text-bleu-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-                    <a href="tel:{{ page.telephone }}" class="text-gray-700 hover:text-bleu-600 transition">{{ page.telephone }}</a>
-                </div>
-                {% endif %}
-
-                {% if page.email %}
-                <div class="flex items-center gap-3">
-                    <svg class="w-6 h-6 text-bleu-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-                    <a href="mailto:{{ page.email }}" class="text-gray-700 hover:text-bleu-600 transition">{{ page.email }}</a>
-                </div>
-                {% endif %}
-
-                <!-- CTA Tenup -->
-                <div class="pt-4 space-y-3">
+                <div class="pt-4 border-t border-sable-200 space-y-3">
                     <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                       class="flex items-center justify-center gap-2.5 bg-bleu-500 hover:bg-bleu-600 text-white font-semibold px-5 py-3 rounded-lg transition w-full text-sm">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                       class="flex items-center justify-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-5 py-3 rounded-lg transition w-full text-sm shadow-lg shadow-bleu-950/20">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         Réserver un court
                     </a>
                     <a href="{{ settings.home.SiteSettings.tenup_url }}" target="_blank" rel="noopener"
-                       class="flex items-center justify-center gap-2.5 border border-bleu-200 hover:border-bleu-400 text-bleu-600 hover:text-bleu-700 font-semibold px-5 py-3 rounded-lg transition w-full text-sm">
-                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                       class="flex items-center justify-center gap-2 border-2 border-sable-200 hover:border-bleu-300 text-bleu-700 font-semibold px-5 py-3 rounded-lg transition w-full text-sm">
+                        <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         Prendre ma licence
                     </a>
                 </div>
-            </div>
+            </aside>
 
             <!-- Formulaire -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
-                    <h2 class="font-display text-xl md:text-2xl font-bold text-bleu-800 mb-6">Nous écrire</h2>
-                    <form method="POST" class="space-y-4">
+            <div class="lg:col-span-3">
+                <div class="bg-white rounded-3xl shadow-xl shadow-bleu-900/5 border border-sable-200 p-6 md:p-10">
+                    <div class="mb-6 md:mb-8">
+                        <span class="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-500 mb-3">Nous écrire</span>
+                        <h2 class="font-display text-3xl md:text-4xl leading-tight text-bleu-900">Un message pour le&nbsp;bureau ?</h2>
+                        <p class="mt-3 text-sm md:text-base text-gray-600 leading-relaxed">
+                            Question sur l'inscription, le partenariat, l'école de tennis… Le bureau vous répond généralement sous 48h.
+                        </p>
+                    </div>
+
+                    <form method="POST" class="space-y-5">
                         {% csrf_token %}
                         {% for field in form %}
-                        <div>
-                            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-1">
-                                {{ field.label }}{% if field.field.required %} *{% endif %}
+                        <div class="form-field">
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-semibold text-gray-800 mb-1.5">
+                                {{ field.label }}{% if field.field.required %} <span class="text-or-600">*</span>{% endif %}
                             </label>
                             {{ field }}
-                            <style>
-                                form input[type="text"], form input[type="email"], form input[type="url"], form input[type="number"], form input[type="tel"],
-                                form select, form textarea {
-                                    width: 100%; border-radius: 0.5rem; border: 1px solid #d1d5db; padding: 0.625rem 1rem;
-                                    font-size: 0.875rem; transition: border-color 0.2s;
-                                }
-                                form input:focus, form select:focus, form textarea:focus {
-                                    border-color: #1a56db; outline: none; box-shadow: 0 0 0 3px rgba(26,86,219,0.1);
-                                }
-                            </style>
+                            {% if field.help_text %}
+                            <p class="mt-1 text-xs text-gray-500">{{ field.help_text }}</p>
+                            {% endif %}
                             {% if field.errors %}
-                            <p class="mt-1 text-sm text-red-600">{{ field.errors.0 }}</p>
+                            <p class="mt-1.5 text-sm text-red-600 font-medium">{{ field.errors.0 }}</p>
                             {% endif %}
                         </div>
                         {% endfor %}
                         <button type="submit"
-                            class="w-full bg-bleu-500 hover:bg-bleu-600 text-white font-semibold py-3 rounded-full transition">
+                            class="w-full inline-flex items-center justify-center gap-2 bg-bleu-700 hover:bg-bleu-800 text-white font-semibold py-3.5 rounded-lg transition shadow-lg shadow-bleu-900/10">
                             Envoyer le message
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                         </button>
+                        <p class="text-xs text-gray-500 text-center">
+                            Les champs marqués d'un <span class="text-or-600">*</span> sont obligatoires.
+                        </p>
                     </form>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
+
+{# Pré-remplissage du sujet via ?sujet=XXX dans l'URL #}
+<script>
+(function() {
+    var params = new URLSearchParams(window.location.search);
+    var sujet = params.get('sujet');
+    if (!sujet) return;
+    // Pré-remplissage : label affiché + message d'intro contextuel
+    var presets = {
+        'partenariat':            {label: 'Partenariat', body: 'Bonjour,\n\nJe vous contacte pour échanger sur un partenariat avec le TSCM.'},
+        'partenariat-tshirts':    {label: 'Partenariat', body: 'Bonjour,\n\nJe suis intéressé·e par l\'offre « Logo en action sur les t-shirts » (150 €). Pouvons-nous en discuter ?'},
+        'partenariat-tableaux':   {label: 'Partenariat', body: 'Bonjour,\n\nJe suis intéressé·e par l\'offre « Logo sur les tableaux des scores » (180 €). Pouvons-nous en discuter ?'},
+        'partenariat-filets':     {label: 'Partenariat', body: 'Bonjour,\n\nJe suis intéressé·e par l\'offre « Logo sur les filets » (200 € / 250 €). Pouvons-nous en discuter ?'},
+        'partenariat-baches':     {label: 'Partenariat', body: 'Bonjour,\n\nJe souhaite recevoir un devis pour une bâche publicitaire sur l\'un de vos terrains.'},
+        'partenariat-sur-mesure': {label: 'Partenariat', body: 'Bonjour,\n\nJe souhaite construire une offre de partenariat sur mesure avec le TSCM. Voici mon idée :'},
+        'ecole-tennis':           {label: 'École de tennis', body: 'Bonjour,\n\nJe souhaite inscrire à l\'école de tennis :'},
+        'equipes':                {label: 'Compétitions', body: 'Bonjour,\n\nJe suis intéressé·e par rejoindre une équipe du club.'},
+        'tarifs':                 {label: 'Inscription', body: 'Bonjour,\n\nJ\'ai une question concernant les tarifs et l\'inscription :'}
+    };
+    var preset = presets[sujet];
+    var label = preset ? preset.label : sujet.replace(/-/g, ' ');
+
+    document.querySelectorAll('.form-field label').forEach(function(l) {
+        var txt = l.textContent.toLowerCase();
+        var field = document.getElementById(l.getAttribute('for'));
+        if (!field) return;
+
+        // Pré-remplir le select Objet / Sujet
+        if ((txt.includes('sujet') || txt.includes('objet')) && field.tagName === 'SELECT') {
+            for (var i = 0; i < field.options.length; i++) {
+                var opt = field.options[i].text.toLowerCase();
+                if (opt && opt.includes(label.toLowerCase())) {
+                    field.selectedIndex = i;
+                    return;
+                }
+            }
+            // Fallback : sélectionner "Autre" si dispo
+            for (var j = 0; j < field.options.length; j++) {
+                if (field.options[j].text.toLowerCase().includes('autre')) {
+                    field.selectedIndex = j;
+                    return;
+                }
+            }
+        }
+
+        // Pré-remplir le message
+        if (preset && preset.body && (txt.includes('message') || field.tagName === 'TEXTAREA') && !field.value) {
+            field.value = preset.body;
+        }
+    });
+})();
+</script>
+
 {% endblock %}

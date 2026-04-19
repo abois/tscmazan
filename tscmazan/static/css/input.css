@@ -30,6 +30,30 @@
 }
 
 /* ─────────────────────────────────────────────────────────
+   Formulaires
+   ───────────────────────────────────────────────────────── */
+@layer components {
+  .form-field input[type="text"],
+  .form-field input[type="email"],
+  .form-field input[type="url"],
+  .form-field input[type="number"],
+  .form-field input[type="tel"],
+  .form-field select,
+  .form-field textarea {
+    @apply w-full rounded-lg border border-sable-200 bg-white px-4 py-3 text-sm md:text-base text-gray-800 placeholder:text-gray-400 transition;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    @apply outline-none border-bleu-500 ring-4 ring-bleu-500/10;
+  }
+  .form-field textarea {
+    min-height: 8rem;
+    resize: vertical;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────
    Composants
    ───────────────────────────────────────────────────────── */
 @layer components {
