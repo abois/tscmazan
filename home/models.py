@@ -86,7 +86,8 @@ class HomePage(Page):
 
     # Nombre de courts (chiffres clés)
     nb_courts = models.PositiveIntegerField(default=4, verbose_name="Nombre de courts")
-    nb_adherents = models.PositiveIntegerField(default=0, verbose_name="Nombre d'adhérents")
+    nb_adherents = models.PositiveIntegerField(default=150, verbose_name="Nombre d'adhérents")
+    nb_equipes = models.PositiveIntegerField(default=15, verbose_name="Nombre d'équipes engagées")
     annee_creation = models.PositiveIntegerField(default=1970, verbose_name="Année de création")
 
     # Section école de tennis
@@ -132,6 +133,7 @@ class HomePage(Page):
             [
                 FieldPanel("nb_courts"),
                 FieldPanel("nb_adherents"),
+                FieldPanel("nb_equipes"),
                 FieldPanel("annee_creation"),
             ],
             heading="Chiffres clés",

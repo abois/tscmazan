@@ -335,12 +335,14 @@ PAGE_FIELDS = {
     "HomePage": [
         ("hero_titre", "Titre du hero", "text"),
         ("hero_sous_titre", "Sous-titre du hero", "text"),
-        ("presentation_titre", "Titre présentation", "text"),
-        ("presentation_texte", "Texte de présentation", "ckeditor"),
+        ("presentation_titre", "Titre section Convivialité", "text"),
+        ("presentation_texte", "Texte section Convivialité", "ckeditor"),
         ("ecole_titre", "Titre école de tennis", "text"),
         ("ecole_texte", "Texte école de tennis", "ckeditor"),
         ("nb_courts", "Nombre de courts", "number"),
         ("nb_adherents", "Nombre d'adhérents", "number"),
+        ("nb_equipes", "Nombre d'équipes engagées", "number"),
+        ("annee_creation", "Année de création du club", "number"),
     ],
     "ClubPage": [
         ("intro", "Introduction", "ckeditor"),

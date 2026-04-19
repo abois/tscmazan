@@ -1,12 +1,13 @@
 {% comment %}
-Hero de page — plein viewport mobile, image de fond optionnelle + overlay.
+Hero de page — plein viewport mobile, image de fond responsive + overlay.
 
 Usage :
   {% include "includes/hero.html" with
       eyebrow="CLUB FFT"
       title="Tennis Sporting Club Mazanais"
       subtitle="Au pied du Ventoux…"
-      image_url=page.hero_image.url
+      image_url=hero_image_desktop_url
+      image_url_mobile=hero_image_mobile_url
       cta_primary_label="Nous rejoindre"
       cta_primary_url="/le-club/"
       cta_secondary_label="École de tennis"
@@ -14,13 +15,17 @@ Usage :
   %}
 
 Tous les paramètres sauf `title` sont optionnels.
+Si `image_url_mobile` est absent, `image_url` est utilisée sur toutes les tailles.
 {% endcomment %}
 
-<section class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-center text-white">
+<section class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-end md:items-center text-white">
     {% if image_url %}
-    <img src="{{ image_url }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    <picture class="absolute inset-0">
+        {% if image_url_mobile %}<source media="(max-width: 767px)" srcset="{{ image_url_mobile }}">{% endif %}
+        <img src="{{ image_url }}" alt="" class="w-full h-full object-cover" loading="eager">
+    </picture>
     {% else %}
-    <div class="absolute inset-0 bg-bleu-800"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-bleu-800 via-bleu-700 to-bleu-900"></div>
     {% endif %}
     <div class="absolute inset-0 hero-gradient"></div>
 
