@@ -3,53 +3,58 @@
 {% block title %}{{ titre_page }}{% endblock %}
 
 {% block content %}
-<div style="margin-top: 0.5rem;">
-    <a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">← {{ retour_label|default:"Accueil" }}</a>
-    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.5rem;">
-        <h1 class="page-title" style="margin-bottom:0;">{{ titre_page }}</h1>
-        {% if page_obj.url %}
-        <a href="{{ page_obj.url }}" target="_blank" style="color:var(--accent); font-size:0.8rem; font-weight:500; text-decoration:none; display:flex; align-items:center; gap:0.3rem;">
-            Voir
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
-        </a>
-        {% endif %}
-    </div>
+<a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    {{ retour_label|default:"Accueil" }}
+</a>
 
-    <form method="POST">
-        {% csrf_token %}
-
-        {% for field_name, label, field_type, value in fields %}
-        <div class="form-group">
-            <label class="form-label" for="id_{{ field_name }}">{{ label }}</label>
-
-            {% if field_type == "ckeditor" %}
-                <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="ckeditor" rows="8">{{ value }}</textarea>
-            {% elif field_type == "textarea" %}
-                <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="form-input no-editor" rows="3">{{ value }}</textarea>
-            {% elif field_type == "number" %}
-                <input type="number" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
-            {% else %}
-                <input type="text" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
-            {% endif %}
-        </div>
-        {% endfor %}
-
-        <button type="submit" class="btn-submit">Enregistrer</button>
-    </form>
-
-    {% if is_galerie %}
-    <div style="margin-top:2rem; padding-top:1.5rem; border-top:1px solid var(--border);">
-        <a href="{% url 'gestion:liste_albums' %}" class="card">
-            <div class="card-icon card-icon--slate">
-                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
-            </div>
-            <div class="card-text">
-                <div class="card-label">Gérer les albums photos</div>
-                <div class="card-desc">Ajouter, modifier ou supprimer des albums</div>
-            </div>
-            <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
-        </a>
-    </div>
+<div class="page-header">
+    <h1 class="page-title">{{ titre_page }}</h1>
+    {% if page_obj.url %}
+    <a href="{{ page_obj.url }}" target="_blank" class="btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+        Voir la page
+    </a>
     {% endif %}
 </div>
+
+<p class="page-subtitle">Modifiez les champs ci-dessous puis cliquez sur <strong>Enregistrer</strong> pour publier vos changements.</p>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {% for field_name, label, field_type, value in fields %}
+    <div class="form-group">
+        <label class="form-label" for="id_{{ field_name }}">{{ label }}</label>
+
+        {% if field_type == "ckeditor" %}
+            <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="ckeditor" rows="8">{{ value }}</textarea>
+        {% elif field_type == "textarea" %}
+            <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="form-input no-editor" rows="3">{{ value }}</textarea>
+        {% elif field_type == "number" %}
+            <input type="number" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+        {% else %}
+            <input type="text" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+        {% endif %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn-submit">Enregistrer et publier</button>
+</form>
+
+{% if is_galerie %}
+<div style="margin-top:2.5rem; padding-top:2rem; border-top:1px solid var(--border);">
+    <div class="section-title" style="margin-top:0;">Albums photos</div>
+    <a href="{% url 'gestion:liste_albums' %}" class="card">
+        <div class="card-icon card-icon--slate">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+        </div>
+        <div class="card-text">
+            <div class="card-label">Gérer les albums photos</div>
+            <div class="card-desc">Ajouter, modifier ou supprimer des albums</div>
+        </div>
+        <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
+    </a>
+</div>
+{% endif %}
 {% endblock %}

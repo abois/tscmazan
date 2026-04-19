@@ -3,28 +3,28 @@
 {% block title %}Gestion{% endblock %}
 
 {% block content %}
-<div class="welcome">Bonjour <strong>{{ request.user.first_name|default:request.user.username }}</strong></div>
+<div class="welcome">Bonjour <strong>{{ request.user.first_name|default:request.user.username }}</strong> <span style="font-size:1.2rem; color:var(--text-muted);">👋</span></div>
 
 <div class="section-title">Actions rapides</div>
 
 <a href="{% url 'gestion:nouvelle_actu' %}" class="card">
-    <div class="card-icon card-icon--accent">
+    <div class="card-icon card-icon--blue">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
     </div>
     <div class="card-text">
         <div class="card-label">Publier une actualité</div>
-        <div class="card-desc">Article avec photo et mise en forme</div>
+        <div class="card-desc">Article avec photo, mise en forme et publication immédiate</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>
 
 <a href="{% url 'gestion:ajouter_photos' %}" class="card">
-    <div class="card-icon card-icon--blue">
+    <div class="card-icon card-icon--green">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>
     </div>
     <div class="card-text">
         <div class="card-label">Ajouter des photos</div>
-        <div class="card-desc">Créer un album avec plusieurs photos</div>
+        <div class="card-desc">Créer un album photo de tournoi, soirée, événement…</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>
@@ -34,13 +34,48 @@
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-4.5A3.375 3.375 0 0019.875 10.875h0A3.375 3.375 0 0016.5 7.5h0V3.75m-9 15v-4.5A3.375 3.375 0 014.125 10.875h0A3.375 3.375 0 017.5 7.5h0V3.75m0 0h9m-9 0H6a1.5 1.5 0 00-1.5 1.5v0A1.5 1.5 0 006 6.75h1.5m9-3H18a1.5 1.5 0 011.5 1.5v0A1.5 1.5 0 0118 6.75h-1.5"/></svg>
     </div>
     <div class="card-text">
-        <div class="card-label">Ajouter un résultat</div>
-        <div class="card-desc">Palmarès du club</div>
+        <div class="card-label">Ajouter un palmarès</div>
+        <div class="card-desc">Nouveau titre, podium ou victoire à afficher</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>
 
-<div class="section-title">Contenu du site</div>
+<div class="section-title">Gérer les contenus existants</div>
+
+<a href="{% url 'gestion:liste_actus' %}" class="card">
+    <div class="card-icon card-icon--slate">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+    </div>
+    <div class="card-text">
+        <div class="card-label">Toutes les actualités</div>
+        <div class="card-desc">Modifier ou supprimer des articles existants</div>
+    </div>
+    <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
+</a>
+
+<a href="{% url 'gestion:liste_albums' %}" class="card">
+    <div class="card-icon card-icon--slate">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg>
+    </div>
+    <div class="card-text">
+        <div class="card-label">Tous les albums photos</div>
+        <div class="card-desc">Gérer les albums et leurs photos</div>
+    </div>
+    <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
+</a>
+
+<a href="{% url 'gestion:liste_palmares' %}" class="card">
+    <div class="card-icon card-icon--slate">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-4.5A3.375 3.375 0 0019.875 10.875h0A3.375 3.375 0 0016.5 7.5V3.75m-9 15v-4.5A3.375 3.375 0 014.125 10.875h0A3.375 3.375 0 017.5 7.5V3.75m0 0h9"/></svg>
+    </div>
+    <div class="card-text">
+        <div class="card-label">Tout le palmarès</div>
+        <div class="card-desc">Modifier ou supprimer un résultat</div>
+    </div>
+    <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
+</a>
+
+<div class="section-title">Pages du site</div>
 
 {% for page in pages %}
 <a href="{{ page.url }}" class="card">
@@ -49,20 +84,21 @@
     </div>
     <div class="card-text">
         <div class="card-label">{{ page.title }}</div>
+        <div class="card-desc">Modifier le contenu de cette page</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>
 {% endfor %}
 
-<div class="section-title">Configuration</div>
+<div class="section-title">Configuration du site</div>
 
 <a href="{% url 'gestion:gerer_menu' %}" class="card">
-    <div class="card-icon card-icon--slate">
+    <div class="card-icon card-icon--purple">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
     </div>
     <div class="card-text">
         <div class="card-label">Menu du site</div>
-        <div class="card-desc">Ajouter, masquer ou réordonner les pages</div>
+        <div class="card-desc">Ajouter, masquer ou réordonner les entrées du menu</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>
@@ -73,7 +109,7 @@
     </div>
     <div class="card-text">
         <div class="card-label">Paramètres du site</div>
-        <div class="card-desc">Téléphone, email, lien Tenup, réseaux</div>
+        <div class="card-desc">Téléphone, email, adresse, lien Tenup, réseaux sociaux</div>
     </div>
     <div class="card-arrow"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg></div>
 </a>

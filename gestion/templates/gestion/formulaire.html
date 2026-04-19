@@ -4,8 +4,12 @@
 {% block title %}{{ titre_page }}{% endblock %}
 
 {% block content %}
-<a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">← {{ retour_label|default:"Accueil" }}</a>
+<a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    {{ retour_label|default:"Accueil" }}
+</a>
 <h1 class="page-title">{{ titre_page }}</h1>
+{% if sous_titre %}<p class="page-subtitle">{{ sous_titre }}</p>{% endif %}
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -26,7 +30,7 @@
                 {% if field.field.widget.attrs.allow_multiple_selected %}multiple{% endif %}>
         {% elif wtype == "textarea" %}
             <textarea name="{{ field.html_name }}" id="{{ field.id_for_label }}"
-                class="form-input"
+                class="form-input {{ field.field.widget.attrs.class|default:'' }}"
                 placeholder="{{ field.field.widget.attrs.placeholder|default:'' }}"
                 rows="{{ field.field.widget.attrs.rows|default:'5' }}"
                 {% if field.field.required %}required{% endif %}>{{ field.value|default:"" }}</textarea>
