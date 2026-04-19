@@ -1,40 +1,88 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailsettings_tags %}
+
+{% block body_class %}page-tarifs{% endblock %}
 
 {% block content %}
-<section class="bg-gradient-to-br from-bleu-700 to-bleu-800 py-16 md:py-24">
-    <div class="max-w-7xl mx-auto px-4 md:px-6">
-        <h1 class="font-display text-3xl md:text-5xl font-bold text-white">{{ page.title }}</h1>
-        {% if page.intro %}
-        <div class="mt-4 text-base md:text-lg text-white/80 max-w-2xl" data-edit-field="intro" data-edit-page="{{ page.pk }}">{{ page.intro|richtext }}</div>
-        {% endif %}
-    </div>
-</section>
 
-<section class="py-12 md:py-20 bg-sable-50">
-    <div class="max-w-4xl mx-auto px-4 md:px-6">
-        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-10 prose prose-lg max-w-none
-                    prose-table:w-full prose-th:bg-bleu-50 prose-th:p-3 prose-td:p-3 prose-table:border prose-th:border prose-td:border"
+<!-- ───────── Hero ───────── -->
+{% include "includes/page_header.html" with eyebrow="Inscription" title="Tarifs" subtitle=page.intro|richtext %}
+
+<!-- ───────── Contenu tarifs ───────── -->
+{% if page.contenu %}
+<section class="edit-section py-20 md:py-28">
+    {% if request.user.is_authenticated %}
+    <a href="/gestion/page/{{ page.pk }}/" class="edit-btn">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+        Modifier
+    </a>
+    {% endif %}
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+        <div class="bg-white rounded-3xl shadow-xl shadow-bleu-900/5 border border-sable-200 p-6 md:p-12
+                    text-base md:text-lg text-gray-700 leading-relaxed
+                    [&_h2]:font-display [&_h2]:text-2xl md:[&_h2]:text-3xl [&_h2]:text-bleu-900 [&_h2]:mt-8 [&_h2]:mb-4 [&_h2:first-child]:mt-0
+                    [&_h3]:font-display [&_h3]:text-xl [&_h3]:text-bleu-800 [&_h3]:mt-6 [&_h3]:mb-3
+                    [&_p]:mb-4 [&_p:last-child]:mb-0
+                    [&_strong]:text-bleu-800 [&_strong]:font-semibold
+                    [&_ul]:my-4 [&_ul]:space-y-2 [&_li]:pl-6 [&_li]:relative [&_li]:before:content-['•'] [&_li]:before:absolute [&_li]:before:left-1 [&_li]:before:text-bleu-500 [&_li]:before:font-bold
+                    [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-sm md:[&_table]:text-base
+                    [&_th]:bg-bleu-50 [&_th]:text-bleu-800 [&_th]:font-display [&_th]:text-lg [&_th]:p-3 [&_th]:text-left [&_th]:border-b-2 [&_th]:border-sable-200
+                    [&_td]:p-3 [&_td]:border-b [&_td]:border-sable-100
+                    [&_tr:hover_td]:bg-sable-50 [&_tr:last-child_td]:border-b-0"
              data-edit-field="contenu" data-edit-page="{{ page.pk }}">
             {{ page.contenu|richtext }}
         </div>
 
-        <div class="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
+        <div class="mt-10 md:mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center">
             {% if page.lien_inscription %}
             <a href="{{ page.lien_inscription }}" target="_blank" rel="noopener"
-               class="inline-flex items-center justify-center gap-2 bg-bleu-500 hover:bg-bleu-600 text-white font-semibold px-6 py-3 rounded-full transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                S'inscrire en ligne
+               class="inline-flex items-center justify-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition shadow-lg shadow-bleu-950/20">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                S'inscrire via Tenup
             </a>
             {% endif %}
             {% if page.document_tarifs %}
             <a href="{{ page.document_tarifs.url }}" target="_blank"
-               class="inline-flex items-center justify-center gap-2 bg-white border-2 border-bleu-200 hover:border-bleu-400 text-bleu-700 font-semibold px-6 py-3 rounded-full transition">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+               class="inline-flex items-center justify-center gap-2 bg-white border-2 border-sable-200 hover:border-bleu-300 text-bleu-700 font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Télécharger les tarifs (PDF)
             </a>
             {% endif %}
         </div>
     </div>
 </section>
+{% endif %}
+
+<!-- ───────── Infos pratiques ───────── -->
+<section class="py-16 md:py-20 bg-sable-50">
+    <div class="max-w-5xl mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
+            <div class="bg-white rounded-2xl p-6 md:p-7 border border-sable-200">
+                <div class="w-12 h-12 rounded-xl bg-bleu-50 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-bleu-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="font-display text-xl text-bleu-900 mb-2">Licence FFT incluse</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">L'adhésion au club comprend la licence FFT (assurance) obligatoire pour jouer.</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 md:p-7 border border-sable-200">
+                <div class="w-12 h-12 rounded-xl bg-or-50 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-or-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/></svg>
+                </div>
+                <h3 class="font-display text-xl text-bleu-900 mb-2">Badge d'accès</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">Un badge nominatif vous donne accès aux installations 7 jours sur 7.</p>
+            </div>
+            <div class="bg-white rounded-2xl p-6 md:p-7 border border-sable-200">
+                <div class="w-12 h-12 rounded-xl bg-bleu-50 flex items-center justify-center mb-4">
+                    <svg class="w-6 h-6 text-bleu-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                </div>
+                <h3 class="font-display text-xl text-bleu-900 mb-2">Réservation Tenup</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">Toute réservation de court se fait via la plateforme officielle FFT Tenup.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ───────── CTA ───────── -->
+{% include "includes/cta_band.html" with eyebrow="Une question sur les tarifs ?" title="Le bureau est là pour y répondre" subtitle="Nous sommes disponibles par téléphone ou email pour vous accompagner dans votre inscription." button_label="Nous contacter" button_url="/contact/?sujet=tarifs" button_secondary_label=settings.home.SiteSettings.telephone button_secondary_url="tel:0490698645" %}
+
 {% endblock %}
