@@ -1,13 +1,117 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-    <head>
-        <meta charset="utf-8" />
-        <title>Internal server error</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-    </head>
-    <body>
-        <h1>Internal server error</h1>
-
-        <h2>Sorry, there seems to be an error. Please try again soon.</h2>
-    </body>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Erreur serveur — TSC Mazan</title>
+    <meta name="theme-color" content="#2057b2">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background: linear-gradient(135deg, #0a1a35, #0f2750, #060f1f);
+            color: white;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+        body::before, body::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+        }
+        body::before {
+            top: -10%; right: -10%;
+            width: 400px; height: 400px;
+            background: rgba(245, 184, 32, 0.08);
+        }
+        body::after {
+            bottom: -10%; left: -10%;
+            width: 500px; height: 500px;
+            background: rgba(32, 87, 178, 0.2);
+        }
+        .wrap {
+            position: relative;
+            text-align: center;
+            max-width: 36rem;
+            z-index: 1;
+        }
+        .code {
+            font-family: 'Bebas Neue', system-ui, sans-serif;
+            font-size: clamp(6rem, 18vw, 10rem);
+            line-height: 1;
+            color: rgba(249, 204, 82, 0.9);
+            letter-spacing: 0.02em;
+            margin-bottom: 1rem;
+        }
+        .eyebrow {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(249, 204, 82, 0.85);
+            margin-bottom: 0.75rem;
+        }
+        h1 {
+            font-family: 'Bebas Neue', system-ui, sans-serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            letter-spacing: 0.02em;
+            line-height: 1.1;
+            margin-bottom: 1.25rem;
+            font-weight: 400;
+        }
+        p {
+            color: rgba(212, 228, 247, 0.85);
+            font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+            line-height: 1.65;
+            margin-bottom: 2rem;
+            max-width: 28rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.9rem 1.75rem;
+            background: #f5b820;
+            color: #0a1a35;
+            border-radius: 0.6rem;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+        .cta:hover { background: #f9cc52; }
+        .cta:active { transform: translateY(1px); }
+        .cta svg { width: 16px; height: 16px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="code">500</div>
+        <div class="eyebrow">Incident technique</div>
+        <h1>Oups, un problème sur&nbsp;le&nbsp;court</h1>
+        <p>
+            Nos équipes ont été notifiées et travaillent à résoudre l'incident. Revenez dans quelques instants — le jeu reprendra bientôt.
+        </p>
+        <a href="/" class="cta">
+            <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            Retour à l'accueil
+        </a>
+    </div>
+</body>
 </html>
