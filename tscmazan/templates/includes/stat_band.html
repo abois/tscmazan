@@ -1,0 +1,26 @@
+{% comment %}
+Bande de chiffres clés. Grille 2×2 sur mobile, auto sur desktop.
+
+Usage :
+  {% include "includes/stat_band.html" with stats=home_stats %}
+
+`stats` doit être une liste de dicts : [{"value": "150+", "label": "Adhérents"}, …]
+Paramètre optionnel `variant` : "default" (fond sable) ou "dark" (fond bleu foncé).
+{% endcomment %}
+
+<section class="{% if variant == 'dark' %}bg-bleu-900 text-white{% else %}bg-sable-50 text-bleu-900{% endif %} py-12 md:py-16 border-y {% if variant == 'dark' %}border-bleu-800{% else %}border-sable-200{% endif %}">
+    <div class="max-w-7xl mx-auto px-4 md:px-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-flow-col lg:auto-cols-fr gap-x-6 gap-y-10 text-center">
+            {% for stat in stats %}
+            <div>
+                <div class="font-display text-4xl sm:text-5xl md:text-6xl leading-none {% if variant == 'dark' %}text-or-300{% else %}text-bleu-500{% endif %} mb-2">
+                    {{ stat.value }}
+                </div>
+                <div class="text-xs md:text-sm font-semibold uppercase tracking-wider {% if variant == 'dark' %}text-bleu-300{% else %}text-bleu-800/70{% endif %}">
+                    {{ stat.label }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>

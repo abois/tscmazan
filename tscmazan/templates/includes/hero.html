@@ -1,0 +1,57 @@
+{% comment %}
+Hero de page — plein viewport mobile, image de fond optionnelle + overlay.
+
+Usage :
+  {% include "includes/hero.html" with
+      eyebrow="CLUB FFT"
+      title="Tennis Sporting Club Mazanais"
+      subtitle="Au pied du Ventoux…"
+      image_url=page.hero_image.url
+      cta_primary_label="Nous rejoindre"
+      cta_primary_url="/le-club/"
+      cta_secondary_label="École de tennis"
+      cta_secondary_url="/ecole-de-tennis/"
+  %}
+
+Tous les paramètres sauf `title` sont optionnels.
+{% endcomment %}
+
+<section class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-center text-white">
+    {% if image_url %}
+    <img src="{{ image_url }}" alt="" class="absolute inset-0 w-full h-full object-cover">
+    {% else %}
+    <div class="absolute inset-0 bg-bleu-800"></div>
+    {% endif %}
+    <div class="absolute inset-0 hero-gradient"></div>
+
+    <div class="relative max-w-7xl mx-auto w-full px-4 md:px-6 py-20 md:py-28">
+        {% if eyebrow %}
+        <span class="anim-up inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-300 mb-4">{{ eyebrow }}</span>
+        {% endif %}
+        <h1 class="anim-up anim-d1 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-none tracking-tight mb-5 md:mb-6">
+            {{ title }}
+        </h1>
+        {% if subtitle %}
+        <p class="anim-up anim-d2 max-w-2xl text-base md:text-lg text-bleu-100 leading-relaxed mb-8 md:mb-10">
+            {{ subtitle }}
+        </p>
+        {% endif %}
+        {% if cta_primary_label or cta_secondary_label %}
+        <div class="anim-up anim-d3 flex flex-col sm:flex-row gap-3 sm:gap-4">
+            {% if cta_primary_label %}
+            <a href="{{ cta_primary_url|default:'#' }}"
+               class="inline-flex items-center justify-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg shadow-bleu-950/30">
+                {{ cta_primary_label }}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+            {% endif %}
+            {% if cta_secondary_label %}
+            <a href="{{ cta_secondary_url|default:'#' }}"
+               class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition">
+                {{ cta_secondary_label }}
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>

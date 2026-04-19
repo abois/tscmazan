@@ -1,0 +1,47 @@
+{% comment %}
+Card standard réutilisable (actus, services, équipes…).
+
+Usage :
+  {% include "includes/card.html" with
+      title="École de Tennis"
+      description="Enfants, ados et adultes, tous niveaux."
+      image_url=article.image.url
+      link_url=article.url
+      tag="Formation"
+  %}
+
+Paramètres :
+- `title` (requis)
+- `description` (optionnel)
+- `image_url` (optionnel) — image de couverture
+- `link_url` (optionnel) — si fourni, toute la card devient cliquable
+- `tag` (optionnel) — badge catégorie affiché au-dessus du titre
+- `date` (optionnel) — date formatée (actus)
+{% endcomment %}
+
+{% if link_url %}<a href="{{ link_url }}" class="group block">{% else %}<div class="block">{% endif %}
+    <article class="h-full bg-white rounded-2xl overflow-hidden border border-sable-200 hover:border-bleu-200 hover:shadow-xl hover:shadow-bleu-900/5 transition-all duration-300">
+        {% if image_url %}
+        <div class="aspect-[4/3] overflow-hidden bg-sable-100">
+            <img src="{{ image_url }}" alt="" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+        </div>
+        {% endif %}
+        <div class="p-5 md:p-6">
+            {% if tag or date %}
+            <div class="flex items-center gap-3 mb-3 text-xs font-semibold uppercase tracking-wider">
+                {% if tag %}<span class="text-bleu-500">{{ tag }}</span>{% endif %}
+                {% if tag and date %}<span class="text-gray-300">•</span>{% endif %}
+                {% if date %}<span class="text-gray-400">{{ date }}</span>{% endif %}
+            </div>
+            {% endif %}
+            <h3 class="font-display text-2xl md:text-3xl text-bleu-900 leading-tight group-hover:text-bleu-600 transition mb-2">
+                {{ title }}
+            </h3>
+            {% if description %}
+            <p class="text-sm md:text-base text-gray-600 leading-relaxed line-clamp-3">
+                {{ description }}
+            </p>
+            {% endif %}
+        </div>
+    </article>
+{% if link_url %}</a>{% else %}</div>{% endif %}

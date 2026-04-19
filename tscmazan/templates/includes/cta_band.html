@@ -1,0 +1,57 @@
+{% comment %}
+Bande CTA horizontale (fin de section/page).
+
+Usage :
+  {% include "includes/cta_band.html" with
+      eyebrow="Envie de nous rejoindre ?"
+      title="Prenez votre licence au TSCM"
+      subtitle="Tennis, padel, pickleball — il y en a pour tout le monde."
+      button_label="Nous contacter"
+      button_url="/contact/"
+      button_secondary_label="Voir les tarifs"
+      button_secondary_url="/tarifs/"
+  %}
+
+Paramètres :
+- `title` (requis)
+- `eyebrow`, `subtitle` (optionnels)
+- `button_label`, `button_url` (optionnels) — bouton principal or
+- `button_secondary_label`, `button_secondary_url` (optionnels) — bouton secondaire outlined
+- `variant` (optionnel) : "bleu" (défaut, fond bleu foncé) ou "or" (fond or)
+{% endcomment %}
+
+<section class="relative overflow-hidden {% if variant == 'or' %}bg-or-400 text-bleu-900{% else %}bg-bleu-900 text-white{% endif %} py-14 md:py-20">
+    <div class="absolute inset-0 bg-diagonal opacity-30"></div>
+    <div class="relative max-w-5xl mx-auto px-4 md:px-6 text-center">
+        {% if eyebrow %}
+        <span class="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase {% if variant == 'or' %}text-bleu-700{% else %}text-or-300{% endif %} mb-4">
+            {{ eyebrow }}
+        </span>
+        {% endif %}
+        <h2 class="font-display text-4xl sm:text-5xl md:text-6xl leading-[1.05] tracking-tight mb-5">
+            {{ title }}
+        </h2>
+        {% if subtitle %}
+        <p class="max-w-2xl mx-auto text-base md:text-lg {% if variant == 'or' %}text-bleu-800{% else %}text-bleu-200{% endif %} leading-relaxed mb-8 md:mb-10">
+            {{ subtitle }}
+        </p>
+        {% endif %}
+        {% if button_label or button_secondary_label %}
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            {% if button_label %}
+            <a href="{{ button_url|default:'#' }}"
+               class="inline-flex items-center justify-center gap-2 {% if variant == 'or' %}bg-bleu-900 hover:bg-bleu-800 text-white{% else %}bg-or-400 hover:bg-or-300 text-bleu-900{% endif %} font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg">
+                {{ button_label }}
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+            {% endif %}
+            {% if button_secondary_label %}
+            <a href="{{ button_secondary_url|default:'#' }}"
+               class="inline-flex items-center justify-center gap-2 border-2 {% if variant == 'or' %}border-bleu-900 text-bleu-900 hover:bg-bleu-900 hover:text-white{% else %}border-white/40 text-white hover:bg-white/10{% endif %} font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition">
+                {{ button_secondary_label }}
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
