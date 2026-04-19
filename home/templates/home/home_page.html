@@ -5,74 +5,88 @@
 
 {% block content %}
 {% if page.hero_image %}
-    {% image page.hero_image width-1920 as hero_img_desktop %}
-{% endif %}
-{% if page.hero_image_mobile %}
-    {% image page.hero_image_mobile width-900 as hero_img_mobile %}
+    {% image page.hero_image fill-1200x1400 as hero_img %}
 {% endif %}
 
-<!-- ───────── Hero ───────── -->
-<section class="relative overflow-hidden min-h-[85vh] md:min-h-[90vh] flex items-end md:items-center text-white">
-    {% if hero_img_desktop %}
-    <picture class="absolute inset-0">
-        {% if hero_img_mobile %}<source media="(max-width: 767px)" srcset="{{ hero_img_mobile.url }}">{% endif %}
-        <img src="{{ hero_img_desktop.url }}" alt="" class="w-full h-full object-cover" loading="eager">
-    </picture>
-    {% else %}
-    <div class="absolute inset-0 bg-gradient-to-br from-bleu-800 via-bleu-700 to-bleu-900"></div>
-    {% endif %}
-    <div class="absolute inset-0 hero-gradient"></div>
+<!-- ───────── Hero (split asymétrique) ───────── -->
+<section class="relative bg-sable-50 min-h-[90vh] md:min-h-[85vh]">
+    <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[inherit]">
 
-    <div class="relative max-w-7xl mx-auto w-full px-4 md:px-6 pb-24 md:pb-28 md:pt-24">
-        <div class="max-w-3xl">
-            <span class="anim-up inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-300 mb-4">Club formateur FFT · Mazan, Vaucluse</span>
-            <h1 class="anim-up anim-d1 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight mb-5 md:mb-6"
-                data-edit-field="hero_titre" data-edit-page="{{ page.pk }}">
-                {{ page.hero_titre }}
-            </h1>
-            {% if page.hero_sous_titre %}
-            <p class="anim-up anim-d2 max-w-2xl text-base md:text-lg text-bleu-100 leading-relaxed mb-8 md:mb-10"
-               data-edit-field="hero_sous_titre" data-edit-page="{{ page.pk }}">
-                {{ page.hero_sous_titre }}
-            </p>
-            {% endif %}
-            <div class="anim-up anim-d3 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <a href="{{ page.hero_cta_url }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center justify-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg shadow-bleu-950/30">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                    {{ page.hero_cta_texte }}
-                </a>
-                {% if page.hero_cta2_texte %}
-                <a href="{{ page.hero_cta2_url }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur border border-white/30 text-white font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition">
-                    {{ page.hero_cta2_texte }}
-                </a>
+        {# Colonne contenu 7/12 sur desktop #}
+        <div class="lg:col-span-7 flex items-center relative order-2 lg:order-1 py-16 md:py-24 lg:py-28 px-4 md:px-10 lg:px-16 xl:px-24">
+            <div class="absolute top-0 left-0 w-48 h-48 bg-or-300/20 rounded-full blur-3xl"></div>
+            <div class="relative max-w-xl w-full">
+                <span class="anim-up inline-block text-xs md:text-sm font-semibold tracking-[0.25em] uppercase text-or-600 mb-5">Club formateur FFT · Mazan</span>
+                <h1 class="anim-up anim-d1 font-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight text-bleu-900 mb-6"
+                    data-edit-field="hero_titre" data-edit-page="{{ page.pk }}">
+                    {{ page.hero_titre }}
+                </h1>
+                {% if page.hero_sous_titre %}
+                <p class="anim-up anim-d2 text-base md:text-lg text-gray-600 leading-relaxed mb-8"
+                   data-edit-field="hero_sous_titre" data-edit-page="{{ page.pk }}">
+                    {{ page.hero_sous_titre }}
+                </p>
                 {% endif %}
+                <div class="anim-up anim-d3 flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-10">
+                    <a href="{{ page.hero_cta_url }}" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-2 bg-bleu-800 hover:bg-bleu-900 text-white font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg shadow-bleu-900/15">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        {{ page.hero_cta_texte }}
+                    </a>
+                    {% if page.hero_cta2_texte %}
+                    <a href="/le-club/" class="inline-flex items-center gap-2 text-bleu-700 hover:text-bleu-900 font-semibold text-sm md:text-base group transition">
+                        Découvrir le club
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    </a>
+                    {% endif %}
+                </div>
+
+                {# Mini stat strip (centré dans chaque cellule) #}
+                <div class="anim-up anim-d3 grid grid-cols-4 gap-3 pt-6 border-t border-sable-200 text-center">
+                    <div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_adherents }}+</div>
+                        <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Licenciés</div>
+                    </div>
+                    <div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_courts }}</div>
+                        <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Courts</div>
+                    </div>
+                    <div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_equipes }}+</div>
+                        <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Équipes</div>
+                    </div>
+                    <div>
+                        <div class="font-display text-2xl md:text-3xl text-or-500 leading-none">{{ page.annee_creation }}</div>
+                        <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Création</div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- ───────── Chiffres clés (floating card) ───────── -->
-<section class="relative -mt-12 md:-mt-16 z-20">
-    <div class="max-w-5xl mx-auto px-4 md:px-6">
-        <div class="bg-white rounded-2xl shadow-2xl shadow-bleu-900/10 border border-sable-200 overflow-hidden">
-            <div class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-sable-200">
-                <div class="p-5 md:p-7 text-center">
-                    <div class="font-display text-3xl md:text-5xl text-bleu-500 leading-none">{{ page.nb_adherents }}+</div>
-                    <div class="mt-2 text-[10px] md:text-xs font-semibold text-bleu-800/60 uppercase tracking-wider">Licenciés</div>
+        {# Colonne visuel 5/12 — photo duotone #}
+        <div class="lg:col-span-5 relative min-h-[50vh] lg:min-h-0 order-1 lg:order-2 overflow-hidden">
+            <div class="absolute inset-0 bg-bleu-900"></div>
+            {% if hero_img %}
+            <img src="{{ hero_img.url }}" alt="" class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-75" loading="eager">
+            {% endif %}
+            <div class="absolute inset-0 bg-gradient-to-br from-bleu-900/40 via-bleu-700/30 to-or-500/30 mix-blend-multiply"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-bleu-950 via-transparent to-transparent opacity-60"></div>
+
+            {# Cartouche "en jeu" en haut à droite #}
+            <div class="absolute top-6 md:top-10 right-6 md:right-10 flex items-center gap-3 text-white/90">
+                <div class="w-10 h-10 rounded-full border border-white/30 bg-white/10 backdrop-blur flex items-center justify-center">
+                    <svg class="w-4 h-4 text-or-300" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
                 </div>
-                <div class="p-5 md:p-7 text-center">
-                    <div class="font-display text-3xl md:text-5xl text-bleu-500 leading-none">{{ page.nb_courts }}</div>
-                    <div class="mt-2 text-[10px] md:text-xs font-semibold text-bleu-800/60 uppercase tracking-wider">Courts</div>
-                </div>
-                <div class="p-5 md:p-7 text-center">
-                    <div class="font-display text-3xl md:text-5xl text-bleu-500 leading-none">{{ page.nb_equipes }}+</div>
-                    <div class="mt-2 text-[10px] md:text-xs font-semibold text-bleu-800/60 uppercase tracking-wider">Équipes</div>
-                </div>
-                <div class="p-5 md:p-7 text-center">
-                    <div class="font-display text-3xl md:text-5xl text-or-500 leading-none">{{ page.annee_creation }}</div>
-                    <div class="mt-2 text-[10px] md:text-xs font-semibold text-bleu-800/60 uppercase tracking-wider">Création</div>
+                <span class="text-[10px] uppercase tracking-[0.25em] font-semibold">En jeu</span>
+            </div>
+
+            {# Badge vertical "depuis {annee}" en bas à gauche #}
+            <div class="absolute bottom-6 md:bottom-10 left-6 md:left-10 text-white/85">
+                <div class="text-[10px] uppercase tracking-[0.25em] font-semibold mb-1">Tennis Club de</div>
+                <div class="font-display text-4xl md:text-5xl tracking-wider text-or-300">Mazan</div>
+                <div class="flex items-center gap-2 mt-2 text-[10px] uppercase tracking-[0.2em]">
+                    <span class="h-px w-6 bg-or-300"></span>
+                    <span>Depuis {{ page.annee_creation }}</span>
                 </div>
             </div>
         </div>
