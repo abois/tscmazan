@@ -10,16 +10,16 @@
 </div>
 
 <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:1.25rem;">
-    Glissez les éléments pour les réordonner.
+    Glissez la poignée <span style="color:var(--accent); font-weight:600;">⋮⋮</span> pour réordonner.
 </p>
 
 <!-- Liste drag & drop -->
 <div id="menu-list">
     {% for item in items %}
     <div class="menu-item" data-id="{{ item.pk }}">
-        <div class="menu-drag">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" opacity="0.3"><path stroke-linecap="round" d="M8 6h.01M8 12h.01M8 18h.01M16 6h.01M16 12h.01M16 18h.01"/></svg>
-        </div>
+        <button type="button" class="menu-drag" aria-label="Glisser pour réordonner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M8 6h.01M8 12h.01M8 18h.01M16 6h.01M16 12h.01M16 18h.01"/></svg>
+        </button>
         <div class="menu-info">
             <div class="menu-label">{{ item.label }}</div>
             <div class="menu-url">{{ item.url }}</div>
@@ -30,12 +30,18 @@
             {% else %}
             <span class="menu-badge menu-badge--off">OFF</span>
             {% endif %}
-            <a href="{% url 'gestion:editer_menu_item' item.pk %}" class="menu-edit">
+            <a href="{% url 'gestion:editer_menu_item' item.pk %}" class="menu-edit" aria-label="Modifier">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
             </a>
         </div>
     </div>
     {% endfor %}
+</div>
+
+<!-- Toast de confirmation -->
+<div id="menu-toast" role="status" aria-live="polite">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+    <span>Ordre enregistré</span>
 </div>
 
 <!-- Modal ajout -->
@@ -74,60 +80,142 @@ function closeModal() {
     .menu-item {
         display: flex;
         align-items: center;
-        gap: 0.6rem;
-        padding: 0.75rem 0.5rem;
+        gap: 0.4rem;
+        padding: 0.6rem 0.4rem;
         background: var(--bg-card);
         border: 1px solid var(--border);
         border-radius: var(--radius);
         margin-bottom: 0.4rem;
-        cursor: grab;
-        transition: box-shadow 0.15s;
-        touch-action: none;
+        transition: box-shadow 0.15s, border-color 0.15s;
     }
-    .menu-item:active { cursor: grabbing; }
     .menu-item.gu-mirror {
         box-shadow: 0 8px 24px rgba(0,0,0,0.12);
         opacity: 0.95;
+        border-color: var(--accent);
     }
     .gu-transit { opacity: 0.3; }
-    .menu-drag { flex-shrink: 0; cursor: grab; padding: 0.25rem; }
-    .menu-info { flex: 1; min-width: 0; }
-    .menu-label { font-weight: 500; font-size: 0.875rem; }
+
+    /* Poignée de drag : SEUL élément avec touch-action:none (pour que le reste scrolle) */
+    .menu-drag {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px; height: 32px;
+        color: var(--text-muted);
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: grab;
+        touch-action: none;
+        transition: background 0.15s, color 0.15s;
+    }
+    .menu-drag:hover { background: var(--sable-100); color: var(--accent); }
+    .menu-drag:active { cursor: grabbing; }
+
+    .menu-info { flex: 1; min-width: 0; padding: 0.15rem 0; }
+    .menu-label { font-weight: 600; font-size: 0.875rem; color: var(--text); }
     .menu-url { font-size: 0.7rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .menu-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+
+    .menu-actions { display: flex; align-items: center; gap: 0.15rem; flex-shrink: 0; }
     .menu-badge {
         font-size: 0.6rem; font-weight: 700; padding: 0.15rem 0.4rem;
         border-radius: 3px; letter-spacing: 0.05em;
+        margin-right: 0.25rem;
     }
     .menu-badge--on { background: #dcfce7; color: #16a34a; }
     .menu-badge--off { background: #fef2f2; color: #dc2626; }
-    .menu-edit { color: var(--text-muted); padding: 0.3rem; }
-    .menu-edit:hover { color: var(--accent); }
+
+    .menu-edit {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px; height: 32px;
+        color: var(--text-muted);
+        border-radius: 6px;
+        transition: background 0.15s, color 0.15s;
+    }
+    .menu-edit:hover { background: var(--bleu-50); color: var(--accent); }
+
+    /* Toast de confirmation */
+    #menu-toast {
+        position: fixed;
+        bottom: 1.5rem;
+        left: 50%;
+        transform: translate(-50%, 2rem);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: var(--bleu-900);
+        color: white;
+        padding: 0.7rem 1.1rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(10, 26, 53, 0.3);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s, transform 0.25s cubic-bezier(.2,.9,.3,1.2);
+        z-index: 1000;
+    }
+    #menu-toast.visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    #menu-toast.error { background: #b91c1c; }
+    #menu-toast svg { width: 18px; height: 18px; color: #4ade80; }
+    #menu-toast.error svg { color: #fca5a5; }
 </style>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
 <script>
-    var drake = dragula([document.getElementById('menu-list')], {
-        direction: 'vertical',
-        mirrorContainer: document.getElementById('menu-list'),
-    });
+(function() {
+    var list = document.getElementById('menu-list');
+    var csrfToken = '{{ csrf_token }}';
 
-    drake.on('drop', function() {
-        var items = document.querySelectorAll('.menu-item');
-        var order = [];
-        items.forEach(function(el, i) {
-            order.push(el.dataset.id);
+    var toast = document.getElementById('menu-toast');
+    var toastLabel = toast.querySelector('span');
+    var toastTimeout = null;
+
+    function showToast(message, isError) {
+        toastLabel.textContent = message || 'Ordre enregistré';
+        toast.classList.toggle('error', !!isError);
+        toast.classList.add('visible');
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(function() {
+            toast.classList.remove('visible');
+        }, 1800);
+    }
+
+    function saveOrder() {
+        var order = Array.from(list.querySelectorAll('.menu-item')).map(function(el) {
+            return el.dataset.id;
         });
-
         fetch('{% url "gestion:reorder_menu" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-CSRFToken': '{{ csrf_token }}',
+                'X-CSRFToken': csrfToken,
             },
             body: JSON.stringify({order: order}),
+        }).then(function(r) {
+            if (r.ok) showToast('Ordre enregistré');
+            else showToast('Erreur — réessayez', true);
+        }).catch(function() {
+            showToast('Erreur — réessayez', true);
         });
+    }
+
+    // Dragula : seule la poignée .menu-drag peut initier le drag
+    var drake = dragula([list], {
+        direction: 'vertical',
+        mirrorContainer: list,
+        moves: function(el, source, handle) {
+            return handle.closest('.menu-drag') !== null;
+        },
     });
+    drake.on('drop', saveOrder);
+})();
 </script>
 {% endblock %}
