@@ -18,6 +18,8 @@ urlpatterns = [
     path("search/", search_views.search, name="search"),
     path("", include("pwa.urls")),
     path("offline/", TemplateView.as_view(template_name="offline.html"), name="offline"),
+    path("mentions-legales/", TemplateView.as_view(template_name="legal/mentions_legales.html"), name="mentions_legales"),
+    path("politique-confidentialite/", TemplateView.as_view(template_name="legal/politique_confidentialite.html"), name="politique_confidentialite"),
     path("gestion/", include("gestion.urls")),
 ]
 

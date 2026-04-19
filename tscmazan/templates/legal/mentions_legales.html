@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load wagtailsettings_tags %}
+
+{% block title %}Mentions légales{% endblock %}
+
+{% block content %}
+
+{% include "includes/page_header.html" with eyebrow="Informations légales" title="Mentions légales" subtitle="Conformément à la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique." %}
+
+<section class="py-16 md:py-24 bg-sable-50">
+    <div class="max-w-3xl mx-auto px-4 md:px-6">
+        <div class="bg-white rounded-3xl shadow-xl shadow-bleu-900/5 border border-sable-200 p-6 md:p-12
+                    text-base md:text-lg text-gray-700 leading-relaxed
+                    [&_h2]:font-display [&_h2]:text-2xl md:[&_h2]:text-3xl [&_h2]:text-bleu-900 [&_h2]:mt-10 [&_h2]:mb-4 [&_h2:first-child]:mt-0
+                    [&_p]:mb-4 [&_p:last-child]:mb-0
+                    [&_strong]:text-bleu-800 [&_strong]:font-semibold
+                    [&_a]:text-bleu-600 [&_a]:underline hover:[&_a]:text-bleu-800
+                    [&_ul]:my-4 [&_ul]:space-y-2 [&_li]:pl-6 [&_li]:relative [&_li]:before:content-['•'] [&_li]:before:absolute [&_li]:before:left-1 [&_li]:before:text-bleu-500 [&_li]:before:font-bold">
+
+            <h2>Éditeur du site</h2>
+            <p>
+                <strong>Tennis Sporting Club Mazanais (TSCM)</strong><br>
+                Association loi 1901 affiliée à la Fédération Française de Tennis.<br>
+                Chemin du Bigourd — Site du COSEC<br>
+                84380 Mazan, France<br>
+                Téléphone : <a href="tel:{{ settings.home.SiteSettings.telephone }}">{{ settings.home.SiteSettings.telephone }}</a><br>
+                Email : <a href="mailto:{{ settings.home.SiteSettings.email }}">{{ settings.home.SiteSettings.email }}</a>
+            </p>
+
+            <h2>Directeur de la publication</h2>
+            <p>
+                Le président du Tennis Sporting Club Mazanais, en fonction à la date de consultation du site.
+            </p>
+
+            <h2>Hébergement</h2>
+            <p>
+                Le site est hébergé par un prestataire technique dont les coordonnées peuvent être communiquées sur simple demande à l'adresse <a href="mailto:{{ settings.home.SiteSettings.email }}">{{ settings.home.SiteSettings.email }}</a>.
+            </p>
+
+            <h2>Propriété intellectuelle</h2>
+            <p>
+                L'ensemble des contenus présents sur ce site (textes, photographies, logos, éléments graphiques) est la propriété exclusive du Tennis Sporting Club Mazanais, sauf mention contraire. Toute reproduction, représentation, modification, publication ou adaptation, totale ou partielle, est interdite sans autorisation écrite préalable.
+            </p>
+            <p>
+                Les logos de nos partenaires et sponsors restent la propriété de leurs détenteurs respectifs et sont utilisés avec leur accord.
+            </p>
+
+            <h2>Liens externes</h2>
+            <p>
+                Le site peut contenir des liens vers des sites tiers (Tenup, FFT, partenaires). Le TSCM n'exerce aucun contrôle sur ces sites et décline toute responsabilité quant à leur contenu ou à leur politique de confidentialité.
+            </p>
+
+            <h2>Responsabilité</h2>
+            <p>
+                Le TSCM s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur son site. Toutefois, il ne peut garantir l'exactitude, la précision ou l'exhaustivité des informations. Les informations fournies le sont à titre indicatif et n'engagent pas la responsabilité du club.
+            </p>
+
+            <h2>Droit applicable</h2>
+            <p>
+                Les présentes mentions légales sont soumises au droit français. Tout litige relatif à l'utilisation du site relève de la compétence exclusive des tribunaux français.
+            </p>
+
+            <h2>Contact</h2>
+            <p>
+                Pour toute question concernant les mentions légales, vous pouvez contacter le bureau du TSCM via le formulaire de <a href="/contact/">contact</a> ou par email à <a href="mailto:{{ settings.home.SiteSettings.email }}">{{ settings.home.SiteSettings.email }}</a>.
+            </p>
+        </div>
+
+        <p class="mt-6 text-center text-xs text-gray-400">
+            Mise à jour : avril 2026
+        </p>
+    </div>
+</section>
+
+{% endblock %}
