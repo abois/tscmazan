@@ -1,6 +1,7 @@
 import io
 from datetime import date
 
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 from django.shortcuts import get_object_or_404, redirect, render
@@ -541,6 +542,13 @@ def live_add_photos(request):
         AlbumPhoto.objects.create(album=album, image=img, sort_order=start + i)
 
     return JsonResponse({"ok": True, "count": len(files)})
+
+
+# ── Logout ─────────────────────────────────────────
+
+def logout_view(request):
+    auth_logout(request)
+    return redirect("/")
 
 
 # ── Succès ─────────────────────────────────────────

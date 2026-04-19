@@ -31,6 +31,8 @@ urlpatterns = [
     # Live edit
     path("live-edit/", views.live_edit, name="live_edit"),
     path("live-add-photos/", views.live_add_photos, name="live_add_photos"),
+    # Logout
+    path("logout/", views.logout_view, name="logout"),
     # Succès
     path("succes/<str:type>/", views.succes, name="succes"),
 ]

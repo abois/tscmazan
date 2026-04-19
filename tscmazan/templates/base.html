@@ -124,39 +124,35 @@
         /* Edit bar */
         .edit-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 999;
             background: rgba(32,87,178,0.95);
             backdrop-filter: blur(12px);
-            padding: 0.6rem 1rem;
+            padding: 0.5rem 0.6rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+            gap: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: 2rem;
         }
         .edit-bar a {
             color: white;
             text-decoration: none;
-            font-size: 0.8rem;
-            font-weight: 500;
+            font-size: 0.75rem;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.35rem;
-            opacity: 0.85;
+            padding: 0.4rem 0.75rem;
+            border-radius: 1.5rem;
+            opacity: 0.9;
+            transition: opacity 0.15s, background 0.15s;
+            white-space: nowrap;
         }
-        .edit-bar a:hover { opacity: 1; }
-        .edit-bar-close {
-            position: absolute;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: white;
-            opacity: 0.5;
-            cursor: pointer;
-            font-size: 1.1rem;
+        .edit-bar a:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+        .edit-bar a svg { width: 16px; height: 16px;
         }
 
         /* Subtle diagonal texture */
@@ -345,13 +341,10 @@
     <!-- Edit Bar (logged-in users only) -->
     {% if request.user.is_authenticated %}
     <div class="edit-bar" id="edit-bar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
-        <a href="/gestion/">Gestion du site</a>
-        <span style="opacity:0.3;">|</span>
-        <a href="/gestion/parametres/">Paramètres</a>
-        <span style="opacity:0.3;">|</span>
-        <a href="/gestion/menu/">Menu</a>
-        <button class="edit-bar-close" onclick="document.getElementById('edit-bar').style.display='none'">&times;</button>
+        <a href="/gestion/">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+            Gestion
+        </a>
     </div>
     {% endif %}
 
