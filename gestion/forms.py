@@ -55,6 +55,7 @@ class PageForm(forms.Form):
 class SettingsForm(forms.Form):
     """Formulaire pour les paramètres globaux du site."""
     tenup_url = forms.URLField(label="Lien Tenup (réservation & licence)")
+    shop_url = forms.URLField(label="Lien boutique partenaire (ASTON)", required=False)
     telephone = forms.CharField(max_length=20, label="Téléphone du club")
     email = forms.EmailField(label="Email du club")
     adresse = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}), label="Adresse", required=False)

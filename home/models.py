@@ -173,6 +173,12 @@ class SiteSettings(BaseGenericSetting):
         verbose_name="Lien Tenup (réservation & licence)",
         help_text="URL de la page du club sur Tenup",
     )
+    shop_url = models.URLField(
+        blank=True,
+        default="https://www.sas-aston.fr",
+        verbose_name="Lien boutique partenaire (ASTON)",
+        help_text="URL de la boutique en ligne du club. Laisser vide pour masquer le lien du site.",
+    )
     telephone = models.CharField(max_length=20, default="04 90 69 86 45")
     email = models.EmailField(default="tscm@bbox.fr")
     adresse = models.TextField(default="Chemin du Bigourd\nSite du COSEC\n84380 Mazan")
@@ -181,8 +187,8 @@ class SiteSettings(BaseGenericSetting):
 
     panels = [
         MultiFieldPanel(
-            [FieldPanel("tenup_url")],
-            heading="Tenup",
+            [FieldPanel("tenup_url"), FieldPanel("shop_url")],
+            heading="Liens externes",
         ),
         MultiFieldPanel(
             [

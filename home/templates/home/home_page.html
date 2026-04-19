@@ -180,6 +180,57 @@
     </div>
 </section>
 
+<!-- ───────── Boutique ASTON ───────── -->
+{% if settings.home.SiteSettings.shop_url %}
+<section class="py-16 md:py-20">
+    <div class="max-w-6xl mx-auto px-4 md:px-6">
+        <a href="{{ settings.home.SiteSettings.shop_url }}" target="_blank" rel="noopener"
+           class="group block relative overflow-hidden rounded-3xl bg-gradient-to-br from-bleu-900 via-bleu-800 to-bleu-950 text-white p-8 md:p-12 transition hover:shadow-2xl hover:shadow-bleu-900/20">
+            <div class="absolute inset-0 bg-diagonal opacity-30"></div>
+            <div class="absolute -top-20 -right-20 w-72 h-72 bg-or-400/15 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-bleu-500/20 rounded-full blur-3xl"></div>
+
+            <div class="relative grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10 items-center">
+                <div class="md:col-span-3">
+                    <span class="inline-block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-or-300 mb-3">Boutique officielle</span>
+                    <h2 class="font-display text-4xl md:text-5xl lg:text-6xl leading-[1.05] tracking-tight mb-4">
+                        Les couleurs du club à&nbsp;porter
+                    </h2>
+                    <p class="text-base md:text-lg text-bleu-100 leading-relaxed mb-6 max-w-xl">
+                        T-shirts, polos, survêtements aux couleurs du TSCM — disponibles toute l'année chez notre partenaire <strong class="text-or-300">ASTON</strong>.
+                    </p>
+                    <span class="inline-flex items-center gap-2 bg-or-400 group-hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition shadow-lg shadow-bleu-950/30">
+                        Découvrir la boutique
+                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </span>
+                </div>
+                <div class="md:col-span-2 flex items-center justify-center">
+                    <div class="relative w-full max-w-[260px] aspect-[4/5] rounded-2xl overflow-hidden border border-white/10">
+                        <div class="absolute inset-0 bg-gradient-to-br from-bleu-700 via-bleu-800 to-bleu-950"></div>
+                        <div class="absolute inset-0 opacity-[0.07]" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, white 10px, white 11px);"></div>
+
+                        {# Bande verticale or en accent, comme une manche de maillot #}
+                        <div class="absolute top-0 bottom-0 right-6 w-1 bg-or-400"></div>
+                        <div class="absolute top-0 bottom-0 right-10 w-px bg-or-400/40"></div>
+
+                        {# Écusson façon club — cercle doré + initiales #}
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                            <div class="font-display text-7xl lg:text-8xl text-or-300 leading-none tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.4)]">TSCM</div>
+                            <div class="mt-4 flex items-center gap-2 text-[10px] uppercase tracking-[0.25em] text-bleu-200 font-semibold">
+                                <span class="h-px w-6 bg-bleu-300/50"></span>
+                                Official
+                                <span class="h-px w-6 bg-bleu-300/50"></span>
+                            </div>
+                            <div class="mt-1 font-display text-sm tracking-[0.4em] text-white/70">BY ASTON</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+{% endif %}
+
 <!-- ───────── Encart Partenaires ───────── -->
 <section class="py-20 md:py-24 bg-white border-t border-sable-200">
     <div class="max-w-7xl mx-auto px-4 md:px-6">

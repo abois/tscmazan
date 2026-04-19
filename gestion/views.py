@@ -423,6 +423,7 @@ def parametres(request):
     else:
         form = SettingsForm(initial={
             "tenup_url": settings_obj.tenup_url,
+            "shop_url": settings_obj.shop_url,
             "telephone": settings_obj.telephone,
             "email": settings_obj.email,
             "adresse": settings_obj.adresse,
