@@ -354,6 +354,10 @@ PAGE_FIELDS = {
         ("intro", "Introduction", "ckeditor"),
         ("contenu", "Contenu des tarifs", "ckeditor"),
     ],
+    "PartenairesPage": [
+        ("intro", "Accroche en haut de page", "ckeditor"),
+        ("offre_personnalisee_texte", "Texte \"Offre personnalisée\"", "ckeditor"),
+    ],
     "EcoleTennisPage": [
         ("intro", "Introduction", "ckeditor"),
         ("contenu", "Contenu", "ckeditor"),

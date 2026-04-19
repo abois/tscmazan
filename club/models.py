@@ -225,6 +225,30 @@ class Match(Orderable):
         return f"{self.tour} — {self.joueur_equipe} vs {self.adversaire}"
 
 
+class PartenairesPage(Page):
+    """Page Partenaires & Sponsoring."""
+
+    intro = RichTextField(
+        blank=True,
+        help_text="Accroche en haut de page (sous le titre hero).",
+    )
+    offre_personnalisee_texte = RichTextField(
+        blank=True,
+        verbose_name="Texte de l'offre personnalisée",
+        help_text="Bloc \"Offre sur mesure\" après les 4 offres standards.",
+    )
+
+    content_panels = Page.content_panels + [
+        FieldPanel("intro"),
+        FieldPanel("offre_personnalisee_texte"),
+    ]
+
+    class Meta:
+        verbose_name = "Page Partenaires"
+
+    parent_page_types = ["home.HomePage"]
+
+
 class ResultatsPage(Page):
     intro = RichTextField(blank=True)
     equipes_texte = RichTextField(
