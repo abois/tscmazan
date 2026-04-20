@@ -355,8 +355,61 @@ PAGE_FIELDS = {
         ("contenu", "Contenu des tarifs", "ckeditor"),
     ],
     "PartenairesPage": [
-        ("intro", "Accroche en haut de page", "ckeditor"),
-        ("offre_personnalisee_texte", "Texte \"Offre personnalisée\"", "ckeditor"),
+        ("__section__", "Hero", "section"),
+        ("hero_eyebrow", "Sur-titre (au-dessus du grand titre)", "text"),
+        ("hero_titre", "Grand titre", "text"),
+        ("intro", "Accroche sous le titre", "ckeditor"),
+
+        ("__section__", "Section \"Nos offres\"", "section"),
+        ("offres_eyebrow", "Sur-titre de la section", "text"),
+        ("offres_titre", "Titre de la section", "text"),
+        ("offres_intro", "Texte d'introduction", "ckeditor"),
+
+        ("__section__", "Offre 1", "section"),
+        ("offre_1_badge", "Badge (Exclusivité, Premium…)", "text"),
+        ("offre_1_titre", "Titre de l'offre", "text"),
+        ("offre_1_prix", "Prix affiché", "text"),
+        ("offre_1_prix_suffixe", "Suffixe du prix (ex. / an)", "text"),
+        ("offre_1_description", "Description", "ckeditor"),
+        ("offre_1_bullet_1", "Point 1", "inline"),
+        ("offre_1_bullet_2", "Point 2", "inline"),
+        ("offre_1_bullet_3", "Point 3", "inline"),
+
+        ("__section__", "Offre 2", "section"),
+        ("offre_2_badge", "Badge", "text"),
+        ("offre_2_titre", "Titre de l'offre", "text"),
+        ("offre_2_prix", "Prix affiché", "text"),
+        ("offre_2_prix_suffixe", "Suffixe du prix", "text"),
+        ("offre_2_description", "Description", "ckeditor"),
+        ("offre_2_bullet_1", "Point 1", "inline"),
+        ("offre_2_bullet_2", "Point 2", "inline"),
+        ("offre_2_bullet_3", "Point 3", "inline"),
+
+        ("__section__", "Offre 3", "section"),
+        ("offre_3_badge", "Badge", "text"),
+        ("offre_3_titre", "Titre de l'offre", "text"),
+        ("offre_3_prix", "Prix affiché", "text"),
+        ("offre_3_prix_suffixe", "Suffixe du prix", "text"),
+        ("offre_3_description", "Description", "ckeditor"),
+        ("offre_3_bullet_1", "Point 1", "inline"),
+        ("offre_3_bullet_2", "Point 2", "inline"),
+        ("offre_3_bullet_3", "Point 3", "inline"),
+
+        ("__section__", "Offre 4", "section"),
+        ("offre_4_badge", "Badge", "text"),
+        ("offre_4_titre", "Titre de l'offre", "text"),
+        ("offre_4_prix", "Prix affiché", "text"),
+        ("offre_4_prix_suffixe", "Suffixe du prix", "text"),
+        ("offre_4_description", "Description", "ckeditor"),
+        ("offre_4_bullet_1", "Point 1", "inline"),
+        ("offre_4_bullet_2", "Point 2", "inline"),
+        ("offre_4_bullet_3", "Point 3", "inline"),
+
+        ("__section__", "Section \"Sur mesure\"", "section"),
+        ("sur_mesure_eyebrow", "Sur-titre de la section", "text"),
+        ("sur_mesure_titre", "Titre de la section", "text"),
+        ("offre_personnalisee_texte", "Texte de la section", "ckeditor"),
+        ("sur_mesure_cta_label", "Libellé du bouton", "text"),
     ],
     "EcoleTennisPage": [
         ("intro", "Introduction", "ckeditor"),
@@ -392,6 +445,8 @@ def editer_page(request, pk):
 
     if request.method == "POST":
         for field_name, label, field_type in fields:
+            if field_type == "section":
+                continue
             value = request.POST.get(field_name, "")
             if field_type == "number":
                 value = int(value) if value else 0
@@ -402,7 +457,10 @@ def editer_page(request, pk):
     return render(request, "gestion/editer_page.html", {
         "page_obj": page,
         "titre_page": f"Modifier : {page.title}",
-        "fields": [(name, label, ftype, getattr(page, name, "")) for name, label, ftype in fields],
+        "fields": [
+            (name, label, ftype, getattr(page, name, "") if ftype != "section" else "")
+            for name, label, ftype in fields
+        ],
         "is_galerie": cls_name == "GaleriePage",
     })
 

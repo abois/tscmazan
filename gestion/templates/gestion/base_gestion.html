@@ -538,6 +538,26 @@
         .mini-editor-content a { color: var(--accent); text-decoration: underline; }
         .mini-editor-content ul { margin: 0.5em 0 0.85em 1.4em; }
         .mini-editor-content li { margin: 0.2em 0; }
+
+        /* Variante inline : bullets, labels, champs courts */
+        .mini-editor--inline .mini-editor-toolbar {
+            padding: 2px 4px;
+            gap: 1px;
+        }
+        .mini-editor--inline .mini-editor-btn {
+            width: 24px;
+            height: 24px;
+            font-size: 0.72rem;
+        }
+        .mini-editor--inline .mini-editor-content {
+            min-height: 0;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        .mini-editor--inline .mini-editor-content p { margin: 0; display: inline; }
     </style>
 </head>
 <body>
@@ -575,35 +595,42 @@
                 textarea.dataset.meInit = '1';
                 textarea.style.display = 'none';
 
+                var isInline = textarea.getAttribute('data-toolbar') === 'inline';
+
                 var wrap = document.createElement('div');
-                wrap.className = 'mini-editor';
+                wrap.className = 'mini-editor' + (isInline ? ' mini-editor--inline' : '');
                 var height = textarea.getAttribute('data-height') || '120';
                 wrap.style.setProperty('--me-height', height + 'px');
 
-                wrap.innerHTML = ''
+                var toolbarHtml = ''
                     + '<div class="mini-editor-toolbar" role="toolbar" aria-label="Mise en forme">'
                     + '  <button type="button" class="mini-editor-btn" data-cmd="bold" title="Gras (Ctrl+B)" aria-label="Gras"><b>B</b></button>'
-                    + '  <button type="button" class="mini-editor-btn" data-cmd="italic" title="Italique (Ctrl+I)" aria-label="Italique"><i style="font-family:Georgia,serif;">I</i></button>'
-                    + '  <button type="button" class="mini-editor-btn" data-cmd="underline" title="Souligné (Ctrl+U)" aria-label="Souligné"><u>U</u></button>'
-                    + '  <button type="button" class="mini-editor-btn" data-cmd="heading" title="Titre (Ctrl+H)" aria-label="Titre"><span style="font-size:0.88rem;">H</span></button>'
-                    + '  <button type="button" class="mini-editor-btn" data-cmd="ul" title="Liste à puces (Ctrl+L)" aria-label="Liste à puces">'
-                    + '    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12M8.25 17.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>'
-                    + '  </button>'
-                    + '  <button type="button" class="mini-editor-btn" data-cmd="link" title="Lien (Ctrl+K)" aria-label="Lien">'
-                    + '    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>'
-                    + '  </button>'
-                    + '  <span class="mini-editor-help" tabindex="0" aria-label="Aide raccourcis clavier">?'
-                    + '    <span class="mini-editor-help-tip" role="tooltip">'
-                    + '      <div><kbd>Ctrl+B</kbd>Gras</div>'
-                    + '      <div><kbd>Ctrl+I</kbd>Italique</div>'
-                    + '      <div><kbd>Ctrl+U</kbd>Souligné</div>'
-                    + '      <div><kbd>Ctrl+H</kbd>Titre</div>'
-                    + '      <div><kbd>Ctrl+L</kbd>Liste</div>'
-                    + '      <div><kbd>Ctrl+K</kbd>Lien</div>'
-                    + '    </span>'
-                    + '  </span>'
-                    + '</div>'
-                    + '<div class="mini-editor-content" contenteditable="true" data-placeholder="Saisissez votre texte…"></div>';
+                    + '  <button type="button" class="mini-editor-btn" data-cmd="italic" title="Italique (Ctrl+I)" aria-label="Italique"><i style="font-family:Georgia,serif;">I</i></button>';
+                if (!isInline) {
+                    toolbarHtml += ''
+                        + '  <button type="button" class="mini-editor-btn" data-cmd="underline" title="Souligné (Ctrl+U)" aria-label="Souligné"><u>U</u></button>'
+                        + '  <button type="button" class="mini-editor-btn" data-cmd="heading" title="Titre (Ctrl+H)" aria-label="Titre"><span style="font-size:0.88rem;">H</span></button>'
+                        + '  <button type="button" class="mini-editor-btn" data-cmd="ul" title="Liste à puces (Ctrl+L)" aria-label="Liste à puces">'
+                        + '    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12M8.25 17.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>'
+                        + '  </button>'
+                        + '  <button type="button" class="mini-editor-btn" data-cmd="link" title="Lien (Ctrl+K)" aria-label="Lien">'
+                        + '    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>'
+                        + '  </button>'
+                        + '  <span class="mini-editor-help" tabindex="0" aria-label="Aide raccourcis clavier">?'
+                        + '    <span class="mini-editor-help-tip" role="tooltip">'
+                        + '      <div><kbd>Ctrl+B</kbd>Gras</div>'
+                        + '      <div><kbd>Ctrl+I</kbd>Italique</div>'
+                        + '      <div><kbd>Ctrl+U</kbd>Souligné</div>'
+                        + '      <div><kbd>Ctrl+H</kbd>Titre</div>'
+                        + '      <div><kbd>Ctrl+L</kbd>Liste</div>'
+                        + '      <div><kbd>Ctrl+K</kbd>Lien</div>'
+                        + '    </span>'
+                        + '  </span>';
+                }
+                toolbarHtml += '</div>'
+                    + '<div class="mini-editor-content" contenteditable="true" data-placeholder="' + (isInline ? '' : 'Saisissez votre texte…') + '"></div>';
+
+                wrap.innerHTML = toolbarHtml;
 
                 var content = wrap.querySelector('.mini-editor-content');
                 content.innerHTML = textarea.value || '';
@@ -617,9 +644,16 @@
 
                 content.addEventListener('input', function () { sync(); updateActive(); });
                 content.addEventListener('blur', function () {
-                    content.innerHTML = ensureParagraphs(content.innerHTML);
+                    if (!isInline) {
+                        content.innerHTML = ensureParagraphs(content.innerHTML);
+                    }
                     sync();
                 });
+                if (isInline) {
+                    content.addEventListener('keydown', function (e) {
+                        if (e.key === 'Enter') { e.preventDefault(); content.blur(); }
+                    });
+                }
 
                 // États actifs des boutons selon le format au caret
                 var cmdToState = { bold: 'bold', italic: 'italic', underline: 'underline', ul: 'insertUnorderedList' };

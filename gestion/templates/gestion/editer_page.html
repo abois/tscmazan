@@ -3,6 +3,152 @@
 {% block title %}{{ titre_page }}{% endblock %}
 
 {% block content %}
+<style>
+    /* ───────── Card de section (défaut) ───────── */
+    .edit-section-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 0.9rem;
+        padding: 1.5rem 1.75rem 0.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: 0 1px 2px rgba(10, 26, 53, 0.03);
+        position: relative;
+    }
+    .edit-section-card > .form-group:last-child { margin-bottom: 1.25rem; }
+
+    .edit-section-heading {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--bleu-900);
+        margin: 0 0 1.25rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 1px solid var(--border);
+        letter-spacing: -0.01em;
+    }
+    .edit-section-heading::before {
+        content: "";
+        width: 4px;
+        align-self: stretch;
+        background: var(--or-400);
+        border-radius: 2px;
+    }
+
+    /* ───────── Variante "Offre" : affiche de prix éditoriale ───────── */
+    .edit-section-card--offre {
+        background:
+            linear-gradient(180deg, #fbf5e7 0%, #fdfbf5 55%, var(--bg-card) 100%);
+        border: 1px solid #ebd9a6;
+        border-left: 0;
+        padding: 1.65rem 1.85rem 0.65rem 2.25rem;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0 1.4rem;
+        overflow: hidden;
+    }
+    .edit-section-card--offre::after {
+        /* barre or latérale */
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: linear-gradient(180deg, var(--or-400) 0%, var(--or-500) 60%, var(--or-600) 100%);
+    }
+    .edit-section-card--offre > * { grid-column: 1 / -1; }
+    .edit-section-card--offre > .edit-section-heading {
+        font-family: 'Bebas Neue', system-ui, sans-serif;
+        font-size: 1.6rem;
+        font-weight: 400;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--bleu-900);
+        border-bottom: 2px solid var(--or-400);
+        padding-bottom: 0.7rem;
+        margin-bottom: 1.4rem;
+    }
+    .edit-section-card--offre > .edit-section-heading::before { display: none; }
+
+    /* Prix / suffixe côte à côte (3 + 3 colonnes) */
+    .edit-section-card--offre > .form-group--prix     { grid-column: span 3; }
+    .edit-section-card--offre > .form-group--suffixe  { grid-column: span 3; }
+
+    /* 3 bullets en ligne (2 + 2 + 2 colonnes) */
+    .edit-section-card--offre > .form-group--bullet   { grid-column: span 2; }
+
+    /* Champ prix : mis en valeur (Bebas, gros) */
+    .form-group--prix .form-input,
+    .form-group--suffixe .form-input {
+        font-family: 'Bebas Neue', system-ui, sans-serif;
+        letter-spacing: 0.04em;
+        color: var(--bleu-900);
+    }
+    .form-group--prix .form-input {
+        font-size: 1.75rem;
+        padding: 0.45rem 0.95rem;
+        border-width: 2px;
+        border-color: #e3c97a;
+    }
+    .form-group--prix .form-input:focus {
+        border-color: var(--or-500);
+        box-shadow: 0 0 0 3px rgba(245, 184, 32, 0.18);
+    }
+    .form-group--suffixe .form-input {
+        font-size: 1.25rem;
+        color: var(--text-label);
+    }
+    .form-group--prix  .form-label::after,
+    .form-group--suffixe .form-label::after {
+        content: "";
+        display: inline-block;
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: var(--or-400);
+        margin-left: 0.45rem;
+        vertical-align: middle;
+        transform: translateY(-1px);
+    }
+
+    /* Badge : input compact */
+    .form-group--badge .form-input {
+        max-width: 16rem;
+        font-family: 'DM Sans', system-ui, sans-serif;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--bleu-800);
+    }
+
+    /* Bullets : label compact, visuellement groupés */
+    .edit-section-card--offre > .form-group--bullet .form-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--or-600);
+    }
+    .edit-section-card--offre > .form-group--bullet .form-input {
+        font-size: 0.9rem;
+    }
+
+    /* Mobile : on dépile tout */
+    @media (max-width: 820px) {
+        .edit-section-card--offre {
+            grid-template-columns: 1fr;
+            padding-left: 1.75rem;
+        }
+        .edit-section-card--offre > .form-group--prix,
+        .edit-section-card--offre > .form-group--suffixe,
+        .edit-section-card--offre > .form-group--bullet { grid-column: 1 / -1; }
+        .edit-section-card--offre > .edit-section-heading {
+            font-size: 1.35rem;
+        }
+    }
+</style>
+
 <a href="{{ retour_url|default:'/gestion/' }}" class="breadcrumb">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
     {{ retour_label|default:"Accueil" }}
@@ -20,24 +166,48 @@
 
 <p class="page-subtitle">Modifiez les champs ci-dessous puis cliquez sur <strong>Enregistrer</strong> pour publier vos changements.</p>
 
-<form method="POST">
+<form method="POST" class="edit-form">
     {% csrf_token %}
 
     {% for field_name, label, field_type, value in fields %}
-    <div class="form-group">
-        <label class="form-label" for="id_{{ field_name }}">{{ label }}</label>
-
-        {% if field_type == "ckeditor" %}
-            <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="ckeditor" rows="8">{{ value }}</textarea>
-        {% elif field_type == "textarea" %}
-            <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="form-input no-editor" rows="3">{{ value }}</textarea>
-        {% elif field_type == "number" %}
-            <input type="number" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+        {% if field_type == "section" %}
+            {% if not forloop.first %}</div>{% endif %}
+            {% if label|slice:":6" == "Offre " %}
+                <div class="edit-section-card edit-section-card--offre">
+            {% else %}
+                <div class="edit-section-card">
+            {% endif %}
+                <h2 class="edit-section-heading">{{ label }}</h2>
         {% else %}
-            <input type="text" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+            {% if forloop.first %}<div class="edit-section-card">{% endif %}
+            {% if field_name|slice:"-13:" == "_prix_suffixe" %}
+                <div class="form-group form-group--suffixe">
+            {% elif field_name|slice:"-5:" == "_prix" %}
+                <div class="form-group form-group--prix">
+            {% elif "_bullet_" in field_name %}
+                <div class="form-group form-group--bullet">
+            {% elif "_badge" in field_name %}
+                <div class="form-group form-group--badge">
+            {% else %}
+                <div class="form-group">
+            {% endif %}
+                <label class="form-label" for="id_{{ field_name }}">{{ label }}</label>
+
+                {% if field_type == "ckeditor" %}
+                    <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="ckeditor" rows="8">{{ value }}</textarea>
+                {% elif field_type == "inline" %}
+                    <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="ckeditor" data-toolbar="inline" data-height="40" rows="1">{{ value }}</textarea>
+                {% elif field_type == "textarea" %}
+                    <textarea name="{{ field_name }}" id="id_{{ field_name }}" class="form-input no-editor" rows="3">{{ value }}</textarea>
+                {% elif field_type == "number" %}
+                    <input type="number" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+                {% else %}
+                    <input type="text" name="{{ field_name }}" id="id_{{ field_name }}" value="{{ value }}" class="form-input">
+                {% endif %}
+            </div>
         {% endif %}
-    </div>
     {% endfor %}
+    {% if fields %}</div>{% endif %}
 
     <button type="submit" class="btn-submit">Enregistrer et publier</button>
 </form>
