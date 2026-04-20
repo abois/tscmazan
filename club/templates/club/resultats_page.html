@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
+{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags club_tags %}
 
 {% block body_class %}page-resultats{% endblock %}
 
@@ -27,7 +27,7 @@
             {% if competitions_list %}
             <a href="#competitions" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white text-sm font-semibold border border-white/20 transition">Compétitions</a>
             {% endif %}
-            {% if page.equipes_texte %}
+            {% if equipes_list %}
             <a href="#equipes" class="px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur text-white text-sm font-semibold border border-white/20 transition">Équipes</a>
             {% endif %}
             {% if page.lien_fft %}
@@ -99,20 +99,56 @@
             </div>
             <div>
                 <span class="block text-xs md:text-sm font-semibold tracking-[0.2em] uppercase text-bleu-500 mb-1">Compétitions</span>
-                <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">Saisons en cours</h2>
+                <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">{{ competitions_titre }}</h2>
             </div>
         </div>
 
-        <div class="space-y-6 md:space-y-8">
-            {% for comp in competitions_list %}
+        {% for titre_groupe, comps in competitions_groups %}
+        {% if comps %}
+        {% if competitions_show_subtitles %}
+        <h3 class="font-display text-2xl md:text-3xl leading-tight text-bleu-800 mt-10 first:mt-0 mb-5 md:mb-6 flex items-center gap-3">
+            <span class="inline-block w-8 md:w-10 h-0.5 bg-or-400"></span>
+            {{ titre_groupe }}
+            <span class="text-sm font-body font-semibold text-gray-400 normal-case tracking-normal">({{ comps|length }})</span>
+        </h3>
+        {% endif %}
+        <div class="space-y-6 md:space-y-8 {% if not forloop.last %}mb-12 md:mb-16{% endif %}">
+            {% for comp in comps %}
             <article class="bg-white rounded-2xl md:rounded-3xl shadow-xl shadow-bleu-900/5 border border-sable-200 overflow-hidden">
                 <header class="bg-gradient-to-r from-bleu-900 to-bleu-800 p-5 md:p-7 text-white">
                     <h3 class="font-display text-2xl md:text-3xl leading-tight">{{ comp.titre }}</h3>
-                    {% if comp.date_debut %}
-                    <p class="mt-1 text-sm text-bleu-200">
-                        {{ comp.date_debut|date:"F Y" }}{% if comp.date_fin %} — {{ comp.date_fin|date:"F Y" }}{% endif %}
-                    </p>
-                    {% endif %}
+                    {% with stats=comp.stats %}
+                    <div class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs md:text-sm text-bleu-200">
+                        {% if comp.date_debut %}
+                        <span>{{ comp.date_debut|date:"F Y" }}{% if comp.date_fin %} — {{ comp.date_fin|date:"F Y" }}{% endif %}</span>
+                        {% endif %}
+                        {% if stats.total %}
+                        {% if comp.date_debut %}<span class="text-bleu-400">·</span>{% endif %}
+                        <span>{{ stats.total }} match{{ stats.total|pluralize }}</span>
+                        {% if stats.victoires %}
+                        <span class="text-bleu-400">·</span>
+                        <span class="inline-flex items-center gap-1 text-emerald-300 font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300"></span>
+                            {{ stats.victoires }} victoire{{ stats.victoires|pluralize }}
+                        </span>
+                        {% endif %}
+                        {% if stats.defaites %}
+                        <span class="text-bleu-400">·</span>
+                        <span class="inline-flex items-center gap-1 text-rose-300 font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-300"></span>
+                            {{ stats.defaites }} défaite{{ stats.defaites|pluralize }}
+                        </span>
+                        {% endif %}
+                        {% if stats.a_venir %}
+                        <span class="text-bleu-400">·</span>
+                        <span class="inline-flex items-center gap-1 text-or-300 font-semibold">
+                            <span class="w-1.5 h-1.5 rounded-full bg-or-300"></span>
+                            {{ stats.a_venir }} à venir
+                        </span>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endwith %}
                 </header>
 
                 <div class="p-5 md:p-8">
@@ -123,30 +159,58 @@
                     {% if comp.matchs.exists %}
                     <div class="overflow-x-auto -mx-5 md:mx-0">
                         <table class="w-full text-sm">
+                            <thead>
+                                <tr class="text-[10px] md:text-[11px] font-bold tracking-[0.15em] uppercase text-gray-400 border-b border-sable-200">
+                                    <th class="py-3 px-4 md:px-6 text-left">Date</th>
+                                    <th class="py-3 px-4 md:px-6 text-left">Adversaire</th>
+                                    <th class="py-3 px-4 md:px-6 text-center">Score</th>
+                                    <th class="py-3 px-4 md:px-6 text-right">Résultat</th>
+                                </tr>
+                            </thead>
                             <tbody class="divide-y divide-sable-200">
                                 {% for match in comp.matchs.all %}
+                                {% with infos=match.tour|split_date_tour %}
                                 <tr class="hover:bg-sable-50 transition">
-                                    <td class="py-4 px-4 md:px-6">
-                                        <div class="font-semibold text-sm md:text-base text-bleu-900">{{ match.adversaire|default:"À définir" }}</div>
-                                        {% if match.tour %}<div class="text-xs text-gray-400 mt-0.5 uppercase tracking-wider font-semibold">{{ match.tour }}</div>{% endif %}
-                                    </td>
-                                    <td class="py-4 px-4 md:px-6 text-center whitespace-nowrap">
-                                        {% if match.score %}
-                                        <span class="font-display text-xl md:text-2xl tracking-wide {% if match.victoire %}text-bleu-700{% else %}text-gray-400{% endif %}">{{ match.score }}</span>
+                                    <td class="py-4 px-4 md:px-6 whitespace-nowrap align-top">
+                                        {% if infos.date %}
+                                        <div class="font-display text-sm md:text-base text-bleu-800 tracking-wide">{{ infos.date }}</div>
                                         {% else %}
-                                        <span class="text-[11px] font-semibold text-bleu-500 bg-bleu-50 px-3 py-1 rounded-full uppercase tracking-wider">À venir</span>
+                                        <div class="text-xs text-gray-300">—</div>
                                         {% endif %}
                                     </td>
-                                    <td class="py-4 px-4 md:px-6 text-right w-16">
-                                        {% if match.victoire %}
-                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-bleu-100">
-                                            <svg class="w-4 h-4 text-bleu-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                                    <td class="py-4 px-4 md:px-6 align-top">
+                                        <div class="font-semibold text-sm md:text-base text-bleu-900">{{ match.adversaire|titlecase_fr|default:"À définir" }}</div>
+                                        {% if infos.tour %}<div class="text-xs text-gray-500 mt-0.5">{{ infos.tour }}</div>{% endif %}
+                                    </td>
+                                    <td class="py-4 px-4 md:px-6 text-center whitespace-nowrap align-top">
+                                        {% if match.score %}
+                                        <span class="font-display text-xl md:text-2xl tracking-wide {% if match.victoire %}text-bleu-700{% else %}text-gray-500{% endif %}">{{ match.score }}</span>
+                                        {% else %}
+                                        <span class="text-gray-300 text-lg">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-4 px-4 md:px-6 text-right whitespace-nowrap align-top">
+                                        {% if match.score %}
+                                            {% if match.victoire %}
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-bold uppercase tracking-[0.12em] text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                                Victoire
+                                            </span>
+                                            {% else %}
+                                            <span class="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-bold uppercase tracking-[0.12em] text-rose-700 bg-rose-50 border border-rose-200 px-2.5 py-1 rounded-full">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                                Défaite
+                                            </span>
+                                            {% endif %}
+                                        {% else %}
+                                        <span class="inline-flex items-center gap-1.5 text-[11px] md:text-xs font-bold uppercase tracking-[0.12em] text-bleu-700 bg-bleu-50 border border-bleu-100 px-2.5 py-1 rounded-full">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-bleu-500"></span>
+                                            À venir
                                         </span>
-                                        {% elif match.score %}
-                                        <span class="text-xs text-gray-300">—</span>
                                         {% endif %}
                                     </td>
                                 </tr>
+                                {% endwith %}
                                 {% endfor %}
                             </tbody>
                         </table>
@@ -156,15 +220,17 @@
             </article>
             {% endfor %}
         </div>
+        {% endif %}
+        {% endfor %}
     </div>
 </section>
 {% endif %}
 
 <!-- ───────── Équipes ───────── -->
-{% if page.equipes_texte %}
+{% if equipes_list %}
 <section id="equipes" class="edit-section py-20 md:py-28 bg-sable-50 scroll-mt-16">
     {% if request.user.is_authenticated %}
-    <a href="/gestion/page/{{ page.pk }}/" class="edit-btn">
+    <a href="/gestion/equipes/" class="edit-btn">
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
         Modifier
     </a>
@@ -179,43 +245,16 @@
                 <h2 class="font-display text-3xl md:text-5xl leading-tight text-bleu-900">Nos équipes engagées</h2>
             </div>
         </div>
-        <div class="equipes-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6"
-             data-edit-field="equipes_texte" data-edit-page="{{ page.pk }}">
-            {{ page.equipes_texte|richtext }}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+            {% for equipe in equipes_list %}
+            <article class="bg-white rounded-2xl border border-sable-200 overflow-hidden flex flex-col hover:shadow-lg hover:border-bleu-200 transition-all">
+                <header class="bg-gradient-to-br from-bleu-800 to-bleu-900 text-white px-5 py-4 md:px-6 md:py-5 border-b-2 border-or-400">
+                    <h3 class="font-display text-xl md:text-2xl leading-tight tracking-wide">{{ equipe.nom }}</h3>
+                </header>
+                <div class="p-5 md:p-6 text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line flex-1">{{ equipe.description }}</div>
+            </article>
+            {% endfor %}
         </div>
-        <style>
-            .equipes-grid > h3 {
-                font-family: 'Bebas Neue', system-ui, sans-serif;
-                font-size: 1.5rem;
-                line-height: 1.2;
-                color: #15376f;
-                background: white;
-                padding: 1.25rem 1.5rem 0.75rem;
-                border-radius: 1rem 1rem 0 0;
-                border: 1px solid #e5dcd0;
-                border-bottom: none;
-                margin-bottom: -0.25rem;
-            }
-            .equipes-grid > h3 + p {
-                background: white;
-                border-radius: 0 0 1rem 1rem;
-                border: 1px solid #e5dcd0;
-                border-top: 2px solid #d4e4f7;
-                padding: 1rem 1.5rem 1.25rem;
-                font-size: 0.9rem;
-                color: #4b5563;
-                line-height: 1.65;
-            }
-            .equipes-grid > p {
-                background: white;
-                padding: 1.25rem 1.5rem;
-                border-radius: 1rem;
-                border: 1px solid #e5dcd0;
-                font-size: 0.9rem;
-                color: #4b5563;
-                line-height: 1.65;
-            }
-        </style>
     </div>
 </section>
 {% endif %}

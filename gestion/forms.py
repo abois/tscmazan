@@ -1,7 +1,7 @@
 from django import forms
 
 from actualites.models import ArticlePage
-from club.models import Palmares, CATEGORIE_CHOICES, NIVEAU_CHOICES
+from club.models import Equipe, Palmares, CATEGORIE_CHOICES, NIVEAU_CHOICES
 from galerie.models import Album
 
 
@@ -61,6 +61,22 @@ class SettingsForm(forms.Form):
     adresse = forms.CharField(widget=forms.Textarea(attrs={"rows": 3}), label="Adresse", required=False)
     facebook_url = forms.URLField(label="Page Facebook", required=False)
     instagram_url = forms.URLField(label="Page Instagram", required=False)
+
+
+class EquipeForm(forms.Form):
+    nom = forms.CharField(
+        max_length=120,
+        widget=forms.TextInput(attrs={"placeholder": "Ex: Équipe Séniors Masculine"}),
+    )
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 5, "class": "no-editor", "placeholder": "Joueurs, capitaine, résultats marquants…"}),
+    )
+    ordre = forms.IntegerField(
+        min_value=0,
+        initial=0,
+        label="Position dans la liste",
+        help_text="Plus petit = plus haut",
+    )
 
 
 class AlbumForm(forms.Form):

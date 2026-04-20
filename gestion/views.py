@@ -12,12 +12,12 @@ from wagtail.images.models import Image
 from wagtail.contrib.forms.models import FormSubmission
 
 from actualites.models import ActualitesIndexPage, ArticlePage
-from club.models import Palmares
+from club.models import Equipe, Palmares
 from contact.models import ContactPage
 from galerie.models import Album, AlbumPhoto, GaleriePage
 
 from home.models import HomePage, MenuItem, SiteSettings
-from .forms import AlbumForm, ArticleForm, PageForm, PalmaresForm, SettingsForm
+from .forms import AlbumForm, ArticleForm, EquipeForm, PageForm, PalmaresForm, SettingsForm
 
 # Pages éditables avec leurs icônes
 PAGE_ICONS = {
@@ -253,6 +253,85 @@ def editer_palmares(request, pk):
     })
 
 
+# ── Équipes ────────────────────────────────────────
+
+@login_required(login_url=LOGIN_URL)
+def liste_equipes(request):
+    items = Equipe.objects.all()
+    return render(request, "gestion/liste.html", {
+        "titre_page": "Équipes engagées",
+        "icone": "👥",
+        "items": [
+            {
+                "titre": e.nom,
+                "sous_titre": e.description[:120] + ("…" if len(e.description) > 120 else ""),
+                "edit_url": f"/gestion/editer-equipe/{e.pk}/",
+            }
+            for e in items
+        ],
+        "ajouter_url": "/gestion/ajouter-equipe/",
+        "ajouter_label": "Nouvelle équipe",
+        "retour_url": "/gestion/",
+        "retour_label": "Accueil",
+    })
+
+
+@login_required(login_url=LOGIN_URL)
+def ajouter_equipe(request):
+    if request.method == "POST":
+        form = EquipeForm(request.POST)
+        if form.is_valid():
+            Equipe.objects.create(
+                nom=form.cleaned_data["nom"],
+                description=form.cleaned_data["description"],
+                ordre=form.cleaned_data["ordre"],
+            )
+            return redirect("gestion:liste_equipes")
+    else:
+        next_ordre = (Equipe.objects.order_by("-ordre").values_list("ordre", flat=True).first() or 0) + 1
+        form = EquipeForm(initial={"ordre": next_ordre})
+    return render(request, "gestion/formulaire.html", {
+        "form": form,
+        "titre_page": "Ajouter une équipe",
+        "icone": "👥",
+        "bouton": "Enregistrer",
+        "retour_url": "/gestion/equipes/",
+        "retour_label": "Équipes",
+    })
+
+
+@login_required(login_url=LOGIN_URL)
+def editer_equipe(request, pk):
+    e = get_object_or_404(Equipe, pk=pk)
+    if request.method == "POST":
+        if request.POST.get("action") == "delete":
+            e.delete()
+            return redirect("gestion:liste_equipes")
+        form = EquipeForm(request.POST)
+        if form.is_valid():
+            e.nom = form.cleaned_data["nom"]
+            e.description = form.cleaned_data["description"]
+            e.ordre = form.cleaned_data["ordre"]
+            e.save()
+            return redirect("gestion:liste_equipes")
+    else:
+        form = EquipeForm(initial={
+            "nom": e.nom,
+            "description": e.description,
+            "ordre": e.ordre,
+        })
+    return render(request, "gestion/formulaire.html", {
+        "form": form,
+        "titre_page": "Modifier l'équipe",
+        "icone": "👥",
+        "bouton": "Enregistrer",
+        "retour_url": "/gestion/equipes/",
+        "retour_label": "Équipes",
+        "delete_label": "Supprimer cette équipe",
+        "delete_confirm": "Supprimer définitivement cette équipe ?",
+    })
+
+
 # ── Albums photos ──────────────────────────────────
 
 @login_required(login_url=LOGIN_URL)
@@ -421,7 +500,6 @@ PAGE_FIELDS = {
     ],
     "ResultatsPage": [
         ("intro", "Introduction", "ckeditor"),
-        ("equipes_texte", "Résultats par équipes", "ckeditor"),
     ],
     "ContactPage": [
         ("intro", "Introduction", "ckeditor"),

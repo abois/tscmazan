@@ -169,6 +169,36 @@ class Palmares(models.Model):
         return f"{self.annee} — {self.titre}"
 
 
+class Equipe(models.Model):
+    """Une équipe du club engagée en compétition."""
+
+    nom = models.CharField(
+        max_length=120,
+        help_text="Ex: Équipe Séniors Masculine",
+    )
+    description = models.TextField(
+        help_text="Joueurs, capitaine, résultats marquants…",
+    )
+    ordre = models.PositiveIntegerField(
+        default=0,
+        help_text="Position dans la liste (plus petit = plus haut)",
+    )
+
+    panels = [
+        FieldPanel("nom"),
+        FieldPanel("description"),
+        FieldPanel("ordre"),
+    ]
+
+    class Meta:
+        verbose_name = "Équipe"
+        verbose_name_plural = "Équipes"
+        ordering = ["ordre", "nom"]
+
+    def __str__(self):
+        return self.nom
+
+
 class Competition(ClusterableModel):
     """Une compétition avec ses matchs."""
 
@@ -195,6 +225,24 @@ class Competition(ClusterableModel):
     class Meta:
         verbose_name = "Compétition"
         ordering = ["-date_debut", "-pk"]
+
+    def stats(self):
+        """Compteurs de matchs (utilise prefetch_related si dispo)."""
+        victoires = defaites = a_venir = total = 0
+        for m in self.matchs.all():
+            total += 1
+            if not m.score:
+                a_venir += 1
+            elif m.victoire:
+                victoires += 1
+            else:
+                defaites += 1
+        return {
+            "total": total,
+            "victoires": victoires,
+            "defaites": defaites,
+            "a_venir": a_venir,
+        }
 
     def __str__(self):
         return self.titre
@@ -434,11 +482,6 @@ class PartenairesPage(Page):
 
 class ResultatsPage(Page):
     intro = RichTextField(blank=True)
-    equipes_texte = RichTextField(
-        blank=True,
-        verbose_name="Résultats par équipes",
-        help_text="Résumé libre des résultats par équipe",
-    )
     lien_fft = models.URLField(
         blank=True,
         default="https://tenup.fft.fr/club/62840344",
@@ -447,14 +490,54 @@ class ResultatsPage(Page):
 
     content_panels = Page.content_panels + [
         FieldPanel("intro"),
-        FieldPanel("equipes_texte"),
         FieldPanel("lien_fft"),
     ]
 
     def get_context(self, request):
+        from datetime import date as _date
+
         context = super().get_context(request)
         context["palmares_list"] = Palmares.objects.all()
-        context["competitions_list"] = Competition.objects.prefetch_related("matchs").all()
+
+        all_comps = list(Competition.objects.prefetch_related("matchs").all())
+        today = _date.today()
+
+        def _statut(c):
+            if c.date_fin and c.date_fin < today:
+                return "passee"
+            if c.date_debut:
+                if c.date_debut > today:
+                    return "a_venir"
+                # Compétition sans date_fin commencée il y a plus de 6 mois → passée
+                if not c.date_fin and (today - c.date_debut).days > 180:
+                    return "passee"
+            return "en_cours"
+
+        competitions_en_cours = [c for c in all_comps if _statut(c) == "en_cours"]
+        competitions_a_venir = [c for c in all_comps if _statut(c) == "a_venir"]
+        competitions_passees = [c for c in all_comps if _statut(c) == "passee"]
+
+        context["competitions_list"] = all_comps  # compat
+        context["competitions_groups"] = [
+            ("En cours", competitions_en_cours),
+            ("À venir", competitions_a_venir),
+            ("Saisons précédentes", competitions_passees),
+        ]
+
+        # Titre adaptatif de la section + affichage des sous-titres par groupe
+        groups_present = sum(bool(g) for g in (competitions_en_cours, competitions_a_venir, competitions_passees))
+        context["competitions_show_subtitles"] = groups_present > 1
+        if groups_present == 1:
+            if competitions_en_cours:
+                context["competitions_titre"] = "Saison en cours"
+            elif competitions_passees:
+                context["competitions_titre"] = "Saison écoulée"
+            else:
+                context["competitions_titre"] = "Saison à venir"
+        else:
+            context["competitions_titre"] = "Nos compétitions"
+
+        context["equipes_list"] = Equipe.objects.all()
         return context
 
     class Meta:

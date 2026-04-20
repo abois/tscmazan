@@ -14,6 +14,10 @@ urlpatterns = [
     path("ajouter-palmares/", views.ajouter_palmares, name="ajouter_palmares"),
     path("palmares/", views.liste_palmares, name="liste_palmares"),
     path("editer-palmares/<int:pk>/", views.editer_palmares, name="editer_palmares"),
+    # Équipes
+    path("equipes/", views.liste_equipes, name="liste_equipes"),
+    path("ajouter-equipe/", views.ajouter_equipe, name="ajouter_equipe"),
+    path("editer-equipe/<int:pk>/", views.editer_equipe, name="editer_equipe"),
     # Albums
     path("ajouter-photos/", views.ajouter_photos, name="ajouter_photos"),
     path("albums/", views.liste_albums, name="liste_albums"),
