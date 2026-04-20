@@ -93,9 +93,11 @@
             <h2 class="font-display text-4xl md:text-5xl leading-[1.05] tracking-tight text-bleu-900">
                 Celles et ceux qui font vivre le club
             </h2>
+            {% with home=page.get_parent.specific %}
             <p class="mt-4 text-base md:text-lg text-gray-600 leading-relaxed">
-                Un bureau dirigeant et une équipe pédagogique bénévoles, au service de plus de 150 licenciés.
+                Un bureau dirigeant et une équipe pédagogique bénévoles, au service de plus de {{ home.nb_adherents|default:150 }} licenciés.
             </p>
+            {% endwith %}
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {% for block in page.dirigeants %}
