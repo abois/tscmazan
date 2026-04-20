@@ -9,8 +9,11 @@ from django.utils.text import slugify
 from PIL import Image as PILImage
 from wagtail.images.models import Image
 
+from wagtail.contrib.forms.models import FormSubmission
+
 from actualites.models import ActualitesIndexPage, ArticlePage
 from club.models import Palmares
+from contact.models import ContactPage
 from galerie.models import Album, AlbumPhoto, GaleriePage
 
 from home.models import HomePage, MenuItem, SiteSettings
@@ -462,6 +465,44 @@ def editer_page(request, pk):
             for name, label, ftype in fields
         ],
         "is_galerie": cls_name == "GaleriePage",
+    })
+
+
+# ── Demandes de contact ────────────────────────────
+
+@login_required(login_url=LOGIN_URL)
+def liste_contacts(request):
+    submissions_qs = FormSubmission.objects.filter(
+        page__in=ContactPage.objects.all()
+    ).order_by("-submit_time")
+
+    if request.method == "POST" and request.POST.get("delete_pk"):
+        FormSubmission.objects.filter(pk=request.POST["delete_pk"]).delete()
+        return redirect("gestion:liste_contacts")
+
+    submissions = []
+    for sub in submissions_qs:
+        data = dict(sub.form_data or {})
+        # Cherche les valeurs "classiques" pour le résumé de la ligne
+        def _find(keys):
+            for k, v in data.items():
+                if any(needle in k.lower() for needle in keys) and v:
+                    return v
+            return ""
+        submissions.append({
+            "pk": sub.pk,
+            "date": sub.submit_time,
+            "nom": _find(["nom"]),
+            "email": _find(["email", "mail"]),
+            "objet": _find(["objet", "sujet"]),
+            "champs": list(data.items()),
+        })
+
+    return render(request, "gestion/liste_contacts.html", {
+        "submissions": submissions,
+        "titre_page": "Demandes de contact",
+        "retour_url": "/gestion/",
+        "retour_label": "Accueil",
     })
 
 

@@ -26,6 +26,8 @@ urlpatterns = [
     path("menu/ajouter/", views.ajouter_menu_item, name="ajouter_menu_item"),
     path("menu/<int:pk>/", views.editer_menu_item, name="editer_menu_item"),
     path("menu/reorder/", views.reorder_menu, name="reorder_menu"),
+    # Demandes de contact
+    path("contacts/", views.liste_contacts, name="liste_contacts"),
     # Paramètres
     path("parametres/", views.parametres, name="parametres"),
     # Live edit
