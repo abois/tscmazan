@@ -228,19 +228,202 @@ class Match(Orderable):
 class PartenairesPage(Page):
     """Page Partenaires & Sponsoring."""
 
+    # ── Hero ─────────────────────────────────────────
+    hero_eyebrow = models.CharField(
+        max_length=120,
+        default="Sponsoring & Partenariat",
+        verbose_name="Sur-titre du hero",
+    )
+    hero_titre = models.CharField(
+        max_length=200,
+        default="Devenez partenaire du TSCM",
+        verbose_name="Titre du hero",
+    )
     intro = RichTextField(
         blank=True,
         help_text="Accroche en haut de page (sous le titre hero).",
+    )
+
+    # ── Section "Nos offres" ─────────────────────────
+    offres_eyebrow = models.CharField(
+        max_length=120,
+        default="Nos offres",
+        verbose_name="Sur-titre section offres",
+    )
+    offres_titre = models.CharField(
+        max_length=200,
+        default="4 formules pour tous les budgets",
+        verbose_name="Titre section offres",
+    )
+    offres_intro = RichTextField(
+        blank=True,
+        default=(
+            "Du soutien à partir de <strong>150 €</strong> aux offres premium, "
+            "choisissez la visibilité qui vous ressemble. Toutes nos offres sont "
+            "en exclusivité ou en nombre limité."
+        ),
+        verbose_name="Intro section offres",
+    )
+
+    # ── Offre 1 ──────────────────────────────────────
+    offre_1_badge = models.CharField(max_length=40, default="Exclusivité", verbose_name="Offre 1 — badge")
+    offre_1_titre = models.CharField(
+        max_length=200,
+        default="Logo en action sur nos t-shirts",
+        verbose_name="Offre 1 — titre",
+    )
+    offre_1_prix = models.CharField(max_length=40, default="150 €", verbose_name="Offre 1 — prix")
+    offre_1_prix_suffixe = models.CharField(max_length=40, default="/ an", verbose_name="Offre 1 — suffixe prix")
+    offre_1_description = RichTextField(
+        blank=True,
+        default=(
+            "Votre logo sur la manche des t-shirts du club, en vente toute l'année "
+            "auprès de nos licenciés via notre partenaire <strong>ASTON</strong>."
+        ),
+        verbose_name="Offre 1 — description",
+    )
+    offre_1_bullet_1 = models.CharField(max_length=160, default="Environ 30 t-shirts par production", verbose_name="Offre 1 — point 1")
+    offre_1_bullet_2 = models.CharField(max_length=160, default="Visibilité sur toutes les équipes", verbose_name="Offre 1 — point 2")
+    offre_1_bullet_3 = models.CharField(max_length=160, default="Diffusion pendant 1 an", verbose_name="Offre 1 — point 3")
+
+    # ── Offre 2 ──────────────────────────────────────
+    offre_2_badge = models.CharField(max_length=40, default="Exclusivité", verbose_name="Offre 2 — badge")
+    offre_2_titre = models.CharField(
+        max_length=200,
+        default="Logo sur nos tableaux des scores",
+        verbose_name="Offre 2 — titre",
+    )
+    offre_2_prix = models.CharField(max_length=40, default="180 €", verbose_name="Offre 2 — prix")
+    offre_2_prix_suffixe = models.CharField(max_length=40, default="/ an", verbose_name="Offre 2 — suffixe prix")
+    offre_2_description = RichTextField(
+        blank=True,
+        default=(
+            "Votre logo sur les <strong>4 tableaux de scores</strong> du club — "
+            "présent sur chaque match officiel, sous les yeux de joueurs et de spectateurs."
+        ),
+        verbose_name="Offre 2 — description",
+    )
+    offre_2_bullet_1 = models.CharField(max_length=160, default="4 tableaux, 4 courts", verbose_name="Offre 2 — point 1")
+    offre_2_bullet_2 = models.CharField(max_length=160, default="~100 matchs par saison", verbose_name="Offre 2 — point 2")
+    offre_2_bullet_3 = models.CharField(max_length=160, default="Diffusion pendant 1 an", verbose_name="Offre 2 — point 3")
+
+    # ── Offre 3 ──────────────────────────────────────
+    offre_3_badge = models.CharField(max_length=40, default="Exclusivité", verbose_name="Offre 3 — badge")
+    offre_3_titre = models.CharField(
+        max_length=200,
+        default="Logo sur nos filets de court",
+        verbose_name="Offre 3 — titre",
+    )
+    offre_3_prix = models.CharField(max_length=40, default="dès 200 €", verbose_name="Offre 3 — prix")
+    offre_3_prix_suffixe = models.CharField(max_length=40, default="/ an", verbose_name="Offre 3 — suffixe prix")
+    offre_3_description = RichTextField(
+        blank=True,
+        default=(
+            "Votre logo sur <strong>2 ou 4 filets</strong> (90 × 60 cm). Seule entreprise "
+            "visible sur l'un des côtés des filets pendant 1 an."
+        ),
+        verbose_name="Offre 3 — description",
+    )
+    offre_3_bullet_1 = models.CharField(max_length=160, default="<strong>Premium</strong> — 2 filets : 200 €", verbose_name="Offre 3 — point 1")
+    offre_3_bullet_2 = models.CharField(max_length=160, default="<strong>Privilège</strong> — 4 filets : 250 €", verbose_name="Offre 3 — point 2")
+    offre_3_bullet_3 = models.CharField(max_length=160, default="Diffusion pendant 1 an", verbose_name="Offre 3 — point 3")
+
+    # ── Offre 4 ──────────────────────────────────────
+    offre_4_badge = models.CharField(max_length=40, default="Premium", verbose_name="Offre 4 — badge")
+    offre_4_titre = models.CharField(
+        max_length=200,
+        default="Bâches publicitaires sur terrain",
+        verbose_name="Offre 4 — titre",
+    )
+    offre_4_prix = models.CharField(max_length=40, default="Sur devis", verbose_name="Offre 4 — prix")
+    offre_4_prix_suffixe = models.CharField(max_length=40, default="1 an", verbose_name="Offre 4 — suffixe prix")
+    offre_4_description = RichTextField(
+        blank=True,
+        default=(
+            "Bâches <strong>2 × 1,5 m</strong> installées sur les grillages de milieu de "
+            "terrain et fonds de court. Fourniture par nos soins, ou fournie par vos soins "
+            "et installée par nous."
+        ),
+        verbose_name="Offre 4 — description",
+    )
+    offre_4_bullet_1 = models.CharField(max_length=160, default="Visibilité maximale sur court", verbose_name="Offre 4 — point 1")
+    offre_4_bullet_2 = models.CharField(max_length=160, default="Fabrication possible de notre côté", verbose_name="Offre 4 — point 2")
+    offre_4_bullet_3 = models.CharField(max_length=160, default="Diffusion pendant 1 an", verbose_name="Offre 4 — point 3")
+
+    # ── Section "Sur mesure" ─────────────────────────
+    sur_mesure_eyebrow = models.CharField(
+        max_length=120,
+        default="Sur mesure",
+        verbose_name="Sur-titre section sur-mesure",
+    )
+    sur_mesure_titre = models.CharField(
+        max_length=200,
+        default="Chez nous, tout est possible",
+        verbose_name="Titre section sur-mesure",
     )
     offre_personnalisee_texte = RichTextField(
         blank=True,
         verbose_name="Texte de l'offre personnalisée",
         help_text="Bloc \"Offre sur mesure\" après les 4 offres standards.",
     )
+    sur_mesure_cta_label = models.CharField(
+        max_length=120,
+        default="Construire une offre ensemble",
+        verbose_name="Label du bouton sur-mesure",
+    )
 
     content_panels = Page.content_panels + [
-        FieldPanel("intro"),
-        FieldPanel("offre_personnalisee_texte"),
+        MultiFieldPanel(
+            [FieldPanel("hero_eyebrow"), FieldPanel("hero_titre"), FieldPanel("intro")],
+            heading="Hero",
+        ),
+        MultiFieldPanel(
+            [FieldPanel("offres_eyebrow"), FieldPanel("offres_titre"), FieldPanel("offres_intro")],
+            heading="Section Nos offres",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("offre_1_badge"), FieldPanel("offre_1_titre"),
+                FieldPanel("offre_1_prix"), FieldPanel("offre_1_prix_suffixe"),
+                FieldPanel("offre_1_description"),
+                FieldPanel("offre_1_bullet_1"), FieldPanel("offre_1_bullet_2"), FieldPanel("offre_1_bullet_3"),
+            ],
+            heading="Offre 1",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("offre_2_badge"), FieldPanel("offre_2_titre"),
+                FieldPanel("offre_2_prix"), FieldPanel("offre_2_prix_suffixe"),
+                FieldPanel("offre_2_description"),
+                FieldPanel("offre_2_bullet_1"), FieldPanel("offre_2_bullet_2"), FieldPanel("offre_2_bullet_3"),
+            ],
+            heading="Offre 2",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("offre_3_badge"), FieldPanel("offre_3_titre"),
+                FieldPanel("offre_3_prix"), FieldPanel("offre_3_prix_suffixe"),
+                FieldPanel("offre_3_description"),
+                FieldPanel("offre_3_bullet_1"), FieldPanel("offre_3_bullet_2"), FieldPanel("offre_3_bullet_3"),
+            ],
+            heading="Offre 3",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("offre_4_badge"), FieldPanel("offre_4_titre"),
+                FieldPanel("offre_4_prix"), FieldPanel("offre_4_prix_suffixe"),
+                FieldPanel("offre_4_description"),
+                FieldPanel("offre_4_bullet_1"), FieldPanel("offre_4_bullet_2"), FieldPanel("offre_4_bullet_3"),
+            ],
+            heading="Offre 4",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("sur_mesure_eyebrow"), FieldPanel("sur_mesure_titre"),
+                FieldPanel("offre_personnalisee_texte"), FieldPanel("sur_mesure_cta_label"),
+            ],
+            heading="Section Sur mesure",
+        ),
     ]
 
     class Meta:
