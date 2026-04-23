@@ -35,27 +35,63 @@
                     <div id="jeu-overlay-sub" class="text-sm md:text-base text-bleu-200 max-w-xs mb-4">Choisissez votre mode de jeu.</div>
                 </div>
                 <div id="jeu-mode-choice" class="flex flex-col gap-3 w-full max-w-sm">
-                    <button type="button" data-mode="solo"
-                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
-                        <span class="font-display text-xl tracking-wide leading-none">MODE SOLO</span>
-                        <span class="text-[10px] font-normal opacity-80">Renvoyez le plus longtemps</span>
-                    </button>
-                    <div class="text-[10px] font-semibold tracking-[0.2em] uppercase text-or-300 mt-1">Contre l'IA — match en 11 points</div>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button type="button" data-mode="ia" data-difficulty="club"
-                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-500/80 hover:bg-bleu-500 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
-                            <span class="font-display text-base tracking-wider leading-none">CLUB</span>
-                            <span class="text-[9px] font-normal opacity-80">Facile</span>
+                    <!-- Étape 1 : choix du mode -->
+                    <div id="jeu-step1" class="flex flex-col gap-3">
+                        <button type="button" data-mode="solo"
+                            class="jeu-mode-btn group relative w-full flex items-center gap-4 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-5 py-4 rounded-xl transition shadow-xl">
+                            <svg class="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <circle cx="12" cy="12" r="9" fill="currentColor" fill-opacity="0.18"/>
+                                <path d="M3 12a9 9 0 0118 0" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="9"/>
+                            </svg>
+                            <div class="text-left">
+                                <div class="font-display text-2xl tracking-wide leading-none">MODE SOLO</div>
+                                <div class="text-[11px] font-normal opacity-80 mt-1">Renvoyez le plus longtemps possible. Pas d'adversaire.</div>
+                            </div>
+                            <svg class="w-5 h-5 ml-auto shrink-0 opacity-60 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </button>
-                        <button type="button" data-mode="ia" data-difficulty="departemental"
-                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
-                            <span class="font-display text-base tracking-wider leading-none">DÉPT.</span>
-                            <span class="text-[9px] font-normal opacity-80">Moyen</span>
+                        <button type="button" data-action="go-ia"
+                            class="jeu-mode-btn group relative w-full flex items-center gap-4 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-5 py-4 rounded-xl transition shadow-xl">
+                            <svg class="w-8 h-8 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <rect x="3" y="6" width="18" height="12" rx="2"/>
+                                <path d="M12 4v2M7 9v2M7 13v2M17 9v2M17 13v2" stroke-linecap="round"/>
+                                <circle cx="12" cy="12" r="1" fill="currentColor"/>
+                            </svg>
+                            <div class="text-left">
+                                <div class="font-display text-2xl tracking-wide leading-none">CONTRE L'IA</div>
+                                <div class="text-[11px] font-normal opacity-80 mt-1">Match en 11 points contre un adversaire.</div>
+                            </div>
+                            <svg class="w-5 h-5 ml-auto shrink-0 opacity-60 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                         </button>
-                        <button type="button" data-mode="ia" data-difficulty="ligue"
-                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-rose-700 hover:bg-rose-600 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
-                            <span class="font-display text-base tracking-wider leading-none">LIGUE</span>
-                            <span class="text-[9px] font-normal opacity-80">Expert</span>
+                    </div>
+
+                    <!-- Étape 2 : choix de la difficulté -->
+                    <div id="jeu-step2" class="hidden flex-col gap-3">
+                        <div class="text-center">
+                            <div class="text-[10px] font-semibold tracking-[0.2em] uppercase text-or-300 mb-1">Match en 11 points</div>
+                            <div class="font-display text-2xl tracking-wide text-white leading-none">Choisissez votre adversaire</div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-2 mt-1">
+                            <button type="button" data-mode="ia" data-difficulty="club"
+                                class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-500/80 hover:bg-bleu-500 text-white font-semibold px-2 py-3 rounded-lg transition shadow">
+                                <span class="font-display text-base tracking-wider leading-none">CLUB</span>
+                                <span class="text-[9px] font-normal opacity-80">Facile</span>
+                            </button>
+                            <button type="button" data-mode="ia" data-difficulty="departemental"
+                                class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-2 py-3 rounded-lg transition shadow">
+                                <span class="font-display text-base tracking-wider leading-none">DÉPT.</span>
+                                <span class="text-[9px] font-normal opacity-80">Moyen</span>
+                            </button>
+                            <button type="button" data-mode="ia" data-difficulty="ligue"
+                                class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-rose-700 hover:bg-rose-600 text-white font-semibold px-2 py-3 rounded-lg transition shadow">
+                                <span class="font-display text-base tracking-wider leading-none">LIGUE</span>
+                                <span class="text-[9px] font-normal opacity-80">Expert</span>
+                            </button>
+                        </div>
+                        <button type="button" data-action="back"
+                            class="jeu-mode-btn inline-flex items-center justify-center gap-1 text-bleu-200 hover:text-white text-xs font-semibold py-2 transition">
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                            Retour au choix du mode
                         </button>
                     </div>
                 </div>
@@ -73,10 +109,12 @@
         </div>
         <div class="mt-3 p-3 rounded-xl bg-bleu-950/60 border border-or-400/20 text-[11px] md:text-xs text-bleu-200 leading-relaxed">
             <strong class="text-or-300 uppercase tracking-wider text-[10px]">Effets tennis</strong> —
+            <span class="text-emerald-300">Coup droit</span> : frappez sur la partie droite ·
+            <span class="text-cyan-300">Revers</span> : frappez sur la partie gauche ·
             <span class="text-red-300">Lifté</span> : accompagnez la balle dans son sens ·
             <span class="text-blue-300">Slicé</span> : glissez à contre-sens ·
-            <span class="text-orange-300">Coupé</span> : frappez en bord de raquette ·
-            <span class="text-violet-300">Amorti</span> : raquette immobile, frappe douce.
+            <span class="text-orange-300">Coupé</span> : frappez en bord extrême ·
+            <span class="text-violet-300">Amorti</span> : gardez la raquette immobile (halo violet = prêt !)
         </div>
     </div>
 </section>
@@ -112,6 +150,7 @@
     var prevPaddleX = 0;
     var paddleVx = 0;            // vitesse horizontale (px/frame)
     var paddleVxSmoothed = 0;    // lissée pour détection d'effet
+    var paddleStillness = 0;     // frames consécutives où la raquette ne bouge quasi pas
     var ai = { x: 0, w: 0, h: 0, y: 0, speed: 0, prevX: 0, vx: 0 };
     var ball = { x: 0, y: 0, vx: 0, vy: 0, r: 0 };
     var running = false;
@@ -324,6 +363,11 @@
         paddleVx = paddle.x - prevPaddleX;
         prevPaddleX = paddle.x;
         paddleVxSmoothed = paddleVxSmoothed * 0.6 + paddleVx * 0.4;
+        if (Math.abs(paddleVx) < 1.5) {
+            paddleStillness = Math.min(paddleStillness + 1, 90);
+        } else {
+            paddleStillness = 0;
+        }
 
         // Trail (pour effet visuel)
         trail.push({ x: ball.x, y: ball.y });
@@ -386,25 +430,34 @@
                 var pvx = paddleVxSmoothed;
                 var absRel = Math.abs(rel);
                 var shot = null;
-                if (absRel > 0.75) {
-                    // Frappe au bord : COUPÉ (angle ouvert latéralement)
+                if (paddleStillness >= 18 && Math.abs(pvx) < 1.5) {
+                    // Raquette immobile depuis ~0.3 s = AMORTI (prioritaire)
+                    // On ralentit modérément et on augmente l'angle pour que la
+                    // balle retombe court mais ne devienne pas molle.
+                    ball.vx *= 0.55;
+                    ball.vy *= 0.55;
+                    shot = { label: 'AMORTI', color: '#a78bfa' };
+                } else if (absRel > 0.8) {
+                    // Frappe au bord extrême : COUPÉ (angle ouvert latéralement)
                     ball.vx *= 1.4; ball.vy *= 0.8;
                     shot = { label: 'COUPÉ', color: '#f97316' };
-                } else if (Math.abs(pvx) < 0.8) {
-                    // Raquette quasi immobile + balle lente = AMORTI
-                    if (speed < Math.min(W, H) * 0.014) {
-                        ball.vx *= 0.35; ball.vy *= 0.35;
-                        shot = { label: 'AMORTI', color: '#a78bfa' };
-                    }
-                } else if (pvx * Math.sign(ball.vx) > 2) {
-                    // Raquette accompagne la balle : LIFTÉ (boost + vertical)
+                } else if (pvx * Math.sign(ball.vx) > 3) {
+                    // Raquette accompagne fort la balle : LIFTÉ
                     ball.vx += pvx * 0.25; ball.vy *= 1.15;
                     shot = { label: 'LIFTÉ', color: '#ef4444' };
-                } else if (pvx * Math.sign(ball.vx) < -2) {
-                    // Raquette contre le sens : SLICÉ (ralenti, plus plat)
+                } else if (pvx * Math.sign(ball.vx) < -3) {
+                    // Raquette contre le sens fort : SLICÉ
                     ball.vx *= 0.8; ball.vy *= 0.7;
                     ball.vx += pvx * 0.3;
                     shot = { label: 'SLICÉ', color: '#60a5fa' };
+                } else if (rel > 0.3) {
+                    // Frappe côté droit : COUP DROIT
+                    ball.vx = Math.abs(ball.vx) * 1.08; // renvoi vers la droite renforcé
+                    shot = { label: 'COUP DROIT', color: '#10b981' };
+                } else if (rel < -0.3) {
+                    // Frappe côté gauche : REVERS
+                    ball.vx = -Math.abs(ball.vx) * 1.08;
+                    shot = { label: 'REVERS', color: '#06b6d4' };
                 }
                 // Clamp vitesse max
                 var curSpeed = Math.hypot(ball.vx, ball.vy);
@@ -665,7 +718,7 @@
             ctx.fill();
         }
 
-        // Raquette joueur (glow si XXL actif)
+        // Raquette joueur (glow si XXL actif ou amortie armée)
         var gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x + paddle.w, paddle.y);
         gradient.addColorStop(0, '#f5b820');
         gradient.addColorStop(1, '#d4960a');
@@ -673,6 +726,10 @@
         if (effects.xxl > 0) {
             ctx.shadowColor = '#f5b820';
             ctx.shadowBlur = 20;
+        } else if (running && !serving && paddleStillness >= 18) {
+            // Amortie armée → halo violet
+            ctx.shadowColor = '#a78bfa';
+            ctx.shadowBlur = 16 + Math.sin(Date.now() / 120) * 4;
         }
         ctx.beginPath();
         ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, paddle.h / 2);
@@ -835,15 +892,35 @@
     }, 16);
 
     var modeChoice = document.getElementById('jeu-mode-choice');
+    var step1 = document.getElementById('jeu-step1');
+    var step2 = document.getElementById('jeu-step2');
+
+    function showStep1() {
+        step1.classList.remove('hidden');
+        step1.classList.add('flex');
+        step2.classList.add('hidden');
+        step2.classList.remove('flex');
+    }
+    function showStep2() {
+        step1.classList.add('hidden');
+        step1.classList.remove('flex');
+        step2.classList.remove('hidden');
+        step2.classList.add('flex');
+    }
+    showStep1();
+
     document.querySelectorAll('.jeu-mode-btn').forEach(function (b) {
         b.addEventListener('click', function (e) {
             e.stopPropagation();
+            var action = b.getAttribute('data-action');
+            if (action === 'go-ia') { showStep2(); return; }
+            if (action === 'back') { showStep1(); return; }
+            // Démarrage effectif
             modeChoice.style.display = 'none';
             startBtn.style.display = 'none';
             var mode = b.getAttribute('data-mode');
             var diff = b.getAttribute('data-difficulty');
             if (diff) aiDifficulty = diff;
-            // Appliquer la vitesse IA selon la nouvelle difficulté
             resize();
             start(mode);
         });
@@ -851,8 +928,9 @@
 
     startBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        // Re-show mode choice, hide restart
+        // Re-show mode choice from step 1
         modeChoice.style.display = '';
+        showStep1();
         startBtn.style.display = 'none';
     });
 
