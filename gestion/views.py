@@ -123,6 +123,8 @@ def partager_actu(request, pk):
 
 
 
+
+
 @login_required(login_url=LOGIN_URL)
 def nouvelle_actu(request):
     if request.method == "POST":
@@ -208,6 +210,7 @@ def editer_actu(request, pk):
         "bouton": "Enregistrer",
         "retour_url": "/gestion/actus/",
         "retour_label": "Actualités",
+        "current_photo": article.image,
     })
 
 
@@ -284,6 +287,7 @@ def editer_palmares(request, pk):
         "bouton": "Enregistrer",
         "retour_url": "/gestion/palmares/",
         "retour_label": "Palmarès",
+        "current_photo": p.photo,
     })
 
 
