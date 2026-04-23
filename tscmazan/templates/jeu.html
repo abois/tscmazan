@@ -130,7 +130,9 @@
         basePaddleW = Math.max(70, W * 0.22);
         paddle.w = basePaddleW * (effects.xxl > 0 ? 1.6 : 1);
         paddle.h = Math.max(10, H * 0.022);
-        paddle.y = H - paddle.h - 18;
+        // Laisse une bande tactile de ~15% sous la raquette pour que le doigt
+        // ne cache pas la raquette (mobile).
+        paddle.y = H - paddle.h - Math.max(70, H * 0.14);
         if (paddle.x === 0 && paddle.w) {
             paddle.x = (W - paddle.w) / 2;
         } else {
@@ -398,6 +400,24 @@
 
         // Ventoux en arrière-plan
         drawVentoux();
+
+        // Bande tactile sous la raquette
+        var touchZoneY = paddle.y + paddle.h + 8;
+        var touchZoneH = H - touchZoneY - 8;
+        if (touchZoneH > 20) {
+            ctx.fillStyle = 'rgba(245, 184, 32, 0.05)';
+            ctx.fillRect(8, touchZoneY, W - 16, touchZoneH);
+            ctx.strokeStyle = 'rgba(245, 184, 32, 0.18)';
+            ctx.setLineDash([6, 6]);
+            ctx.lineWidth = 1;
+            ctx.strokeRect(8, touchZoneY, W - 16, touchZoneH);
+            ctx.setLineDash([]);
+            ctx.fillStyle = 'rgba(249, 204, 82, 0.55)';
+            ctx.font = '600 11px "DM Sans", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Glissez ici pour déplacer la raquette', W / 2, touchZoneY + touchZoneH / 2);
+        }
 
         // Lignes de court
         ctx.strokeStyle = 'rgba(245, 184, 32, 0.15)';
