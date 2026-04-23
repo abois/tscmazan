@@ -30,13 +30,13 @@
                 <div class="anim-up anim-d3 flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-10">
                     <a href="{{ page.hero_cta_url }}" target="_blank" rel="noopener"
                        class="inline-flex items-center gap-2 bg-bleu-800 hover:bg-bleu-900 text-white font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg shadow-bleu-900/15">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                         {{ page.hero_cta_texte }}
                     </a>
                     {% if page.hero_cta2_texte %}
                     <a href="/le-club/" class="inline-flex items-center gap-2 text-bleu-700 hover:text-bleu-900 font-semibold text-sm md:text-base group transition">
                         Découvrir le club
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        <svg aria-hidden="true" class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                     </a>
                     {% endif %}
                 </div>
@@ -75,7 +75,7 @@
             {# Cartouche "en jeu" en haut à droite #}
             <div class="absolute top-6 md:top-10 right-6 md:right-10 flex items-center gap-3 text-white/90">
                 <div class="w-10 h-10 rounded-full border border-white/30 bg-white/10 backdrop-blur flex items-center justify-center">
-                    <svg class="w-4 h-4 text-or-300" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
+                    <svg aria-hidden="true" class="w-4 h-4 text-or-300" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
                 </div>
                 <span class="text-[10px] uppercase tracking-[0.25em] font-semibold">En jeu</span>
             </div>
@@ -98,7 +98,7 @@
 <section class="edit-section py-20 md:py-32 bg-sable-50 bg-diagonal relative">
     {% if request.user.is_authenticated %}
     <a href="/gestion/page/{{ page.pk }}/" class="edit-btn">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+        <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
         Modifier
     </a>
     {% endif %}
@@ -113,7 +113,7 @@
         </div>
         <a href="/le-club/" class="mt-10 md:mt-12 inline-flex items-center gap-2 text-bleu-600 hover:text-bleu-800 font-semibold text-sm md:text-base transition group">
             Découvrir le club en détail
-            <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            <svg aria-hidden="true" class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
         </a>
     </div>
 </section>
@@ -124,7 +124,7 @@
 <section class="edit-section py-20 md:py-28 relative overflow-hidden">
     {% if request.user.is_authenticated %}
     <a href="/gestion/page/{{ page.pk }}/" class="edit-btn">
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+        <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
         Modifier
     </a>
     {% endif %}
@@ -141,7 +141,7 @@
                 <a href="/ecole-de-tennis/"
                    class="mt-8 inline-flex items-center gap-2 bg-bleu-600 hover:bg-bleu-700 text-white font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition shadow-lg shadow-bleu-900/10">
                     Découvrir l'école
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
             </div>
             <div class="order-1 lg:order-2 relative">
@@ -152,7 +152,7 @@
                     <div class="hidden md:block absolute -top-6 -left-6 w-24 h-24 bg-bleu-200/60 rounded-2xl -z-10"></div>
                 {% else %}
                     <div class="aspect-[4/3] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 rounded-2xl flex items-center justify-center">
-                        <svg class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        <svg aria-hidden="true" class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     </div>
                 {% endif %}
             </div>
@@ -173,7 +173,7 @@
             </div>
             <a href="/actualites/" class="self-start sm:self-end inline-flex items-center gap-2 text-bleu-600 hover:text-bleu-800 font-semibold text-sm group transition">
                 Toutes les actualités
-                <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                <svg aria-hidden="true" class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
         </div>
 
@@ -215,7 +215,7 @@
                     </p>
                     <span class="inline-flex items-center gap-2 bg-or-400 group-hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition shadow-lg shadow-bleu-950/30">
                         Découvrir la boutique
-                        <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                        <svg aria-hidden="true" class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                     </span>
                 </div>
                 <div class="md:col-span-2 flex items-center justify-center">
@@ -260,7 +260,7 @@
                 <a href="/partenaires/"
                    class="inline-flex items-center gap-2 bg-bleu-900 hover:bg-bleu-800 text-white font-semibold px-6 py-3.5 rounded-lg text-sm md:text-base transition shadow-lg">
                     Découvrir nos offres
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
             </div>
 
@@ -285,7 +285,7 @@
             {% else %}
             <div class="hidden lg:flex items-center justify-center">
                 <div class="aspect-square w-full max-w-sm bg-gradient-to-br from-bleu-50 via-sable-50 to-or-50 rounded-3xl flex items-center justify-center border border-sable-200">
-                    <svg class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                    <svg aria-hidden="true" class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                 </div>
             </div>
             {% endif %}

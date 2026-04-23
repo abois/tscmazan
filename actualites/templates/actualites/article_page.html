@@ -12,7 +12,7 @@
         <div class="absolute top-0 right-0 w-96 h-96 bg-or-400/10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3"></div>
         <div class="relative max-w-4xl mx-auto px-4 md:px-6">
             <a href="{{ page.get_parent.url }}" class="anim-up inline-flex items-center gap-2 text-bleu-200 hover:text-white text-sm font-semibold mb-6 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 Retour aux actualités
             </a>
             <div class="anim-up anim-d1 flex items-center gap-3 mb-4 text-xs md:text-sm font-semibold uppercase tracking-wider">
@@ -46,7 +46,7 @@
     <section class="edit-section py-12 md:py-20 {% if not page.image %}pt-20 md:pt-24{% endif %}">
         {% if request.user.is_authenticated %}
         <a href="/gestion/editer-actu/{{ page.pk }}/" class="edit-btn">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
+            <svg aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
             Modifier
         </a>
         {% endif %}
@@ -75,7 +75,7 @@
                 </div>
                 <a href="{{ page.get_parent.url }}" class="inline-flex items-center gap-2 text-bleu-600 hover:text-bleu-800 font-semibold text-sm group transition self-start sm:self-end">
                     Toutes les actualités
-                    <svg class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                    <svg aria-hidden="true" class="w-4 h-4 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
                 </a>
             </div>
 

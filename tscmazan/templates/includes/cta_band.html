@@ -42,7 +42,7 @@ Paramètres :
             <a href="{{ button_url|default:'#' }}"
                class="inline-flex items-center justify-center gap-2 {% if variant == 'or' %}bg-bleu-900 hover:bg-bleu-800 text-white{% else %}bg-or-400 hover:bg-or-300 text-bleu-900{% endif %} font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg">
                 {{ button_label }}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
             {% endif %}
             {% if button_secondary_label %}

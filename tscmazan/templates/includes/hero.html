@@ -47,7 +47,7 @@ Si `image_url_mobile` est absent, `image_url` est utilisée sur toutes les taill
             <a href="{{ cta_primary_url|default:'#' }}"
                class="inline-flex items-center justify-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold text-sm md:text-base px-6 py-3.5 rounded-lg transition shadow-lg shadow-bleu-950/30">
                 {{ cta_primary_label }}
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                <svg aria-hidden="true" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
             </a>
             {% endif %}
             {% if cta_secondary_label %}
