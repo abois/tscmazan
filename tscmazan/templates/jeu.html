@@ -34,17 +34,30 @@
                     <div id="jeu-overlay-title" class="font-display text-4xl md:text-6xl leading-[0.95] tracking-tight mb-2">Service !</div>
                     <div id="jeu-overlay-sub" class="text-sm md:text-base text-bleu-200 max-w-xs mb-4">Choisissez votre mode de jeu.</div>
                 </div>
-                <div id="jeu-mode-choice" class="flex flex-col sm:flex-row gap-3">
+                <div id="jeu-mode-choice" class="flex flex-col gap-3 w-full max-w-sm">
                     <button type="button" data-mode="solo"
-                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg min-w-[160px]">
+                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
                         <span class="font-display text-xl tracking-wide leading-none">MODE SOLO</span>
                         <span class="text-[10px] font-normal opacity-80">Renvoyez le plus longtemps</span>
                     </button>
-                    <button type="button" data-mode="ia"
-                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-6 py-3 rounded-lg transition shadow-lg min-w-[160px]">
-                        <span class="font-display text-xl tracking-wide leading-none">CONTRE L'IA</span>
-                        <span class="text-[10px] font-normal opacity-80">Match en 11 points</span>
-                    </button>
+                    <div class="text-[10px] font-semibold tracking-[0.2em] uppercase text-or-300 mt-1">Contre l'IA — match en 11 points</div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" data-mode="ia" data-difficulty="club"
+                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-500/80 hover:bg-bleu-500 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
+                            <span class="font-display text-base tracking-wider leading-none">CLUB</span>
+                            <span class="text-[9px] font-normal opacity-80">Facile</span>
+                        </button>
+                        <button type="button" data-mode="ia" data-difficulty="departemental"
+                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
+                            <span class="font-display text-base tracking-wider leading-none">DÉPT.</span>
+                            <span class="text-[9px] font-normal opacity-80">Moyen</span>
+                        </button>
+                        <button type="button" data-mode="ia" data-difficulty="ligue"
+                            class="jeu-mode-btn inline-flex flex-col items-center gap-0.5 bg-rose-700 hover:bg-rose-600 text-white font-semibold px-2 py-2.5 rounded-lg transition shadow">
+                            <span class="font-display text-base tracking-wider leading-none">LIGUE</span>
+                            <span class="text-[9px] font-normal opacity-80">Expert</span>
+                        </button>
+                    </div>
                 </div>
                 <button id="jeu-start" type="button" style="display:none;"
                     class="inline-flex items-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
@@ -57,6 +70,13 @@
         <div class="mt-4 flex items-center justify-between text-xs md:text-sm text-bleu-200">
             <div>Mode : <span id="jeu-mode">Touch</span></div>
             <div>Annonce : <span id="jeu-call" class="font-semibold text-or-300">0</span></div>
+        </div>
+        <div class="mt-3 p-3 rounded-xl bg-bleu-950/60 border border-or-400/20 text-[11px] md:text-xs text-bleu-200 leading-relaxed">
+            <strong class="text-or-300 uppercase tracking-wider text-[10px]">Effets tennis</strong> —
+            <span class="text-red-300">Lifté</span> : accompagnez la balle dans son sens ·
+            <span class="text-blue-300">Slicé</span> : glissez à contre-sens ·
+            <span class="text-orange-300">Coupé</span> : frappez en bord de raquette ·
+            <span class="text-violet-300">Amorti</span> : raquette immobile, frappe douce.
         </div>
     </div>
 </section>
@@ -89,15 +109,21 @@
 
     var W = 0, H = 0, dpr = 1;
     var paddle = { x: 0, w: 0, h: 0, y: 0 };
-    var ai = { x: 0, w: 0, h: 0, y: 0, speed: 0 };
+    var prevPaddleX = 0;
+    var paddleVx = 0;            // vitesse horizontale (px/frame)
+    var paddleVxSmoothed = 0;    // lissée pour détection d'effet
+    var ai = { x: 0, w: 0, h: 0, y: 0, speed: 0, prevX: 0, vx: 0 };
     var ball = { x: 0, y: 0, vx: 0, vy: 0, r: 0 };
     var running = false;
     var serving = false;  // balle en attente au-dessus de la raquette
     var score = 0;
     var gameMode = 'solo';   // 'solo' | 'ia'
+    var aiDifficulty = 'departemental';
+    var AI_SPEED_BY_DIFF = { club: 0.55, departemental: 0.85, ligue: 1.3 };
     var aiScore = 0;
     var playerScore = 0;
     var MATCH_POINTS = 11;
+    var lastShotEffect = null;   // {label, color, life}
 
     // Effets visuels
     var trail = [];        // [{x, y}] — dernières positions de la balle
@@ -157,7 +183,8 @@
         ai.y = 18;
         if (ai.x === 0 && ai.w) { ai.x = (W - ai.w) / 2; }
         else { ai.x = Math.min(ai.x, W - ai.w); }
-        ai.speed = Math.max(3.5, W * 0.009); // vitesse max de l'IA
+        var baseAiSpeed = Math.max(3.5, W * 0.009);
+        ai.speed = baseAiSpeed * (AI_SPEED_BY_DIFF[aiDifficulty] || 1);
         if (paddle.x === 0 && paddle.w) {
             paddle.x = (W - paddle.w) / 2;
         } else {
@@ -293,6 +320,11 @@
             return true;
         }
 
+        // Vitesse de la raquette (pour détection d'effets)
+        paddleVx = paddle.x - prevPaddleX;
+        prevPaddleX = paddle.x;
+        paddleVxSmoothed = paddleVxSmoothed * 0.6 + paddleVx * 0.4;
+
         // Trail (pour effet visuel)
         trail.push({ x: ball.x, y: ball.y });
         if (trail.length > 10) trail.shift();
@@ -349,6 +381,39 @@
                 var angle = rel * 0.7 - Math.PI / 2; // angle principalement vertical
                 ball.vx = Math.cos(angle) * speed;
                 ball.vy = Math.sin(angle) * speed;
+
+                // Effets tennis selon mouvement de la raquette + position d'impact
+                var pvx = paddleVxSmoothed;
+                var absRel = Math.abs(rel);
+                var shot = null;
+                if (absRel > 0.75) {
+                    // Frappe au bord : COUPÉ (angle ouvert latéralement)
+                    ball.vx *= 1.4; ball.vy *= 0.8;
+                    shot = { label: 'COUPÉ', color: '#f97316' };
+                } else if (Math.abs(pvx) < 0.8) {
+                    // Raquette quasi immobile + balle lente = AMORTI
+                    if (speed < Math.min(W, H) * 0.014) {
+                        ball.vx *= 0.35; ball.vy *= 0.35;
+                        shot = { label: 'AMORTI', color: '#a78bfa' };
+                    }
+                } else if (pvx * Math.sign(ball.vx) > 2) {
+                    // Raquette accompagne la balle : LIFTÉ (boost + vertical)
+                    ball.vx += pvx * 0.25; ball.vy *= 1.15;
+                    shot = { label: 'LIFTÉ', color: '#ef4444' };
+                } else if (pvx * Math.sign(ball.vx) < -2) {
+                    // Raquette contre le sens : SLICÉ (ralenti, plus plat)
+                    ball.vx *= 0.8; ball.vy *= 0.7;
+                    ball.vx += pvx * 0.3;
+                    shot = { label: 'SLICÉ', color: '#60a5fa' };
+                }
+                // Clamp vitesse max
+                var curSpeed = Math.hypot(ball.vx, ball.vy);
+                var maxSp = Math.min(W, H) * 0.05;
+                if (curSpeed > maxSp) {
+                    ball.vx *= maxSp / curSpeed;
+                    ball.vy *= maxSp / curSpeed;
+                }
+                if (shot) lastShotEffect = { label: shot.label, color: shot.color, life: 45 };
                 ball.y = paddle.y - ball.r - 1;
                 score += effects.double > 0 ? 2 : 1;
                 updateScore();
@@ -418,6 +483,7 @@
 
         if (screenShake > 0) screenShake--;
         if (celebration) { celebration.life--; if (celebration.life <= 0) celebration = null; }
+        if (lastShotEffect) { lastShotEffect.life--; if (lastShotEffect.life <= 0) lastShotEffect = null; }
 
         // Balle sortie bas
         if (ball.y - ball.r > H) {
@@ -661,6 +727,22 @@
             ctx.stroke();
         }
 
+        // Label d'effet tennis (apparaît brièvement près du contact)
+        if (lastShotEffect) {
+            var le = lastShotEffect;
+            var alphaE = Math.max(0, le.life / 45);
+            ctx.save();
+            ctx.globalAlpha = alphaE;
+            ctx.fillStyle = le.color;
+            ctx.font = '700 ' + Math.round(Math.min(W, H) * 0.06) + 'px "Bebas Neue", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 10;
+            ctx.fillText(le.label + ' !', W / 2, paddle.y - 20 - (1 - alphaE) * 30);
+            ctx.restore();
+        }
+
         // Célébration (texte qui monte et fade)
         if (celebration) {
             var prog = 1 - celebration.life / 60;
@@ -758,7 +840,12 @@
             e.stopPropagation();
             modeChoice.style.display = 'none';
             startBtn.style.display = 'none';
-            start(b.getAttribute('data-mode'));
+            var mode = b.getAttribute('data-mode');
+            var diff = b.getAttribute('data-difficulty');
+            if (diff) aiDifficulty = diff;
+            // Appliquer la vitesse IA selon la nouvelle difficulté
+            resize();
+            start(mode);
         });
     });
 
