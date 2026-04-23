@@ -80,10 +80,38 @@
     var running = false;
     var serving = false;  // balle en attente au-dessus de la raquette
     var score = 0;
+
+    // Effets visuels
+    var trail = [];        // [{x, y}] — dernières positions de la balle
+    var particles = [];    // [{x, y, vx, vy, life, color}]
+    var screenShake = 0;   // frames restantes
+    var celebration = null; // {text, life}
+
+    // Power-ups
+    var powerups = [];     // [{x, y, vy, w, h, type, color, label, duration}]
+    var effects = { xxl: 0, double: 0, slow: 0 };  // durée restante en frames
+    var lastPowerupScore = 0;
+    var slowApplied = false;
+    var basePaddleW = 0;
+
+    var POWERUP_TYPES = [
+        { type: 'xxl',    color: '#f5b820', label: 'RAQUETTE XXL',  duration: 600 },
+        { type: 'double', color: '#ef4444', label: '× 2 POINTS',    duration: 480 },
+        { type: 'slow',   color: '#60a5fa', label: 'RALENTI',       duration: 420 },
+    ];
     var best = parseInt(localStorage.getItem('tscm-jeu-best') || '0', 10);
     bestEl.textContent = best;
 
     var TENNIS_CALLS = ['0', '15', '30', '40', 'JEU !', 'AVANTAGE', 'SET !', 'MATCH !'];
+    var LOCAL_MILESTONES = {
+        10: 'VUE SUR LE VENTOUX',
+        20: 'ESPRIT DU MISTRAL',
+        30: 'CHAMPION DU VAUCLUSE',
+        40: 'FIERTÉ DU COSEC',
+        50: 'LÉGENDE DU TSCM',
+        75: 'BAGEL MAZANAIS',
+        100: 'IMMORTEL DES COURTS',
+    };
 
     var inputMode = 'touch';
     if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
@@ -99,7 +127,8 @@
         canvas.width = Math.round(W * dpr);
         canvas.height = Math.round(H * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        paddle.w = Math.max(70, W * 0.22);
+        basePaddleW = Math.max(70, W * 0.22);
+        paddle.w = basePaddleW * (effects.xxl > 0 ? 1.6 : 1);
         paddle.h = Math.max(10, H * 0.022);
         paddle.y = H - paddle.h - 18;
         if (paddle.x === 0 && paddle.w) {
@@ -129,7 +158,16 @@
 
     function start() {
         score = 0;
+        lastPowerupScore = 0;
         updateScore();
+        trail.length = 0;
+        particles.length = 0;
+        powerups.length = 0;
+        effects.xxl = effects.double = effects.slow = 0;
+        slowApplied = false;
+        paddle.w = basePaddleW;
+        celebration = null;
+        screenShake = 0;
         placeBallOnPaddle();
         serving = true;
         overlay.classList.add('is-hidden');
@@ -158,6 +196,57 @@
         callEl.textContent = call;
     }
 
+    function spawnParticles(x, y, color, n) {
+        for (var k = 0; k < n; k++) {
+            var a = Math.random() * Math.PI - Math.PI; // vers le haut surtout
+            var s = 2 + Math.random() * 4;
+            particles.push({
+                x: x, y: y,
+                vx: Math.cos(a) * s,
+                vy: Math.sin(a) * s - 1,
+                life: 30 + Math.random() * 20,
+                color: color,
+            });
+        }
+    }
+
+    function spawnPowerup() {
+        var def = POWERUP_TYPES[Math.floor(Math.random() * POWERUP_TYPES.length)];
+        var size = Math.max(26, Math.min(W, H) * 0.06);
+        powerups.push({
+            x: size + Math.random() * (W - size * 2),
+            y: -size,
+            vy: Math.max(1.5, H * 0.003),
+            w: size, h: size,
+            type: def.type,
+            color: def.color,
+            label: def.label,
+            duration: def.duration,
+        });
+    }
+
+    function activateEffect(p) {
+        effects[p.type] = p.duration;
+        if (p.type === 'slow' && !slowApplied) {
+            ball.vx *= 0.5; ball.vy *= 0.5;
+            slowApplied = true;
+        }
+        celebration = { text: p.label, life: 45 };
+        spawnParticles(paddle.x + paddle.w / 2, paddle.y, p.color, 20);
+    }
+
+    function ballColor(speed) {
+        var maxSpeed = Math.min(W, H) * 0.04;
+        var t = Math.min(1, speed / maxSpeed);
+        // Jaune → orange → rouge selon vitesse
+        if (t < 0.5) {
+            return { inner: '#fdf0c8', mid: '#f5b820', outer: '#a87308' };
+        } else if (t < 0.8) {
+            return { inner: '#fef3c7', mid: '#fb923c', outer: '#c2410c' };
+        }
+        return { inner: '#fee2e2', mid: '#ef4444', outer: '#991b1b' };
+    }
+
     function step() {
         // En phase service : la balle suit la raquette
         if (serving) {
@@ -165,6 +254,10 @@
             ball.y = paddle.y - ball.r - 6;
             return true;
         }
+
+        // Trail (pour effet visuel)
+        trail.push({ x: ball.x, y: ball.y });
+        if (trail.length > 10) trail.shift();
 
         // Balle
         ball.x += ball.vx;
@@ -186,10 +279,74 @@
                 ball.vx = Math.cos(angle) * speed;
                 ball.vy = Math.sin(angle) * speed;
                 ball.y = paddle.y - ball.r - 1;
-                score++;
+                score += effects.double > 0 ? 2 : 1;
                 updateScore();
+                spawnParticles(ball.x, paddle.y, '#f5b820', 12);
+                // Célébrations + shake sur les annonces
+                if (score === 1 || score === 2 || score === 3) {
+                    screenShake = 12;
+                    celebration = { text: TENNIS_CALLS[score], life: 40 };
+                } else if (score === 4) {
+                    screenShake = 22;
+                    celebration = { text: 'JEU !', life: 60 };
+                    spawnParticles(ball.x, paddle.y, '#f9cc52', 30);
+                } else if (LOCAL_MILESTONES[score]) {
+                    screenShake = 18;
+                    celebration = { text: LOCAL_MILESTONES[score], life: 60 };
+                    spawnParticles(ball.x, paddle.y, '#f9cc52', 22);
+                } else if (score > 4 && score % 10 === 0) {
+                    screenShake = 10;
+                    celebration = { text: score + ' pts', life: 35 };
+                }
+                // Power-up : toutes les 5 réussites
+                if (score > 0 && score - lastPowerupScore >= 5) {
+                    lastPowerupScore = score;
+                    spawnPowerup();
+                }
             }
         }
+
+        // Power-ups en chute
+        for (var i = powerups.length - 1; i >= 0; i--) {
+            var p = powerups[i];
+            p.y += p.vy;
+            // Capture par la raquette
+            if (p.y + p.h >= paddle.y && p.y <= paddle.y + paddle.h &&
+                p.x + p.w >= paddle.x && p.x <= paddle.x + paddle.w) {
+                activateEffect(p);
+                powerups.splice(i, 1);
+                continue;
+            }
+            if (p.y > H + 40) powerups.splice(i, 1);
+        }
+
+        // Particules
+        for (var j = particles.length - 1; j >= 0; j--) {
+            var pt = particles[j];
+            pt.x += pt.vx;
+            pt.y += pt.vy;
+            pt.vy += 0.15; // gravité
+            pt.life--;
+            if (pt.life <= 0) particles.splice(j, 1);
+        }
+
+        // Timers effets
+        if (effects.xxl > 0) effects.xxl--;
+        if (effects.double > 0) effects.double--;
+        if (effects.slow > 0) {
+            effects.slow--;
+            if (effects.slow === 0 && slowApplied) {
+                ball.vx *= 2; ball.vy *= 2;
+                slowApplied = false;
+            }
+        }
+        // Raquette XXL
+        var targetW = basePaddleW * (effects.xxl > 0 ? 1.6 : 1);
+        paddle.w += (targetW - paddle.w) * 0.18; // interpolation douce
+        if (paddle.x + paddle.w > W) paddle.x = W - paddle.w;
+
+        if (screenShake > 0) screenShake--;
+        if (celebration) { celebration.life--; if (celebration.life <= 0) celebration = null; }
 
         // Balle sortie bas
         if (ball.y - ball.r > H) {
@@ -200,10 +357,47 @@
         return true;
     }
 
+    function drawVentoux() {
+        // Silhouette subtile des collines et du Ventoux en arrière-plan
+        var baseY = H * 0.72;
+        ctx.fillStyle = 'rgba(21, 55, 111, 0.35)';
+        ctx.beginPath();
+        ctx.moveTo(0, baseY);
+        ctx.quadraticCurveTo(W * 0.15, baseY - H * 0.05, W * 0.28, baseY - H * 0.02);
+        ctx.quadraticCurveTo(W * 0.45, baseY - H * 0.12, W * 0.58, baseY - H * 0.18);
+        ctx.lineTo(W * 0.64, baseY - H * 0.2);
+        ctx.lineTo(W * 0.72, baseY - H * 0.06);
+        ctx.quadraticCurveTo(W * 0.85, baseY + H * 0.02, W, baseY - H * 0.04);
+        ctx.lineTo(W, H);
+        ctx.lineTo(0, H);
+        ctx.closePath();
+        ctx.fill();
+        // Neige sur le Ventoux
+        ctx.fillStyle = 'rgba(253, 240, 200, 0.55)';
+        ctx.beginPath();
+        ctx.moveTo(W * 0.58, baseY - H * 0.17);
+        ctx.lineTo(W * 0.63, baseY - H * 0.2);
+        ctx.lineTo(W * 0.7, baseY - H * 0.07);
+        ctx.lineTo(W * 0.66, baseY - H * 0.11);
+        ctx.lineTo(W * 0.62, baseY - H * 0.14);
+        ctx.closePath();
+        ctx.fill();
+    }
+
     function draw() {
+        ctx.save();
+        if (screenShake > 0) {
+            var sx = (Math.random() - 0.5) * 8 * (screenShake / 20);
+            var sy = (Math.random() - 0.5) * 8 * (screenShake / 20);
+            ctx.translate(sx, sy);
+        }
+
         // Fond terrain
         ctx.fillStyle = '#060f1f';
-        ctx.fillRect(0, 0, W, H);
+        ctx.fillRect(-20, -20, W + 40, H + 40);
+
+        // Ventoux en arrière-plan
+        drawVentoux();
 
         // Lignes de court
         ctx.strokeStyle = 'rgba(245, 184, 32, 0.15)';
@@ -223,25 +417,79 @@
         ctx.stroke();
         ctx.setLineDash([]);
 
-        // Raquette
+        // Trail de la balle
+        for (var ti = 0; ti < trail.length; ti++) {
+            var tp = trail[ti];
+            var alpha = (ti + 1) / trail.length * 0.35;
+            ctx.fillStyle = 'rgba(245, 184, 32, ' + alpha + ')';
+            ctx.beginPath();
+            ctx.arc(tp.x, tp.y, ball.r * (0.4 + ti / trail.length * 0.5), 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Power-ups en chute
+        for (var pi = 0; pi < powerups.length; pi++) {
+            var pu = powerups[pi];
+            ctx.save();
+            ctx.globalAlpha = 0.9;
+            // Ombre / glow
+            ctx.shadowColor = pu.color;
+            ctx.shadowBlur = 15;
+            ctx.fillStyle = pu.color;
+            ctx.beginPath();
+            ctx.roundRect(pu.x, pu.y, pu.w, pu.h, 6);
+            ctx.fill();
+            ctx.shadowBlur = 0;
+            // Symbole au centre (1 lettre selon type)
+            ctx.fillStyle = '#0a1a35';
+            ctx.font = '700 ' + Math.round(pu.w * 0.55) + 'px "Bebas Neue", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            var letter = pu.type === 'xxl' ? 'XXL' : pu.type === 'double' ? '×2' : '⋯';
+            ctx.fillText(letter, pu.x + pu.w / 2, pu.y + pu.h / 2 + 1);
+            ctx.restore();
+        }
+
+        // Particules
+        for (var qi = 0; qi < particles.length; qi++) {
+            var q = particles[qi];
+            ctx.fillStyle = q.color.replace(')', ', ' + Math.max(0, q.life / 50) + ')').replace('rgb', 'rgba');
+            // fallback si couleur non-rgb : hex
+            if (q.color.charAt(0) === '#') {
+                ctx.globalAlpha = Math.max(0, q.life / 50);
+                ctx.fillStyle = q.color;
+            }
+            ctx.beginPath();
+            ctx.arc(q.x, q.y, 2 + (q.life / 50) * 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
+
+        // Raquette (glow si XXL actif)
         var gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x + paddle.w, paddle.y);
         gradient.addColorStop(0, '#f5b820');
         gradient.addColorStop(1, '#d4960a');
         ctx.fillStyle = gradient;
+        if (effects.xxl > 0) {
+            ctx.shadowColor = '#f5b820';
+            ctx.shadowBlur = 20;
+        }
         ctx.beginPath();
         ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, paddle.h / 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
-        // Balle jaune
+        // Balle — couleur selon vitesse
+        var speedNow = Math.hypot(ball.vx, ball.vy);
+        var col = ballColor(speedNow);
         var grad = ctx.createRadialGradient(ball.x - ball.r * 0.3, ball.y - ball.r * 0.3, ball.r * 0.2, ball.x, ball.y, ball.r);
-        grad.addColorStop(0, '#fdf0c8');
-        grad.addColorStop(0.6, '#f5b820');
-        grad.addColorStop(1, '#a87308');
+        grad.addColorStop(0, col.inner);
+        grad.addColorStop(0.6, col.mid);
+        grad.addColorStop(1, col.outer);
         ctx.fillStyle = grad;
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
         ctx.fill();
-        // Ligne de balle de tennis (simplifiée)
         ctx.strokeStyle = 'rgba(255,255,255,0.55)';
         ctx.lineWidth = 1.2;
         ctx.beginPath();
@@ -254,10 +502,9 @@
             ctx.font = '600 14px "DM Sans", system-ui, sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Touchez pour servir', W / 2, H / 2);
-            // petite flèche haut clignotante
-            var t = Date.now() / 400;
-            var alpha = 0.4 + Math.abs(Math.sin(t)) * 0.6;
-            ctx.strokeStyle = 'rgba(249, 204, 82, ' + alpha + ')';
+            var tt = Date.now() / 400;
+            var alpha2 = 0.4 + Math.abs(Math.sin(tt)) * 0.6;
+            ctx.strokeStyle = 'rgba(249, 204, 82, ' + alpha2 + ')';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.moveTo(ball.x, ball.y - ball.r - 12);
@@ -267,6 +514,40 @@
             ctx.lineTo(ball.x + 5, ball.y - ball.r - 22);
             ctx.stroke();
         }
+
+        // Célébration (texte qui monte et fade)
+        if (celebration) {
+            var prog = 1 - celebration.life / 60;
+            ctx.save();
+            ctx.globalAlpha = Math.max(0, celebration.life / 60);
+            ctx.fillStyle = '#f5b820';
+            ctx.font = '700 ' + Math.round(Math.min(W, H) * 0.09) + 'px "Bebas Neue", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.shadowColor = 'rgba(0,0,0,0.5)';
+            ctx.shadowBlur = 12;
+            ctx.fillText(celebration.text, W / 2, H * 0.35 - prog * 40);
+            ctx.restore();
+        }
+
+        // HUD effets actifs
+        var hudY = 12;
+        var hudActive = [];
+        if (effects.xxl > 0) hudActive.push({ label: 'XXL', color: '#f5b820', t: effects.xxl });
+        if (effects.double > 0) hudActive.push({ label: '×2', color: '#ef4444', t: effects.double });
+        if (effects.slow > 0) hudActive.push({ label: 'SLOW', color: '#60a5fa', t: effects.slow });
+        for (var hi = 0; hi < hudActive.length; hi++) {
+            var hh = hudActive[hi];
+            ctx.fillStyle = hh.color;
+            ctx.fillRect(12 + hi * 70, hudY, 58, 22);
+            ctx.fillStyle = '#0a1a35';
+            ctx.font = '700 11px "Bebas Neue", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(hh.label, 12 + hi * 70 + 29, hudY + 11);
+        }
+
+        ctx.restore();
     }
 
     function loop() {
