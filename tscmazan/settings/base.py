@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "taggit",
     "django_filters",
     "pwa",
+    "axes",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -67,7 +68,18 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "axes.middleware.AxesMiddleware",  # doit être APRÈS Auth, fin de la chaîne
 ]
+
+# ── django-axes : anti brute-force ──
+AUTHENTICATION_BACKENDS = [
+    "axes.backends.AxesStandaloneBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+AXES_FAILURE_LIMIT = 5           # 5 échecs…
+AXES_COOLOFF_TIME = 1            # …puis blocage 1h par défaut
+AXES_LOCKOUT_PARAMETERS = ["ip_address", "username"]
+AXES_RESET_ON_SUCCESS = True
 
 ROOT_URLCONF = "tscmazan.urls"
 
@@ -153,6 +165,34 @@ STATIC_URL = "/static/"
 
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
+
+# ── Durcissement session/CSRF (valeurs surchargées en prod) ──
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_SAMESITE = "Lax"
+
+# ── Upload ───────────────────────────────────────────────────
+# Plafonne la taille d'un fichier uploadé (images actus / palmarès).
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 Mo
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10 Mo
+
+# ── Logging : trace les auth échouées et les erreurs ────────
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "simple": {"format": "[{asctime}] {levelname} {name}: {message}", "style": "{"},
+    },
+    "handlers": {
+        "console": {"class": "logging.StreamHandler", "formatter": "simple"},
+    },
+    "loggers": {
+        "django.security": {"handlers": ["console"], "level": "WARNING"},
+        "django.request": {"handlers": ["console"], "level": "ERROR"},
+        "axes": {"handlers": ["console"], "level": "WARNING"},
+    },
+}
 
 # Django sets a maximum of 1000 fields per form by default, but particularly complex page models
 # can exceed this limit within Wagtail's page editor.

@@ -33,10 +33,29 @@ PAGE_ICONS = {
 LOGIN_URL = "/admin/login/"
 
 
+MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 Mo
+ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP", "GIF"}
+
+
 def _upload_image(file, title):
-    """Upload un fichier image dans Wagtail."""
+    """Upload un fichier image dans Wagtail, avec validation taille + format."""
+    from django.core.exceptions import ValidationError
+
+    if file.size > MAX_UPLOAD_BYTES:
+        raise ValidationError(
+            f"L'image fait {file.size // 1024} Ko, le maximum est {MAX_UPLOAD_BYTES // 1024} Ko."
+        )
     data = file.read()
-    pil = PILImage.open(io.BytesIO(data))
+    try:
+        pil = PILImage.open(io.BytesIO(data))
+        pil.verify()  # lève une exception si le fichier n'est pas une vraie image
+        pil = PILImage.open(io.BytesIO(data))  # verify() consume le stream, on rouvre
+    except Exception as exc:
+        raise ValidationError("Le fichier n'est pas une image valide.") from exc
+    if pil.format not in ALLOWED_IMAGE_FORMATS:
+        raise ValidationError(
+            f"Format {pil.format} non autorisé. Utilisez JPEG, PNG, WEBP ou GIF."
+        )
     w, h = pil.size
     img = Image(title=title, width=w, height=h)
     img.file.save(file.name, ImageFile(io.BytesIO(data), name=file.name))
