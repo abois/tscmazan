@@ -32,11 +32,24 @@
                 <div>
                     <div id="jeu-overlay-eyebrow" class="text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase text-or-300 mb-2">Prêt ?</div>
                     <div id="jeu-overlay-title" class="font-display text-4xl md:text-6xl leading-[0.95] tracking-tight mb-2">Service !</div>
-                    <div id="jeu-overlay-sub" class="text-sm md:text-base text-bleu-200 max-w-xs">Touchez ou cliquez pour démarrer. Glissez pour déplacer la raquette.</div>
+                    <div id="jeu-overlay-sub" class="text-sm md:text-base text-bleu-200 max-w-xs mb-4">Choisissez votre mode de jeu.</div>
                 </div>
-                <button id="jeu-start" type="button" class="inline-flex items-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
+                <div id="jeu-mode-choice" class="flex flex-col sm:flex-row gap-3">
+                    <button type="button" data-mode="solo"
+                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg min-w-[160px]">
+                        <span class="font-display text-xl tracking-wide leading-none">MODE SOLO</span>
+                        <span class="text-[10px] font-normal opacity-80">Renvoyez le plus longtemps</span>
+                    </button>
+                    <button type="button" data-mode="ia"
+                        class="jeu-mode-btn inline-flex flex-col items-center gap-1 bg-bleu-700 hover:bg-bleu-600 text-white font-semibold px-6 py-3 rounded-lg transition shadow-lg min-w-[160px]">
+                        <span class="font-display text-xl tracking-wide leading-none">CONTRE L'IA</span>
+                        <span class="text-[10px] font-normal opacity-80">Match en 11 points</span>
+                    </button>
+                </div>
+                <button id="jeu-start" type="button" style="display:none;"
+                    class="inline-flex items-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                    <span id="jeu-start-label">Commencer</span>
+                    <span id="jeu-start-label">Rejouer</span>
                 </button>
             </div>
         </div>
@@ -76,10 +89,15 @@
 
     var W = 0, H = 0, dpr = 1;
     var paddle = { x: 0, w: 0, h: 0, y: 0 };
+    var ai = { x: 0, w: 0, h: 0, y: 0, speed: 0 };
     var ball = { x: 0, y: 0, vx: 0, vy: 0, r: 0 };
     var running = false;
     var serving = false;  // balle en attente au-dessus de la raquette
     var score = 0;
+    var gameMode = 'solo';   // 'solo' | 'ia'
+    var aiScore = 0;
+    var playerScore = 0;
+    var MATCH_POINTS = 11;
 
     // Effets visuels
     var trail = [];        // [{x, y}] — dernières positions de la balle
@@ -133,6 +151,13 @@
         // Laisse une bande tactile de ~15% sous la raquette pour que le doigt
         // ne cache pas la raquette (mobile).
         paddle.y = H - paddle.h - Math.max(70, H * 0.14);
+        // Raquette IA : symétrique en haut du canvas
+        ai.w = basePaddleW;
+        ai.h = paddle.h;
+        ai.y = 18;
+        if (ai.x === 0 && ai.w) { ai.x = (W - ai.w) / 2; }
+        else { ai.x = Math.min(ai.x, W - ai.w); }
+        ai.speed = Math.max(3.5, W * 0.009); // vitesse max de l'IA
         if (paddle.x === 0 && paddle.w) {
             paddle.x = (W - paddle.w) / 2;
         } else {
@@ -158,8 +183,11 @@
         serving = false;
     }
 
-    function start() {
+    function start(mode) {
+        if (mode) gameMode = mode;
         score = 0;
+        aiScore = 0;
+        playerScore = 0;
         lastPowerupScore = 0;
         updateScore();
         trail.length = 0;
@@ -168,6 +196,7 @@
         effects.xxl = effects.double = effects.slow = 0;
         slowApplied = false;
         paddle.w = basePaddleW;
+        ai.x = (W - ai.w) / 2;
         celebration = null;
         screenShake = 0;
         placeBallOnPaddle();
@@ -179,7 +208,7 @@
 
     function gameOver() {
         running = false;
-        if (score > best) {
+        if (gameMode === 'solo' && score > best) {
             best = score;
             localStorage.setItem('tscm-jeu-best', best);
             bestEl.textContent = best;
@@ -187,15 +216,22 @@
         overlayEyebrow.textContent = 'Balle sortie';
         overlayTitle.textContent = 'Let !';
         overlaySub.innerHTML = 'Score : <strong class="text-or-300">' + score + '</strong> renvois.' +
-            (score >= best ? '<br><span class="text-or-300">Nouveau record !</span>' : '');
+            (gameMode === 'solo' && score >= best ? '<br><span class="text-or-300">Nouveau record !</span>' : '');
         startLabel.textContent = 'Rejouer';
+        startBtn.style.display = '';
+        modeChoice.style.display = '';
         overlay.classList.remove('is-hidden');
     }
 
     function updateScore() {
-        scoreEl.textContent = score;
-        var call = score < TENNIS_CALLS.length ? TENNIS_CALLS[score] : score + ' pts';
-        callEl.textContent = call;
+        if (gameMode === 'ia') {
+            scoreEl.textContent = playerScore + ' – ' + aiScore;
+            callEl.textContent = 'Match en ' + MATCH_POINTS + ' points';
+        } else {
+            scoreEl.textContent = score;
+            var call = score < TENNIS_CALLS.length ? TENNIS_CALLS[score] : score + ' pts';
+            callEl.textContent = call;
+        }
     }
 
     function spawnParticles(x, y, color, n) {
@@ -268,8 +304,41 @@
         // Rebonds murs latéraux
         if (ball.x - ball.r < 0) { ball.x = ball.r; ball.vx = Math.abs(ball.vx); }
         if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.vx = -Math.abs(ball.vx); }
-        // Rebond mur haut
-        if (ball.y - ball.r < 0) { ball.y = ball.r; ball.vy = Math.abs(ball.vy); }
+
+        // Mur haut (solo) OU raquette IA (mode IA)
+        if (gameMode === 'ia') {
+            // Suivi IA
+            var iaTarget = ball.x - ai.w / 2;
+            var diff = iaTarget - ai.x;
+            ai.x += Math.sign(diff) * Math.min(Math.abs(diff), ai.speed);
+            ai.x = Math.max(0, Math.min(W - ai.w, ai.x));
+            // Collision IA (balle qui monte)
+            if (ball.vy < 0 && ball.y - ball.r <= ai.y + ai.h && ball.y - ball.r >= ai.y - Math.abs(ball.vy)) {
+                if (ball.x >= ai.x && ball.x <= ai.x + ai.w) {
+                    var relA = (ball.x - (ai.x + ai.w / 2)) / (ai.w / 2);
+                    var spA = Math.hypot(ball.vx, ball.vy) * 1.05;
+                    spA = Math.min(spA, Math.min(W, H) * 0.04);
+                    var angA = relA * 0.7 + Math.PI / 2; // vers le bas
+                    ball.vx = Math.cos(angA) * spA;
+                    ball.vy = Math.sin(angA) * spA;
+                    ball.y = ai.y + ai.h + ball.r + 1;
+                    spawnParticles(ball.x, ai.y + ai.h, '#60a5fa', 8);
+                }
+            }
+            // Balle sortie en haut = point joueur
+            if (ball.y - ball.r < -20) {
+                playerScore++;
+                updateScore();
+                screenShake = 12;
+                celebration = { text: '+1', life: 30 };
+                checkMatchEnd();
+                if (running) resetRally();
+                return true;
+            }
+        } else {
+            // Mode solo : rebond mur haut
+            if (ball.y - ball.r < 0) { ball.y = ball.r; ball.vy = Math.abs(ball.vy); }
+        }
 
         // Collision raquette
         if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y + ball.r <= paddle.y + paddle.h + ball.vy) {
@@ -352,11 +421,45 @@
 
         // Balle sortie bas
         if (ball.y - ball.r > H) {
+            if (gameMode === 'ia') {
+                aiScore++;
+                updateScore();
+                screenShake = 8;
+                checkMatchEnd();
+                if (running) resetRally();
+                return true;
+            }
             gameOver();
             draw();
             return false;
         }
         return true;
+    }
+
+    function resetRally() {
+        // Remettre la balle en phase service, alternativement au-dessus de la
+        // raquette joueur ou IA selon qui vient de marquer
+        placeBallOnPaddle();
+        serving = true;
+        trail.length = 0;
+        particles.length = 0;
+        powerups.length = 0;
+    }
+
+    function checkMatchEnd() {
+        if (gameMode !== 'ia') return;
+        if (playerScore >= MATCH_POINTS || aiScore >= MATCH_POINTS) {
+            running = false;
+            var win = playerScore > aiScore;
+            overlayEyebrow.textContent = win ? 'Match gagné' : 'Match perdu';
+            overlayTitle.textContent = win ? 'Victoire !' : 'Défaite';
+            overlaySub.innerHTML = 'Score final : <strong class="text-or-300">' +
+                playerScore + ' – ' + aiScore + '</strong>';
+            startLabel.textContent = 'Rejouer';
+            startBtn.style.display = '';
+            modeChoice.style.display = '';
+            overlay.classList.remove('is-hidden');
+        }
     }
 
     function drawVentoux() {
@@ -485,7 +588,18 @@
             ctx.globalAlpha = 1;
         }
 
-        // Raquette (glow si XXL actif)
+        // Raquette IA (mode IA) — bleu
+        if (gameMode === 'ia') {
+            var gradAi = ctx.createLinearGradient(ai.x, ai.y, ai.x + ai.w, ai.y);
+            gradAi.addColorStop(0, '#60a5fa');
+            gradAi.addColorStop(1, '#2057b2');
+            ctx.fillStyle = gradAi;
+            ctx.beginPath();
+            ctx.roundRect(ai.x, ai.y, ai.w, ai.h, ai.h / 2);
+            ctx.fill();
+        }
+
+        // Raquette joueur (glow si XXL actif)
         var gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x + paddle.w, paddle.y);
         gradient.addColorStop(0, '#f5b820');
         gradient.addColorStop(1, '#d4960a');
@@ -498,6 +612,18 @@
         ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, paddle.h / 2);
         ctx.fill();
         ctx.shadowBlur = 0;
+
+        // Score match (mode IA) affiché au milieu à gauche et à droite
+        if (gameMode === 'ia') {
+            ctx.fillStyle = 'rgba(249, 204, 82, 0.8)';
+            ctx.font = '700 ' + Math.round(Math.min(W, H) * 0.06) + 'px "Bebas Neue", system-ui, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(String(playerScore), 16, H / 2 + H * 0.08);
+            ctx.fillStyle = 'rgba(96, 165, 250, 0.8)';
+            ctx.textAlign = 'right';
+            ctx.fillText(String(aiScore), W - 16, H / 2 - H * 0.08);
+        }
 
         // Balle — couleur selon vitesse
         var speedNow = Math.hypot(ball.vx, ball.vy);
@@ -626,9 +752,21 @@
         if (keys.right) paddle.x = Math.min(W - paddle.w, paddle.x + step);
     }, 16);
 
+    var modeChoice = document.getElementById('jeu-mode-choice');
+    document.querySelectorAll('.jeu-mode-btn').forEach(function (b) {
+        b.addEventListener('click', function (e) {
+            e.stopPropagation();
+            modeChoice.style.display = 'none';
+            startBtn.style.display = 'none';
+            start(b.getAttribute('data-mode'));
+        });
+    });
+
     startBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        start();
+        // Re-show mode choice, hide restart
+        modeChoice.style.display = '';
+        startBtn.style.display = 'none';
     });
 
     window.addEventListener('resize', resize);
