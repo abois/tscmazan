@@ -90,7 +90,16 @@ def liste_actus(request):
     return render(request, "gestion/liste.html", {
         "titre_page": "Actualités",
         "icone": "📝",
-        "items": [{"titre": a.title, "sous_titre": a.date.strftime("%d/%m/%Y"), "edit_url": f"/gestion/editer-actu/{a.pk}/", "view_url": a.url} for a in articles],
+        "items": [
+            {
+                "titre": a.title,
+                "sous_titre": a.date.strftime("%d/%m/%Y"),
+                "edit_url": f"/gestion/editer-actu/{a.pk}/",
+                "view_url": a.url,
+                "share_url": f"/gestion/partager-actu/{a.pk}/",
+            }
+            for a in articles
+        ],
         "ajouter_url": "/gestion/nouvelle-actu/",
         "ajouter_label": "Nouvelle actu",
         "retour_url": "/gestion/",
@@ -98,6 +107,19 @@ def liste_actus(request):
     })
 
 
+@login_required(login_url=LOGIN_URL)
+def partager_actu(request, pk):
+    article = get_object_or_404(ArticlePage, pk=pk)
+    return render(request, "gestion/succes.html", {
+        "titre": "Partager sur Facebook",
+        "description": "Partagez cette actualité sur la page du club.",
+        "share_actu": {
+            "pk": article.pk,
+            "title": article.title,
+            "intro": article.intro,
+            "url": request.build_absolute_uri(article.url),
+        },
+    })
 
 
 
@@ -129,6 +151,12 @@ def nouvelle_actu(request):
             )
             index.add_child(instance=article)
             article.save_revision().publish()
+            request.session["last_published_actu"] = {
+                "pk": article.pk,
+                "title": article.title,
+                "intro": article.intro,
+                "url": request.build_absolute_uri(article.url),
+            }
             return redirect("gestion:succes", type="actu")
     else:
         form = ArticleForm(initial={"date": date.today()})
@@ -160,6 +188,12 @@ def editer_actu(request, pk):
                 article.image = _upload_image(form.cleaned_data["photo"], article.title)
 
             article.save_revision().publish()
+            request.session["last_published_actu"] = {
+                "pk": article.pk,
+                "title": article.title,
+                "intro": article.intro,
+                "url": request.build_absolute_uri(article.url),
+            }
             return redirect("gestion:succes", type="actu")
     else:
         form = ArticleForm(initial={
@@ -747,4 +781,12 @@ def succes(request, type):
         "settings": ("Paramètres sauvegardés !", "Les modifications sont effectives."),
     }
     titre, desc = messages.get(type, ("Terminé !", ""))
-    return render(request, "gestion/succes.html", {"titre": titre, "description": desc})
+    context = {"titre": titre, "description": desc}
+
+    # Bloc "Partager sur Facebook" après publication d'une actu
+    if type == "actu":
+        actu = request.session.pop("last_published_actu", None)
+        if actu:
+            context["share_actu"] = actu
+
+    return render(request, "gestion/succes.html", context)
