@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
+{% load static wagtailcore_tags wagtailimages_tags wagtailsettings_tags %}
 
 {% block body_class %}home{% endblock %}
 
@@ -308,22 +308,34 @@
   "alternateName": "TSCM",
   "description": "{{ page.hero_sous_titre|default:'Club de tennis à Mazan (Vaucluse), affilié FFT depuis plus de 40 ans.' }}",
   "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "logo": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo-512.png' %}",
+  "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo-512.png' %}",
   "telephone": "{{ settings.home.SiteSettings.telephone }}",
   "email": "{{ settings.home.SiteSettings.email }}",
   "address": {
     "@type": "PostalAddress",
     "streetAddress": "Chemin du Bigourd, Site du COSEC",
     "addressLocality": "Mazan",
+    "addressRegion": "Vaucluse",
     "postalCode": "84380",
     "addressCountry": "FR"
   },
+  "areaServed": [
+    {"@type": "City", "name": "Mazan"},
+    {"@type": "AdministrativeArea", "name": "Vaucluse"},
+    {"@type": "AdministrativeArea", "name": "Provence-Alpes-Côte d'Azur"}
+  ],
   "sport": ["Tennis", "Pickleball"],
   "foundingDate": "{{ page.annee_creation }}",
   "memberOf": {
     "@type": "Organization",
     "name": "Fédération Française de Tennis",
     "url": "https://www.fft.fr/"
-  }
+  },
+  "sameAs": [
+    {% if settings.home.SiteSettings.facebook_url %}"{{ settings.home.SiteSettings.facebook_url }}"{% if settings.home.SiteSettings.instagram_url %},{% endif %}{% endif %}
+    {% if settings.home.SiteSettings.instagram_url %}"{{ settings.home.SiteSettings.instagram_url }}"{% endif %}
+  ]
 }
 </script>
 {% endblock %}

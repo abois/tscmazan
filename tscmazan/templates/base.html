@@ -3,18 +3,34 @@
 <html lang="fr">
 <head>
     <meta charset="utf-8">
-    <title>
-        {% block title %}
-            {% if page.seo_title %}{{ page.seo_title }}{% else %}{{ page.title }}{% endif %}
-        {% endblock %}
-        {% block title_suffix %}
-            {% wagtail_site as current_site %}
-            {% if current_site and current_site.site_name %} — {{ current_site.site_name }}{% endif %}
-        {% endblock %}
-    </title>
-    {% if page.search_description %}
-    <meta name="description" content="{{ page.search_description }}">
-    {% endif %}
+    {% wagtail_site as current_site %}
+    {% with site_name=current_site.site_name|default:"Tennis Sporting Club Mazanais" %}
+    {% block seo_meta %}
+    {% firstof page.seo_title page.title "Tennis Sporting Club Mazanais" as seo_title %}
+    {% firstof page.search_description "Tennis Sporting Club Mazanais — club de tennis à Mazan (Vaucluse). Cours, compétitions, école de tennis, partenariats et location de courts." as seo_description %}
+    <title>{% block title %}{{ seo_title }}{% endblock %}{% block title_suffix %}{% if site_name %} — {{ site_name }}{% endif %}{% endblock %}</title>
+    <meta name="description" content="{{ seo_description }}">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta name="robots" content="index, follow">
+
+    {# Open Graph #}
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:site_name" content="{{ site_name }}">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:title" content="{{ seo_title }}">
+    <meta property="og:description" content="{{ seo_description }}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo-512.png' %}{% endblock %}">
+    <meta property="og:image:alt" content="Logo Tennis Sporting Club Mazanais">
+
+    {# Twitter Cards #}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ seo_title }}">
+    <meta name="twitter:description" content="{{ seo_description }}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'images/logo-512.png' %}{% endblock %}">
+    {% endblock %}
+    {% endwith %}
+
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#2057b2">
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">

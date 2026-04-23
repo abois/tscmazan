@@ -263,3 +263,47 @@
 {% include "includes/cta_band.html" with eyebrow="Envie de compétition ?" title="Rejoignez nos équipes" subtitle="Du loisir à la compétition régionale, il y a une équipe pour vous. Venez discuter avec l'un de nos capitaines à l'occasion d'un entraînement." button_label="Nous contacter" button_url="/contact/?sujet=equipes" button_secondary_label="Voir sur Tenup" button_secondary_url=page.lien_fft %}
 
 {% endblock %}
+
+{% block extra_head %}
+{% include "includes/breadcrumb_jsonld.html" %}
+{% if competitions_list %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "Compétitions du Tennis Sporting Club Mazanais",
+  "itemListElement": [
+    {% for comp in competitions_list %}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.counter }},
+      "item": {
+        "@type": "SportsEvent",
+        "name": "{{ comp.titre|escapejs }}",
+        "sport": "Tennis"{% if comp.date_debut %},
+        "startDate": "{{ comp.date_debut|date:'Y-m-d' }}"{% endif %}{% if comp.date_fin %},
+        "endDate": "{{ comp.date_fin|date:'Y-m-d' }}"{% endif %},
+        "location": {
+          "@type": "Place",
+          "name": "Tennis Sporting Club Mazanais",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Mazan",
+            "addressRegion": "Vaucluse",
+            "postalCode": "84380",
+            "addressCountry": "FR"
+          }
+        },
+        "organizer": {
+          "@type": "SportsClub",
+          "name": "Tennis Sporting Club Mazanais",
+          "url": "{{ request.scheme }}://{{ request.get_host }}/"
+        }
+      }
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
+</script>
+{% endif %}
+{% endblock %}

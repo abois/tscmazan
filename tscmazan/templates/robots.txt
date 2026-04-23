@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /django-admin/
+Disallow: /gestion/
+Disallow: /search/
+
+Sitemap: {{ request.scheme }}://{{ request.get_host }}/sitemap.xml

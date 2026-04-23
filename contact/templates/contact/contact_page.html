@@ -183,3 +183,30 @@
 </script>
 
 {% endblock %}
+
+{% block extra_head %}
+{% include "includes/breadcrumb_jsonld.html" %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "name": "Contact — Tennis Sporting Club Mazanais",
+  "url": "{{ request.scheme }}://{{ request.get_host }}{{ page.url }}",
+  "mainEntity": {
+    "@type": "SportsClub",
+    "name": "Tennis Sporting Club Mazanais",
+    "telephone": "{{ settings.home.SiteSettings.telephone }}",
+    "email": "{{ settings.home.SiteSettings.email }}",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Chemin du Bigourd, Site du COSEC",
+      "addressLocality": "Mazan",
+      "addressRegion": "Vaucluse",
+      "postalCode": "84380",
+      "addressCountry": "FR"
+    }{% if page.latitude and page.longitude %},
+    "geo": {"@type": "GeoCoordinates", "latitude": "{{ page.latitude }}", "longitude": "{{ page.longitude }}"}{% endif %}
+  }
+}
+</script>
+{% endblock %}

@@ -86,3 +86,7 @@
 {% include "includes/cta_band.html" with eyebrow="Une question sur les tarifs ?" title="Le bureau est là pour y répondre" subtitle="Nous sommes disponibles par téléphone ou email pour vous accompagner dans votre inscription." button_label="Nous contacter" button_url="/contact/?sujet=tarifs" button_secondary_label=settings.home.SiteSettings.telephone button_secondary_url="tel:0490698645" %}
 
 {% endblock %}
+
+{% block extra_head %}
+{% include "includes/breadcrumb_jsonld.html" %}
+{% endblock %}

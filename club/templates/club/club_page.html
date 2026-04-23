@@ -217,6 +217,7 @@
 {% endblock %}
 
 {% block extra_head %}
+{% include "includes/breadcrumb_jsonld.html" %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -232,6 +233,7 @@
       "@type": "PostalAddress",
       "streetAddress": "Chemin du Bigourd, Site du COSEC",
       "addressLocality": "Mazan",
+      "addressRegion": "Vaucluse",
       "postalCode": "84380",
       "addressCountry": "FR"
     }{% if page.latitude and page.longitude %},
