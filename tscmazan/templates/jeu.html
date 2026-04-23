@@ -25,8 +25,8 @@
             </div>
         </div>
 
-        <div id="jeu-wrap" class="relative rounded-2xl md:rounded-3xl overflow-hidden border-2 border-or-400/50 bg-bleu-950 shadow-2xl shadow-bleu-950/50 select-none" style="touch-action:none;">
-            <canvas id="jeu-canvas" class="block w-full" style="aspect-ratio:3/4;"></canvas>
+        <div id="jeu-wrap" class="relative rounded-2xl md:rounded-3xl overflow-hidden border-2 border-or-400/50 bg-bleu-950 shadow-2xl shadow-bleu-950/50 select-none mx-auto" style="touch-action:none; max-width:min(100%, calc(70vh * 0.75));">
+            <canvas id="jeu-canvas" class="block w-full" style="aspect-ratio:3/4; max-height:70vh;"></canvas>
 
             <div id="jeu-overlay" class="absolute inset-0 flex flex-col items-center justify-center gap-4 md:gap-6 bg-bleu-950/80 backdrop-blur-sm text-center px-6">
                 <div>
@@ -78,6 +78,7 @@
     var paddle = { x: 0, w: 0, h: 0, y: 0 };
     var ball = { x: 0, y: 0, vx: 0, vy: 0, r: 0 };
     var running = false;
+    var serving = false;  // balle en attente au-dessus de la raquette
     var score = 0;
     var best = parseInt(localStorage.getItem('tscm-jeu-best') || '0', 10);
     bestEl.textContent = best;
@@ -110,19 +111,27 @@
         if (!running) draw();
     }
 
-    function resetBall() {
-        ball.x = W / 2;
-        ball.y = H * 0.3;
-        var angle = (Math.random() * 0.5 + 0.25) * Math.PI; // entre 45° et 135° vers le bas
-        var speed = Math.max(4, Math.min(W, H) * 0.008);
-        ball.vx = Math.cos(angle) * speed * (Math.random() < 0.5 ? -1 : 1);
+    function placeBallOnPaddle() {
+        ball.x = paddle.x + paddle.w / 2;
+        ball.y = paddle.y - ball.r - 6;
+        ball.vx = 0;
+        ball.vy = 0;
+    }
+
+    function launchBall() {
+        if (!serving) return;
+        var speed = Math.max(6, Math.min(W, H) * 0.011);
+        var angle = (Math.random() * 0.6 - 0.3) - Math.PI / 2; // vers le haut, ± 17°
+        ball.vx = Math.cos(angle) * speed;
         ball.vy = Math.sin(angle) * speed;
+        serving = false;
     }
 
     function start() {
         score = 0;
         updateScore();
-        resetBall();
+        placeBallOnPaddle();
+        serving = true;
         overlay.classList.add('is-hidden');
         running = true;
         loop();
@@ -150,6 +159,13 @@
     }
 
     function step() {
+        // En phase service : la balle suit la raquette
+        if (serving) {
+            ball.x = paddle.x + paddle.w / 2;
+            ball.y = paddle.y - ball.r - 6;
+            return true;
+        }
+
         // Balle
         ball.x += ball.vx;
         ball.y += ball.vy;
@@ -164,8 +180,8 @@
         if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y + ball.r <= paddle.y + paddle.h + ball.vy) {
             if (ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
                 var rel = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2); // -1 à 1
-                var speed = Math.hypot(ball.vx, ball.vy) * 1.04; // +4% à chaque renvoi
-                speed = Math.min(speed, Math.min(W, H) * 0.025);
+                var speed = Math.hypot(ball.vx, ball.vy) * 1.07; // +7% à chaque renvoi
+                speed = Math.min(speed, Math.min(W, H) * 0.04);
                 var angle = rel * 0.7 - Math.PI / 2; // angle principalement vertical
                 ball.vx = Math.cos(angle) * speed;
                 ball.vy = Math.sin(angle) * speed;
@@ -231,6 +247,26 @@
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.r * 0.85, -Math.PI * 0.4, Math.PI * 0.4);
         ctx.stroke();
+
+        // Indicateur de service
+        if (serving) {
+            ctx.fillStyle = 'rgba(249, 204, 82, 0.85)';
+            ctx.font = '600 14px "DM Sans", system-ui, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Touchez pour servir', W / 2, H / 2);
+            // petite flèche haut clignotante
+            var t = Date.now() / 400;
+            var alpha = 0.4 + Math.abs(Math.sin(t)) * 0.6;
+            ctx.strokeStyle = 'rgba(249, 204, 82, ' + alpha + ')';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(ball.x, ball.y - ball.r - 12);
+            ctx.lineTo(ball.x, ball.y - ball.r - 28);
+            ctx.moveTo(ball.x - 5, ball.y - ball.r - 22);
+            ctx.lineTo(ball.x, ball.y - ball.r - 28);
+            ctx.lineTo(ball.x + 5, ball.y - ball.r - 22);
+            ctx.stroke();
+        }
     }
 
     function loop() {
@@ -251,24 +287,32 @@
         return clientX - rect.left;
     }
 
-    wrap.addEventListener('touchstart', function (e) {
+    // On écoute sur le canvas (pas sur le wrap qui contient l'overlay + bouton)
+    // pour ne pas interférer avec les clics/taps sur "Commencer".
+    canvas.addEventListener('touchstart', function (e) {
         e.preventDefault();
         setPaddleCenterX(pointerPos(e));
+        launchBall();
     }, { passive: false });
-    wrap.addEventListener('touchmove', function (e) {
+    canvas.addEventListener('touchmove', function (e) {
         e.preventDefault();
         setPaddleCenterX(pointerPos(e));
     }, { passive: false });
 
-    wrap.addEventListener('mousemove', function (e) {
+    canvas.addEventListener('mousemove', function (e) {
         setPaddleCenterX(pointerPos(e));
     });
+    canvas.addEventListener('click', function () { launchBall(); });
 
     var keys = { left: false, right: false };
     window.addEventListener('keydown', function (e) {
         if (e.key === 'ArrowLeft') keys.left = true;
         if (e.key === 'ArrowRight') keys.right = true;
-        if ((e.key === ' ' || e.key === 'Enter') && !running) { e.preventDefault(); start(); }
+        if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            if (!running) { start(); }
+            else { launchBall(); }
+        }
     });
     window.addEventListener('keyup', function (e) {
         if (e.key === 'ArrowLeft') keys.left = false;
@@ -281,7 +325,10 @@
         if (keys.right) paddle.x = Math.min(W - paddle.w, paddle.x + step);
     }, 16);
 
-    startBtn.addEventListener('click', start);
+    startBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        start();
+    });
 
     window.addEventListener('resize', resize);
     window.addEventListener('orientationchange', resize);
