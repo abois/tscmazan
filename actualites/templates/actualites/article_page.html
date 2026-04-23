@@ -3,6 +3,11 @@
 
 {% block body_class %}page-article{% endblock %}
 
+{% block og_type %}article{% endblock %}
+
+{% block og_image %}{% if page.image %}{% image page.image fill-1200x630 as og_img %}{{ request.scheme }}://{{ request.get_host }}{{ og_img.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+{% block twitter_image %}{% if page.image %}{% image page.image fill-1200x630 as tw_img %}{{ request.scheme }}://{{ request.get_host }}{{ tw_img.url }}{% else %}{{ block.super }}{% endif %}{% endblock %}
+
 {% block content %}
 
 <article>
