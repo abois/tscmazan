@@ -210,8 +210,9 @@ Ordre à suivre le jour J :
 
 ```
 DJANGO_SETTINGS_MODULE=tscmazan.settings.production
-SECRET_KEY=...
-ALLOWED_HOSTS=www.tscmazan.com,tscmazan.com
+DJANGO_SECRET_KEY=...                     # générer une clé aléatoire forte
+DJANGO_ALLOWED_HOSTS=www.tscmazan.com,tscmazan.com
+DJANGO_CSRF_TRUSTED_ORIGINS=https://www.tscmazan.com,https://tscmazan.com
 DB_NAME=tscmazan
 DB_USER=tscmazan
 DB_PASSWORD=...
@@ -219,9 +220,13 @@ DB_HOST=localhost
 DB_PORT=5432
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
+EMAIL_USE_TLS=true
 EMAIL_HOST_USER=noreply@tscmazan.com
 EMAIL_HOST_PASSWORD=...
+DEFAULT_FROM_EMAIL=Tennis Sporting Club Mazanais <noreply@tscmazan.com>
 ```
+
+Générer une nouvelle SECRET_KEY : `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`
 
 ## Commandes mémo
 
@@ -232,7 +237,7 @@ npm ci && npm run build:css
 # Collecter les statiques
 python manage.py collectstatic --noinput
 
-# Migrer la base
+# Migrer la base (inclut django-axes)
 python manage.py migrate
 
 # Créer un superuser
@@ -241,6 +246,28 @@ python manage.py createsuperuser
 # Synchro Tenup
 python manage.py sync_tenup
 
+# Purge RGPD des demandes de contact > 3 ans (à mettre en cron journalier)
+python manage.py purge_submissions
+python manage.py purge_submissions --dry-run      # pour vérifier
+python manage.py purge_submissions --days 1095    # personnaliser la durée
+
 # Lancer en prod
 gunicorn tscmazan.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 30
+```
+
+## Cron RGPD
+
+Ajouter au crontab système (ou équivalent cloud) pour la purge automatique quotidienne :
+```
+# Chaque nuit à 03:30, supprimer les FormSubmission > 3 ans
+30 3 * * * cd /app && /app/.venv/bin/python manage.py purge_submissions >> /var/log/tscm/purge.log 2>&1
+```
+
+## Anti brute-force (django-axes)
+
+Activé d'office : 5 échecs d'authentification → blocage 1h par couple (IP, utilisateur). En cas de lockout légitime :
+```sh
+python manage.py axes_reset                       # tout réinitialiser
+python manage.py axes_reset_user <username>       # un utilisateur
+python manage.py axes_reset_ip <ip>               # une IP
 ```
