@@ -113,8 +113,7 @@
             <span class="text-cyan-300">Revers</span> : frappez sur la partie gauche ·
             <span class="text-red-300">Lifté</span> : accompagnez la balle dans son sens ·
             <span class="text-blue-300">Slicé</span> : glissez à contre-sens ·
-            <span class="text-orange-300">Coupé</span> : frappez en bord extrême ·
-            <span class="text-violet-300">Amorti</span> : gardez la raquette immobile (halo violet = prêt !)
+            <span class="text-orange-300">Coupé</span> : frappez en bord extrême.
         </div>
     </div>
 </section>
@@ -430,14 +429,7 @@
                 var pvx = paddleVxSmoothed;
                 var absRel = Math.abs(rel);
                 var shot = null;
-                if (paddleStillness >= 18 && Math.abs(pvx) < 1.5) {
-                    // Raquette immobile depuis ~0.3 s = AMORTI (prioritaire)
-                    // On ralentit modérément et on augmente l'angle pour que la
-                    // balle retombe court mais ne devienne pas molle.
-                    ball.vx *= 0.55;
-                    ball.vy *= 0.55;
-                    shot = { label: 'AMORTI', color: '#a78bfa' };
-                } else if (absRel > 0.8) {
+                if (absRel > 0.8) {
                     // Frappe au bord extrême : COUPÉ (angle ouvert latéralement)
                     ball.vx *= 1.4; ball.vy *= 0.8;
                     shot = { label: 'COUPÉ', color: '#f97316' };
@@ -726,10 +718,6 @@
         if (effects.xxl > 0) {
             ctx.shadowColor = '#f5b820';
             ctx.shadowBlur = 20;
-        } else if (running && !serving && paddleStillness >= 18) {
-            // Amortie armée → halo violet
-            ctx.shadowColor = '#a78bfa';
-            ctx.shadowBlur = 16 + Math.sin(Date.now() / 120) * 4;
         }
         ctx.beginPath();
         ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, paddle.h / 2);
