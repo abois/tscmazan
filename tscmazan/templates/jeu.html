@@ -1,0 +1,293 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Balle de match — mini-jeu{% endblock %}
+
+{% block body_class %}page-jeu{% endblock %}
+
+{% block content %}
+<section class="relative bg-gradient-to-br from-bleu-900 via-bleu-800 to-bleu-950 text-white">
+    <div class="absolute inset-0 bg-diagonal opacity-30 pointer-events-none"></div>
+
+    <div class="relative max-w-3xl mx-auto px-4 md:px-6 py-6 md:py-10">
+        <div class="flex items-start justify-between gap-4 mb-4 md:mb-6">
+            <div>
+                <span class="inline-block text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase text-or-300 mb-1">Easter egg</span>
+                <h1 class="font-display text-3xl md:text-5xl leading-[1] tracking-tight">Balle de match</h1>
+                <p class="text-xs md:text-sm text-bleu-200 mt-1 max-w-md">
+                    Renvoyez la balle avec votre raquette. Faites glisser <strong class="text-or-300">votre doigt</strong> sur l'écran, ou utilisez les flèches du clavier.
+                </p>
+            </div>
+            <div class="text-right shrink-0">
+                <div class="text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase text-or-300">Score</div>
+                <div id="jeu-score" class="font-display text-4xl md:text-6xl text-or-300 leading-none">0</div>
+                <div class="text-[10px] md:text-xs uppercase tracking-wider text-bleu-200 mt-1">Record&nbsp;: <span id="jeu-best">0</span></div>
+            </div>
+        </div>
+
+        <div id="jeu-wrap" class="relative rounded-2xl md:rounded-3xl overflow-hidden border-2 border-or-400/50 bg-bleu-950 shadow-2xl shadow-bleu-950/50 select-none" style="touch-action:none;">
+            <canvas id="jeu-canvas" class="block w-full" style="aspect-ratio:3/4;"></canvas>
+
+            <div id="jeu-overlay" class="absolute inset-0 flex flex-col items-center justify-center gap-4 md:gap-6 bg-bleu-950/80 backdrop-blur-sm text-center px-6">
+                <div>
+                    <div id="jeu-overlay-eyebrow" class="text-[10px] md:text-xs font-semibold tracking-[0.25em] uppercase text-or-300 mb-2">Prêt ?</div>
+                    <div id="jeu-overlay-title" class="font-display text-4xl md:text-6xl leading-[0.95] tracking-tight mb-2">Service !</div>
+                    <div id="jeu-overlay-sub" class="text-sm md:text-base text-bleu-200 max-w-xs">Touchez ou cliquez pour démarrer. Glissez pour déplacer la raquette.</div>
+                </div>
+                <button id="jeu-start" type="button" class="inline-flex items-center gap-2 bg-or-400 hover:bg-or-300 text-bleu-900 font-semibold px-6 py-3 rounded-lg transition shadow-lg">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                    <span id="jeu-start-label">Commencer</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="mt-4 flex items-center justify-between text-xs md:text-sm text-bleu-200">
+            <div>Mode : <span id="jeu-mode">Touch</span></div>
+            <div>Annonce : <span id="jeu-call" class="font-semibold text-or-300">0</span></div>
+        </div>
+    </div>
+</section>
+
+<style>
+    body.page-jeu { overflow-x: hidden; }
+    #jeu-canvas { background: #060f1f; display: block; }
+    #jeu-overlay.is-hidden { display: none; }
+    @media (orientation: landscape) and (max-width: 900px) {
+        #jeu-canvas { aspect-ratio: 4/3 !important; }
+    }
+</style>
+
+<script>
+(function () {
+    'use strict';
+    var canvas = document.getElementById('jeu-canvas');
+    var ctx = canvas.getContext('2d');
+    var wrap = document.getElementById('jeu-wrap');
+    var overlay = document.getElementById('jeu-overlay');
+    var overlayEyebrow = document.getElementById('jeu-overlay-eyebrow');
+    var overlayTitle = document.getElementById('jeu-overlay-title');
+    var overlaySub = document.getElementById('jeu-overlay-sub');
+    var startBtn = document.getElementById('jeu-start');
+    var startLabel = document.getElementById('jeu-start-label');
+    var scoreEl = document.getElementById('jeu-score');
+    var bestEl = document.getElementById('jeu-best');
+    var callEl = document.getElementById('jeu-call');
+    var modeEl = document.getElementById('jeu-mode');
+
+    var W = 0, H = 0, dpr = 1;
+    var paddle = { x: 0, w: 0, h: 0, y: 0 };
+    var ball = { x: 0, y: 0, vx: 0, vy: 0, r: 0 };
+    var running = false;
+    var score = 0;
+    var best = parseInt(localStorage.getItem('tscm-jeu-best') || '0', 10);
+    bestEl.textContent = best;
+
+    var TENNIS_CALLS = ['0', '15', '30', '40', 'JEU !', 'AVANTAGE', 'SET !', 'MATCH !'];
+
+    var inputMode = 'touch';
+    if (!('ontouchstart' in window) && !navigator.maxTouchPoints) {
+        inputMode = 'mouse';
+    }
+    modeEl.textContent = inputMode === 'touch' ? 'Tactile' : 'Souris / clavier';
+
+    function resize() {
+        dpr = Math.max(1, window.devicePixelRatio || 1);
+        var rect = canvas.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = Math.round(W * dpr);
+        canvas.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        paddle.w = Math.max(70, W * 0.22);
+        paddle.h = Math.max(10, H * 0.022);
+        paddle.y = H - paddle.h - 18;
+        if (paddle.x === 0 && paddle.w) {
+            paddle.x = (W - paddle.w) / 2;
+        } else {
+            paddle.x = Math.min(paddle.x, W - paddle.w);
+        }
+        ball.r = Math.max(7, Math.min(W, H) * 0.018);
+        if (!running) draw();
+    }
+
+    function resetBall() {
+        ball.x = W / 2;
+        ball.y = H * 0.3;
+        var angle = (Math.random() * 0.5 + 0.25) * Math.PI; // entre 45° et 135° vers le bas
+        var speed = Math.max(4, Math.min(W, H) * 0.008);
+        ball.vx = Math.cos(angle) * speed * (Math.random() < 0.5 ? -1 : 1);
+        ball.vy = Math.sin(angle) * speed;
+    }
+
+    function start() {
+        score = 0;
+        updateScore();
+        resetBall();
+        overlay.classList.add('is-hidden');
+        running = true;
+        loop();
+    }
+
+    function gameOver() {
+        running = false;
+        if (score > best) {
+            best = score;
+            localStorage.setItem('tscm-jeu-best', best);
+            bestEl.textContent = best;
+        }
+        overlayEyebrow.textContent = 'Balle sortie';
+        overlayTitle.textContent = 'Let !';
+        overlaySub.innerHTML = 'Score : <strong class="text-or-300">' + score + '</strong> renvois.' +
+            (score >= best ? '<br><span class="text-or-300">Nouveau record !</span>' : '');
+        startLabel.textContent = 'Rejouer';
+        overlay.classList.remove('is-hidden');
+    }
+
+    function updateScore() {
+        scoreEl.textContent = score;
+        var call = score < TENNIS_CALLS.length ? TENNIS_CALLS[score] : score + ' pts';
+        callEl.textContent = call;
+    }
+
+    function step() {
+        // Balle
+        ball.x += ball.vx;
+        ball.y += ball.vy;
+
+        // Rebonds murs latéraux
+        if (ball.x - ball.r < 0) { ball.x = ball.r; ball.vx = Math.abs(ball.vx); }
+        if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.vx = -Math.abs(ball.vx); }
+        // Rebond mur haut
+        if (ball.y - ball.r < 0) { ball.y = ball.r; ball.vy = Math.abs(ball.vy); }
+
+        // Collision raquette
+        if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y + ball.r <= paddle.y + paddle.h + ball.vy) {
+            if (ball.x >= paddle.x && ball.x <= paddle.x + paddle.w) {
+                var rel = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2); // -1 à 1
+                var speed = Math.hypot(ball.vx, ball.vy) * 1.04; // +4% à chaque renvoi
+                speed = Math.min(speed, Math.min(W, H) * 0.025);
+                var angle = rel * 0.7 - Math.PI / 2; // angle principalement vertical
+                ball.vx = Math.cos(angle) * speed;
+                ball.vy = Math.sin(angle) * speed;
+                ball.y = paddle.y - ball.r - 1;
+                score++;
+                updateScore();
+            }
+        }
+
+        // Balle sortie bas
+        if (ball.y - ball.r > H) {
+            gameOver();
+            draw();
+            return false;
+        }
+        return true;
+    }
+
+    function draw() {
+        // Fond terrain
+        ctx.fillStyle = '#060f1f';
+        ctx.fillRect(0, 0, W, H);
+
+        // Lignes de court
+        ctx.strokeStyle = 'rgba(245, 184, 32, 0.15)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, H / 2);
+        ctx.lineTo(W, H / 2);
+        ctx.stroke();
+
+        // Filet stylisé
+        ctx.strokeStyle = 'rgba(245, 184, 32, 0.35)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(0, H / 2);
+        ctx.lineTo(W, H / 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Raquette
+        var gradient = ctx.createLinearGradient(paddle.x, paddle.y, paddle.x + paddle.w, paddle.y);
+        gradient.addColorStop(0, '#f5b820');
+        gradient.addColorStop(1, '#d4960a');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.roundRect(paddle.x, paddle.y, paddle.w, paddle.h, paddle.h / 2);
+        ctx.fill();
+
+        // Balle jaune
+        var grad = ctx.createRadialGradient(ball.x - ball.r * 0.3, ball.y - ball.r * 0.3, ball.r * 0.2, ball.x, ball.y, ball.r);
+        grad.addColorStop(0, '#fdf0c8');
+        grad.addColorStop(0.6, '#f5b820');
+        grad.addColorStop(1, '#a87308');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fill();
+        // Ligne de balle de tennis (simplifiée)
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r * 0.85, -Math.PI * 0.4, Math.PI * 0.4);
+        ctx.stroke();
+    }
+
+    function loop() {
+        if (!running) return;
+        if (!step()) return;
+        draw();
+        requestAnimationFrame(loop);
+    }
+
+    // ── Contrôles ─────────────────────────────────────────
+    function setPaddleCenterX(x) {
+        paddle.x = Math.max(0, Math.min(W - paddle.w, x - paddle.w / 2));
+    }
+
+    function pointerPos(e) {
+        var rect = canvas.getBoundingClientRect();
+        var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        return clientX - rect.left;
+    }
+
+    wrap.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        setPaddleCenterX(pointerPos(e));
+    }, { passive: false });
+    wrap.addEventListener('touchmove', function (e) {
+        e.preventDefault();
+        setPaddleCenterX(pointerPos(e));
+    }, { passive: false });
+
+    wrap.addEventListener('mousemove', function (e) {
+        setPaddleCenterX(pointerPos(e));
+    });
+
+    var keys = { left: false, right: false };
+    window.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowLeft') keys.left = true;
+        if (e.key === 'ArrowRight') keys.right = true;
+        if ((e.key === ' ' || e.key === 'Enter') && !running) { e.preventDefault(); start(); }
+    });
+    window.addEventListener('keyup', function (e) {
+        if (e.key === 'ArrowLeft') keys.left = false;
+        if (e.key === 'ArrowRight') keys.right = false;
+    });
+    setInterval(function () {
+        if (!running) return;
+        var step = Math.max(6, W * 0.012);
+        if (keys.left) paddle.x = Math.max(0, paddle.x - step);
+        if (keys.right) paddle.x = Math.min(W - paddle.w, paddle.x + step);
+    }, 16);
+
+    startBtn.addEventListener('click', start);
+
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', resize);
+
+    resize();
+    draw();
+})();
+</script>
+{% endblock %}

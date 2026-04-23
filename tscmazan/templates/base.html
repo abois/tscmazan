@@ -232,9 +232,13 @@
 
             <div class="mt-12 md:mt-16 pt-6 border-t border-sable-200 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-500">
                 <p>&copy; {% now "Y" %} Tennis Sporting Club Mazanais — Association loi 1901 affiliée FFT.</p>
-                <div class="flex gap-6">
+                <div class="flex items-center gap-6">
                     <a href="/mentions-legales/" class="hover:text-bleu-700 transition">Mentions légales</a>
                     <a href="/politique-confidentialite/" class="hover:text-bleu-700 transition">Confidentialité</a>
+                    <a href="{% url 'jeu' %}" title="Balle de match" aria-label="Balle de match — mini-jeu"
+                       class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-or-300/70 hover:bg-or-400 hover:scale-110 transition-transform shadow-sm">
+                        <span class="sr-only">Balle de match</span>
+                    </a>
                 </div>
             </div>
         </div>
