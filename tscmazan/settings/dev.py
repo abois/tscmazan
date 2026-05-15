@@ -13,9 +13,15 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 CSRF_TRUSTED_ORIGINS = [
     "https://*.ngrok-free.app",
+    "https://*.ngrok-free.dev",
     "https://*.ngrok.io",
     "https://delta-guerdonless-unputridly.ngrok-free.dev",
 ]
+
+# Derrière ngrok (proxy HTTPS) : faire confiance à l'en-tête X-Forwarded-Proto
+# pour que Django génère des URLs absolues en https://
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+USE_X_FORWARDED_HOST = True
 
 
 try:

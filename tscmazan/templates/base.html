@@ -1,4 +1,4 @@
-{% load static wagtailcore_tags wagtailuserbar pwa wagtailsettings_tags %}
+{% load static wagtailcore_tags pwa wagtailsettings_tags %}
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -52,7 +52,6 @@
 </head>
 
 <body class="font-body text-gray-800 bg-white antialiased {% block body_class %}{% endblock %}">
-    {% wagtailuserbar %}
 
     <!-- Top bar -->
     <div class="bg-bleu-900 text-bleu-200 text-sm hidden lg:block">
