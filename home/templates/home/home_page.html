@@ -44,19 +44,19 @@
                 {# Mini stat strip (centré dans chaque cellule) #}
                 <div class="anim-up anim-d3 grid grid-cols-4 gap-3 pt-6 border-t border-sable-200 text-center">
                     <div>
-                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_adherents }}+</div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none"><span data-edit-field="nb_adherents" data-edit-page="{{ page.pk }}">{{ page.nb_adherents }}</span>+</div>
                         <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Licenciés</div>
                     </div>
                     <div>
-                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_courts }}</div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none" data-edit-field="nb_courts" data-edit-page="{{ page.pk }}">{{ page.nb_courts }}</div>
                         <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Courts</div>
                     </div>
                     <div>
-                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none">{{ page.nb_equipes }}+</div>
+                        <div class="font-display text-2xl md:text-3xl text-bleu-700 leading-none"><span data-edit-field="nb_equipes" data-edit-page="{{ page.pk }}">{{ page.nb_equipes }}</span>+</div>
                         <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Équipes</div>
                     </div>
                     <div>
-                        <div class="font-display text-2xl md:text-3xl text-or-500 leading-none">{{ page.annee_creation }}</div>
+                        <div class="font-display text-2xl md:text-3xl text-or-500 leading-none" data-edit-field="annee_creation" data-edit-page="{{ page.pk }}">{{ page.annee_creation }}</div>
                         <div class="mt-1.5 text-[9px] md:text-[10px] font-semibold uppercase tracking-wider text-gray-500">Création</div>
                     </div>
                 </div>
@@ -67,7 +67,11 @@
         <div class="lg:col-span-5 relative min-h-[50vh] lg:min-h-0 order-1 lg:order-2 overflow-hidden">
             <div class="absolute inset-0 bg-bleu-900"></div>
             {% if hero_img %}
-            <img src="{{ hero_img.url }}" alt="" class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-75" loading="eager">
+            <img src="{{ hero_img.url }}" alt="" class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-75" loading="eager"
+                 data-edit-image="hero_image" data-edit-page="{{ page.pk }}">
+            {% else %}
+            <img src="" alt="" class="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-75" hidden
+                 data-edit-image="hero_image" data-edit-page="{{ page.pk }}">
             {% endif %}
             <div class="absolute inset-0 bg-gradient-to-br from-bleu-900/40 via-bleu-700/30 to-or-500/30 mix-blend-multiply"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-bleu-950 via-transparent to-transparent opacity-60"></div>
@@ -147,11 +151,17 @@
             <div class="order-1 lg:order-2 relative">
                 {% if page.ecole_image %}
                     {% image page.ecole_image fill-800x600 as ecole_img %}
-                    <img src="{{ ecole_img.url }}" alt="{{ page.ecole_titre }}" class="rounded-2xl shadow-2xl shadow-bleu-900/20 w-full aspect-[4/3] object-cover" loading="lazy">
+                    <img src="{{ ecole_img.url }}" alt="{{ page.ecole_titre }}"
+                         class="rounded-2xl shadow-2xl shadow-bleu-900/20 w-full aspect-[4/3] object-cover" loading="lazy"
+                         data-edit-image="ecole_image" data-edit-page="{{ page.pk }}">
                     <div class="hidden md:block absolute -bottom-6 -right-6 w-32 h-32 bg-or-300/40 rounded-2xl -z-10"></div>
                     <div class="hidden md:block absolute -top-6 -left-6 w-24 h-24 bg-bleu-200/60 rounded-2xl -z-10"></div>
                 {% else %}
-                    <div class="aspect-[4/3] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 rounded-2xl flex items-center justify-center">
+                    <img src="" alt=""
+                         class="rounded-2xl shadow-2xl shadow-bleu-900/20 w-full aspect-[4/3] object-cover" hidden
+                         data-edit-image="ecole_image" data-edit-page="{{ page.pk }}">
+                    <div class="aspect-[4/3] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 rounded-2xl flex items-center justify-center"
+                         data-edit-image-placeholder>
                         <svg aria-hidden="true" class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                     </div>
                 {% endif %}

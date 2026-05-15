@@ -68,13 +68,21 @@
                 {% if page.president_photo %}
                     {% image page.president_photo fill-600x700 as pres_img %}
                     <div class="relative">
-                        <img src="{{ pres_img.url }}" alt="{{ page.president_nom }}" class="rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[5/6] object-cover" loading="lazy">
+                        <img src="{{ pres_img.url }}" alt="{{ page.president_nom }}"
+                             class="rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[5/6] object-cover" loading="lazy"
+                             data-edit-image="president_photo" data-edit-page="{{ page.pk }}">
                         <div class="hidden md:block absolute -top-6 -left-6 w-24 h-24 bg-or-300/40 rounded-2xl -z-10"></div>
                         <div class="hidden md:block absolute -bottom-6 -right-6 w-32 h-32 bg-bleu-200/50 rounded-2xl -z-10"></div>
                     </div>
                 {% else %}
-                    <div class="aspect-[5/6] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 rounded-3xl flex items-center justify-center">
-                        <svg aria-hidden="true" class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                    <div class="relative">
+                        <img src="" alt=""
+                             class="rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[5/6] object-cover" hidden
+                             data-edit-image="president_photo" data-edit-page="{{ page.pk }}">
+                        <div class="aspect-[5/6] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 rounded-3xl flex items-center justify-center"
+                             data-edit-image-placeholder>
+                            <svg aria-hidden="true" class="w-24 h-24 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                        </div>
                     </div>
                 {% endif %}
             </div>
@@ -84,8 +92,14 @@
 {% endif %}
 
 <!-- ───────── Dirigeants / équipe ───────── -->
-{% if page.dirigeants %}
-<section class="py-20 md:py-28 bg-sable-50 relative">
+{% if dirigeants_list %}
+<section class="edit-section py-20 md:py-28 bg-sable-50 relative">
+    {% if request.user.is_authenticated %}
+    <a href="/gestion/dirigeants/" class="edit-btn">
+        <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zM19.5 14.25v4.5A2.25 2.25 0 0117.25 21H5.25A2.25 2.25 0 013 18.75V6.75A2.25 2.25 0 015.25 4.5h4.5"/></svg>
+        Gérer l'équipe
+    </a>
+    {% endif %}
     <div class="absolute inset-0 bg-diagonal opacity-40"></div>
     <div class="relative max-w-7xl mx-auto px-4 md:px-6">
         <div class="max-w-2xl mb-12 md:mb-16">
@@ -100,18 +114,24 @@
             {% endwith %}
         </div>
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {% for block in page.dirigeants %}
+            {% for dirigeant in dirigeants_list %}
             <div class="bg-white rounded-2xl p-5 md:p-6 text-center border border-sable-200 hover:border-bleu-200 hover:shadow-lg transition-all">
-                {% if block.value.photo %}
-                    {% image block.value.photo fill-240x240 as dir_img %}
-                    <img src="{{ dir_img.url }}" alt="{{ block.value.nom }}" class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 object-cover ring-4 ring-sable-100">
+                {% if dirigeant.photo %}
+                    {% image dirigeant.photo fill-240x240 as dir_img %}
+                    <img src="{{ dir_img.url }}" alt="{{ dirigeant.nom }}"
+                         class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 object-cover ring-4 ring-sable-100"
+                         data-edit-image="photo" data-edit-model="dirigeant" data-edit-object="{{ dirigeant.pk }}">
                 {% else %}
-                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-bleu-100 to-or-100 flex items-center justify-center ring-4 ring-sable-100">
+                    <img src="" alt="" hidden
+                         class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 object-cover ring-4 ring-sable-100"
+                         data-edit-image="photo" data-edit-model="dirigeant" data-edit-object="{{ dirigeant.pk }}">
+                    <div class="w-20 h-20 md:w-24 md:h-24 rounded-full mx-auto mb-4 bg-gradient-to-br from-bleu-100 to-or-100 flex items-center justify-center ring-4 ring-sable-100"
+                         data-edit-image-placeholder>
                         <svg aria-hidden="true" class="w-10 h-10 text-bleu-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     </div>
                 {% endif %}
-                <h3 class="font-display text-lg md:text-xl text-bleu-900 leading-tight">{{ block.value.nom }}</h3>
-                <p class="mt-1 text-xs md:text-sm font-semibold text-bleu-500 uppercase tracking-wider">{{ block.value.role }}</p>
+                <h3 class="font-display text-lg md:text-xl text-bleu-900 leading-tight">{{ dirigeant.nom }}</h3>
+                <p class="mt-1 text-xs md:text-sm font-semibold text-bleu-500 uppercase tracking-wider">{{ dirigeant.role }}</p>
             </div>
             {% endfor %}
         </div>

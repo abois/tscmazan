@@ -1,23 +1,24 @@
 import io
 from datetime import date
 
+from django.contrib import messages
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import ImageFile
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.text import slugify
-from PIL import Image as PILImage
+from PIL import Image as PILImage, UnidentifiedImageError
 from wagtail.images.models import Image
 
 from wagtail.contrib.forms.models import FormSubmission
 
 from actualites.models import ActualitesIndexPage, ArticlePage
-from club.models import Equipe, Palmares
+from club.models import Dirigeant, Equipe, Palmares
 from contact.models import ContactPage
 from galerie.models import Album, AlbumPhoto, GaleriePage
 
 from home.models import HomePage, MenuItem, SiteSettings
-from .forms import AlbumForm, ArticleForm, EquipeForm, PageForm, PalmaresForm, SettingsForm
+from .forms import AlbumForm, ArticleForm, DirigeantForm, EquipeForm, PageForm, PalmaresForm, SettingsForm
 
 # Pages éditables avec leurs icônes
 PAGE_ICONS = {
@@ -33,34 +34,70 @@ PAGE_ICONS = {
 LOGIN_URL = "/admin/login/"
 
 
-MAX_UPLOAD_BYTES = 8 * 1024 * 1024  # 8 Mo
-ALLOWED_IMAGE_FORMATS = {"JPEG", "PNG", "WEBP", "GIF"}
+MAX_IMAGE_BYTES = 8 * 1024 * 1024  # 8 Mo
+MAX_IMAGE_WIDTH = 2500  # auto-redimensionnement au-delà
+
+
+class ImageUploadError(Exception):
+    """Erreur métier remontée à l'utilisateur lors d'un upload d'image."""
 
 
 def _upload_image(file, title):
-    """Upload un fichier image dans Wagtail, avec validation taille + format."""
-    from django.core.exceptions import ValidationError
-
-    if file.size > MAX_UPLOAD_BYTES:
-        raise ValidationError(
-            f"L'image fait {file.size // 1024} Ko, le maximum est {MAX_UPLOAD_BYTES // 1024} Ko."
+    """Upload un fichier image dans Wagtail, avec validation et compression."""
+    if file.size > MAX_IMAGE_BYTES:
+        raise ImageUploadError(
+            f"Fichier trop volumineux ({file.size // (1024 * 1024)} Mo). "
+            f"Maximum autorisé : {MAX_IMAGE_BYTES // (1024 * 1024)} Mo."
         )
+
     data = file.read()
     try:
         pil = PILImage.open(io.BytesIO(data))
-        pil.verify()  # lève une exception si le fichier n'est pas une vraie image
-        pil = PILImage.open(io.BytesIO(data))  # verify() consume le stream, on rouvre
-    except Exception as exc:
-        raise ValidationError("Le fichier n'est pas une image valide.") from exc
-    if pil.format not in ALLOWED_IMAGE_FORMATS:
-        raise ValidationError(
-            f"Format {pil.format} non autorisé. Utilisez JPEG, PNG, WEBP ou GIF."
-        )
-    w, h = pil.size
+        pil.verify()
+        pil = PILImage.open(io.BytesIO(data))  # rouvre après verify()
+    except (UnidentifiedImageError, OSError, ValueError):
+        raise ImageUploadError("Fichier non reconnu comme image valide (JPG, PNG, WebP…).")
+
+    # Redimensionne si trop large
+    name = file.name
+    if pil.width > MAX_IMAGE_WIDTH:
+        ratio = MAX_IMAGE_WIDTH / pil.width
+        new_size = (MAX_IMAGE_WIDTH, int(pil.height * ratio))
+        pil = pil.convert("RGB") if pil.mode in ("P", "RGBA") and name.lower().endswith((".jpg", ".jpeg")) else pil
+        pil = pil.resize(new_size, PILImage.LANCZOS)
+        buf = io.BytesIO()
+        fmt = (pil.format or "JPEG").upper()
+        if fmt not in ("JPEG", "PNG", "WEBP"):
+            fmt = "JPEG"
+        save_kwargs = {"quality": 85, "optimize": True} if fmt == "JPEG" else {"optimize": True}
+        pil.save(buf, format=fmt, **save_kwargs)
+        data = buf.getvalue()
+
+    pil_final = PILImage.open(io.BytesIO(data))
+    w, h = pil_final.size
     img = Image(title=title, width=w, height=h)
-    img.file.save(file.name, ImageFile(io.BytesIO(data), name=file.name))
+    img.file.save(name, ImageFile(io.BytesIO(data), name=name))
     img.save()
     return img
+
+
+# Recommandations d'usage affichées sous chaque champ image
+IMAGE_HINTS = {
+    "hero_image": "Format portrait (ratio ~6:7) — recadré à 1200×1400. Idéalement 2000×2400 px pour la qualité retina.",
+    "hero_image_mobile": "Format portrait 9:16, idéalement 1080×1920 px.",
+    "ecole_image": "Format paysage, JPG ou PNG.",
+    "president_photo": "Portrait — format carré ou 4:5 recommandé.",
+    "image": "JPG, PNG ou WebP.",
+}
+
+
+def _cleanup_orphan_image(image, page_title):
+    """Supprime l'ancienne image si elle a été créée par cette interface (titre préfixé)."""
+    if image and image.title.startswith(f"{page_title} —"):
+        try:
+            image.delete()
+        except Exception:
+            pass
 
 
 # ── Dashboard ──────────────────────────────────────
@@ -389,6 +426,102 @@ def editer_equipe(request, pk):
     })
 
 
+# ── Équipe dirigeante ──────────────────────────────
+
+@login_required(login_url=LOGIN_URL)
+def liste_dirigeants(request):
+    items = Dirigeant.objects.all()
+    return render(request, "gestion/liste.html", {
+        "titre_page": "Équipe dirigeante",
+        "icone": "👔",
+        "items": [
+            {
+                "titre": d.nom,
+                "sous_titre": d.role,
+                "edit_url": f"/gestion/editer-dirigeant/{d.pk}/",
+            }
+            for d in items
+        ],
+        "ajouter_url": "/gestion/ajouter-dirigeant/",
+        "ajouter_label": "Nouveau dirigeant",
+        "retour_url": "/gestion/",
+        "retour_label": "Accueil",
+    })
+
+
+@login_required(login_url=LOGIN_URL)
+def ajouter_dirigeant(request):
+    if request.method == "POST":
+        form = DirigeantForm(request.POST, request.FILES)
+        if form.is_valid():
+            photo = None
+            if form.cleaned_data.get("photo"):
+                try:
+                    photo = _upload_image(form.cleaned_data["photo"], form.cleaned_data["nom"])
+                except ImageUploadError as exc:
+                    messages.error(request, f"Photo : {exc}")
+                    return render(request, "gestion/formulaire.html", _dirigeant_form_ctx(form, "Ajouter un dirigeant"))
+            Dirigeant.objects.create(
+                nom=form.cleaned_data["nom"],
+                role=form.cleaned_data["role"],
+                photo=photo,
+                ordre=form.cleaned_data["ordre"],
+            )
+            return redirect("gestion:liste_dirigeants")
+    else:
+        next_ordre = (Dirigeant.objects.order_by("-ordre").values_list("ordre", flat=True).first() or 0) + 1
+        form = DirigeantForm(initial={"ordre": next_ordre})
+    return render(request, "gestion/formulaire.html", _dirigeant_form_ctx(form, "Ajouter un dirigeant"))
+
+
+@login_required(login_url=LOGIN_URL)
+def editer_dirigeant(request, pk):
+    d = get_object_or_404(Dirigeant, pk=pk)
+    if request.method == "POST":
+        if request.POST.get("action") == "delete":
+            _cleanup_orphan_image(d.photo, d.nom)
+            d.delete()
+            return redirect("gestion:liste_dirigeants")
+        form = DirigeantForm(request.POST, request.FILES)
+        if form.is_valid():
+            d.nom = form.cleaned_data["nom"]
+            d.role = form.cleaned_data["role"]
+            d.ordre = form.cleaned_data["ordre"]
+            if form.cleaned_data.get("photo"):
+                try:
+                    new_photo = _upload_image(form.cleaned_data["photo"], form.cleaned_data["nom"])
+                except ImageUploadError as exc:
+                    messages.error(request, f"Photo : {exc}")
+                    return render(request, "gestion/formulaire.html", _dirigeant_form_ctx(form, "Modifier le dirigeant", delete=True))
+                old = d.photo
+                d.photo = new_photo
+                _cleanup_orphan_image(old, d.nom)
+            d.save()
+            return redirect("gestion:liste_dirigeants")
+    else:
+        form = DirigeantForm(initial={
+            "nom": d.nom,
+            "role": d.role,
+            "ordre": d.ordre,
+        })
+    return render(request, "gestion/formulaire.html", _dirigeant_form_ctx(form, "Modifier le dirigeant", delete=True))
+
+
+def _dirigeant_form_ctx(form, titre, delete=False):
+    ctx = {
+        "form": form,
+        "titre_page": titre,
+        "icone": "👔",
+        "bouton": "Enregistrer",
+        "retour_url": "/gestion/dirigeants/",
+        "retour_label": "Équipe dirigeante",
+    }
+    if delete:
+        ctx["delete_label"] = "Supprimer ce dirigeant"
+        ctx["delete_confirm"] = "Supprimer définitivement ce dirigeant ?"
+    return ctx
+
+
 # ── Albums photos ──────────────────────────────────
 
 @login_required(login_url=LOGIN_URL)
@@ -474,10 +607,13 @@ PAGE_FIELDS = {
     "HomePage": [
         ("hero_titre", "Titre du hero", "text"),
         ("hero_sous_titre", "Sous-titre du hero", "text"),
+        ("hero_image", "Image hero (desktop)", "image"),
+        ("hero_image_mobile", "Image hero (mobile)", "image"),
         ("presentation_titre", "Titre section Convivialité", "text"),
         ("presentation_texte", "Texte section Convivialité", "ckeditor"),
         ("ecole_titre", "Titre école de tennis", "text"),
         ("ecole_texte", "Texte école de tennis", "ckeditor"),
+        ("ecole_image", "Image école de tennis", "image"),
         ("nb_courts", "Nombre de courts", "number"),
         ("nb_adherents", "Nombre d'adhérents", "number"),
         ("nb_equipes", "Nombre d'équipes engagées", "number"),
@@ -487,6 +623,7 @@ PAGE_FIELDS = {
         ("intro", "Introduction", "ckeditor"),
         ("president_nom", "Nom du président", "text"),
         ("president_texte", "Mot du président", "ckeditor"),
+        ("president_photo", "Photo du président", "image"),
         ("adresse", "Adresse du club", "textarea"),
     ],
     "TarifsPage": [
@@ -553,6 +690,7 @@ PAGE_FIELDS = {
     "EcoleTennisPage": [
         ("intro", "Introduction", "ckeditor"),
         ("contenu", "Contenu", "ckeditor"),
+        ("image", "Image principale", "image"),
         ("horaires", "Horaires et tarifs cours", "ckeditor"),
     ],
     "ResultatsPage": [
@@ -582,25 +720,52 @@ def editer_page(request, pk):
         return redirect("gestion:dashboard")
 
     if request.method == "POST":
+        has_error = False
         for field_name, label, field_type in fields:
             if field_type == "section":
+                continue
+            if field_type == "image":
+                file = request.FILES.get(field_name)
+                if file:
+                    try:
+                        new_img = _upload_image(file, f"{page.title} — {label}")
+                    except ImageUploadError as exc:
+                        messages.error(request, f"{label} : {exc}")
+                        has_error = True
+                        continue
+                    old_img = getattr(page, field_name, None)
+                    setattr(page, field_name, new_img)
+                    _cleanup_orphan_image(old_img, page.title)
                 continue
             value = request.POST.get(field_name, "")
             if field_type == "number":
                 value = int(value) if value else 0
             setattr(page, field_name, value)
+        if has_error:
+            # Rerender avec les erreurs (sans publier)
+            return render(request, "gestion/editer_page.html", _editer_page_context(page, fields, cls_name))
         page.save_revision().publish()
         return redirect("gestion:succes", type="page")
 
-    return render(request, "gestion/editer_page.html", {
+    return render(request, "gestion/editer_page.html", _editer_page_context(page, fields, cls_name))
+
+
+def _editer_page_context(page, fields, cls_name):
+    return {
         "page_obj": page,
         "titre_page": f"Modifier : {page.title}",
         "fields": [
-            (name, label, ftype, getattr(page, name, "") if ftype != "section" else "")
+            (
+                name,
+                label,
+                ftype,
+                getattr(page, name, None) if ftype != "section" else "",
+                IMAGE_HINTS.get(name, "") if ftype == "image" else "",
+            )
             for name, label, ftype in fields
         ],
         "is_galerie": cls_name == "GaleriePage",
-    })
+    }
 
 
 # ── Demandes de contact ────────────────────────────
@@ -738,6 +903,8 @@ def live_edit(request):
     data = json.loads(request.body)
     fields = data.get("fields", {})
 
+    from django.db import models as django_models
+
     for field_name, info in fields.items():
         page_pk = info.get("page")
         value = info.get("value", "")
@@ -746,6 +913,23 @@ def live_edit(request):
         try:
             page = WagtailPage.objects.get(pk=int(page_pk)).specific
             if hasattr(page, field_name):
+                # Coercion pour les champs numériques (saisie HTML est toujours string)
+                try:
+                    field = page._meta.get_field(field_name)
+                except Exception:
+                    field = None
+                if isinstance(field, (django_models.IntegerField, django_models.SmallIntegerField, django_models.BigIntegerField)):
+                    # Strip HTML résiduel + caractères non-numériques (sauf signe -)
+                    import re
+                    cleaned = re.sub(r"[^\d-]", "", str(value))
+                    value = int(cleaned) if cleaned and cleaned != "-" else 0
+                elif isinstance(field, django_models.FloatField):
+                    import re
+                    cleaned = re.sub(r"[^\d.\-]", "", str(value).replace(",", "."))
+                    try:
+                        value = float(cleaned)
+                    except ValueError:
+                        value = 0.0
                 setattr(page, field_name, value)
                 page.save_revision().publish()
         except WagtailPage.DoesNotExist:
@@ -762,6 +946,82 @@ def live_edit(request):
             site_settings.save()
 
     return JsonResponse({"ok": True})
+
+
+# Whitelist des modèles éditables via live-edit (sécurité)
+LIVE_EDIT_MODELS = {
+    "dirigeant": ("club", "Dirigeant", "nom"),  # (app, model, attribut pour le titre)
+}
+
+
+@login_required(login_url=LOGIN_URL)
+def live_edit_image(request):
+    """Remplace un champ image (sur une Page Wagtail OU un objet whitelisté) depuis le front."""
+    from django.apps import apps
+    from django.http import JsonResponse
+    from wagtail.models import Page as WagtailPage
+
+    if request.method != "POST":
+        return JsonResponse({"error": "POST only"}, status=405)
+
+    field_name = request.POST.get("field")
+    file = request.FILES.get("image")
+    if not (field_name and file):
+        return JsonResponse({"ok": False, "error": "Paramètres manquants"}, status=400)
+
+    # Mode "objet arbitraire" (Dirigeant, etc.)
+    model_key = request.POST.get("model")
+    object_pk = request.POST.get("object")
+    if model_key and object_pk:
+        if model_key not in LIVE_EDIT_MODELS:
+            return JsonResponse({"ok": False, "error": "Modèle non autorisé"}, status=403)
+        app_label, model_name, title_attr = LIVE_EDIT_MODELS[model_key]
+        Model = apps.get_model(app_label, model_name)
+        try:
+            obj = Model.objects.get(pk=int(object_pk))
+        except Model.DoesNotExist:
+            return JsonResponse({"ok": False, "error": "Objet introuvable"}, status=404)
+        if not hasattr(obj, field_name):
+            return JsonResponse({"ok": False, "error": "Champ inconnu"}, status=400)
+
+        title = str(getattr(obj, title_attr, "")) or model_name
+        try:
+            new_img = _upload_image(file, f"{title} — {field_name}")
+        except ImageUploadError as exc:
+            return JsonResponse({"ok": False, "error": str(exc)}, status=400)
+        old_img = getattr(obj, field_name, None)
+        setattr(obj, field_name, new_img)
+        obj.save()
+        _cleanup_orphan_image(old_img, title)
+        rendition = new_img.get_rendition("max-1600x1600")
+        return JsonResponse({"ok": True, "url": rendition.url})
+
+    # Mode "page Wagtail"
+    page_pk = request.POST.get("page")
+    if not page_pk:
+        return JsonResponse({"ok": False, "error": "Paramètres manquants"}, status=400)
+
+    try:
+        page = WagtailPage.objects.get(pk=int(page_pk)).specific
+    except WagtailPage.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "Page introuvable"}, status=404)
+
+    if not hasattr(page, field_name):
+        return JsonResponse({"ok": False, "error": "Champ inconnu"}, status=400)
+
+    label = field_name.replace("_", " ")
+    try:
+        new_img = _upload_image(file, f"{page.title} — {label}")
+    except ImageUploadError as exc:
+        return JsonResponse({"ok": False, "error": str(exc)}, status=400)
+
+    old_img = getattr(page, field_name, None)
+    setattr(page, field_name, new_img)
+    page.save_revision().publish()
+    _cleanup_orphan_image(old_img, page.title)
+
+    rendition = new_img.get_rendition("max-1600x1600")
+    return JsonResponse({"ok": True, "url": rendition.url})
 
 
 @login_required(login_url=LOGIN_URL)

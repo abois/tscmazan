@@ -19,6 +19,10 @@ urlpatterns = [
     path("equipes/", views.liste_equipes, name="liste_equipes"),
     path("ajouter-equipe/", views.ajouter_equipe, name="ajouter_equipe"),
     path("editer-equipe/<int:pk>/", views.editer_equipe, name="editer_equipe"),
+    # Équipe dirigeante
+    path("dirigeants/", views.liste_dirigeants, name="liste_dirigeants"),
+    path("ajouter-dirigeant/", views.ajouter_dirigeant, name="ajouter_dirigeant"),
+    path("editer-dirigeant/<int:pk>/", views.editer_dirigeant, name="editer_dirigeant"),
     # Albums
     path("ajouter-photos/", views.ajouter_photos, name="ajouter_photos"),
     path("albums/", views.liste_albums, name="liste_albums"),
@@ -37,6 +41,7 @@ urlpatterns = [
     path("parametres/", views.parametres, name="parametres"),
     # Live edit
     path("live-edit/", views.live_edit, name="live_edit"),
+    path("live-edit-image/", views.live_edit_image, name="live_edit_image"),
     path("live-add-photos/", views.live_add_photos, name="live_add_photos"),
     # Logout
     path("logout/", views.logout_view, name="logout"),

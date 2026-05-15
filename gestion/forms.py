@@ -79,6 +79,28 @@ class EquipeForm(forms.Form):
     )
 
 
+class DirigeantForm(forms.Form):
+    nom = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"placeholder": "Ex: Thierry Drai"}),
+    )
+    role = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"placeholder": "Ex: Président, Trésorier…"}),
+        label="Rôle",
+    )
+    photo = forms.ImageField(
+        required=False,
+        help_text="Optionnel — portrait recommandé (format carré).",
+    )
+    ordre = forms.IntegerField(
+        min_value=0,
+        initial=0,
+        label="Position dans la liste",
+        help_text="Plus petit = plus haut",
+    )
+
+
 class AlbumForm(forms.Form):
     titre = forms.CharField(
         max_length=120,

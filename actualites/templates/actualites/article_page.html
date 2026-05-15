@@ -38,14 +38,26 @@
     </header>
 
     <!-- ───────── Image en overlay ───────── -->
-    {% if page.image %}
     <div class="relative -mt-8 md:-mt-12 mb-8 md:mb-12">
         <div class="max-w-4xl mx-auto px-4 md:px-6">
-            {% image page.image fill-1200x675 as article_img %}
-            <img src="{{ article_img.url }}" alt="{{ page.title }}" class="rounded-2xl md:rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[16/9] object-cover" loading="eager">
+            {% if page.image %}
+                {% image page.image fill-1200x675 as article_img %}
+                <img src="{{ article_img.url }}" alt="{{ page.title }}"
+                     class="rounded-2xl md:rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[16/9] object-cover" loading="eager"
+                     data-edit-image="image" data-edit-page="{{ page.pk }}">
+            {% else %}
+                {% if request.user.is_authenticated %}
+                <img src="" alt="" hidden
+                     class="rounded-2xl md:rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[16/9] object-cover"
+                     data-edit-image="image" data-edit-page="{{ page.pk }}">
+                <div class="rounded-2xl md:rounded-3xl shadow-2xl shadow-bleu-900/20 w-full aspect-[16/9] bg-gradient-to-br from-bleu-100 via-sable-100 to-or-100 flex items-center justify-center"
+                     data-edit-image-placeholder>
+                    <svg aria-hidden="true" class="w-16 h-16 text-bleu-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+                </div>
+                {% endif %}
+            {% endif %}
         </div>
     </div>
-    {% endif %}
 
     <!-- ───────── Contenu ───────── -->
     <section class="edit-section py-12 md:py-20 {% if not page.image %}pt-20 md:pt-24{% endif %}">

@@ -9,16 +9,6 @@ from wagtail.blocks import CharBlock, StructBlock, RichTextBlock
 from wagtail.images.blocks import ImageChooserBlock
 
 
-class DirigeantBlock(StructBlock):
-    nom = CharBlock(max_length=100)
-    role = CharBlock(max_length=100)
-    photo = ImageChooserBlock(required=False)
-
-    class Meta:
-        icon = "user"
-        label = "Dirigeant"
-
-
 class ClubPage(Page):
     intro = RichTextField(blank=True)
 
@@ -32,12 +22,6 @@ class ClubPage(Page):
         related_name="+",
     )
     president_nom = models.CharField(max_length=100, blank=True)
-
-    dirigeants = StreamField(
-        [("dirigeant", DirigeantBlock())],
-        blank=True,
-        use_json_field=True,
-    )
 
     adresse = models.TextField(blank=True)
     latitude = models.FloatField(null=True, blank=True)
@@ -54,7 +38,6 @@ class ClubPage(Page):
             ],
             heading="Mot du Président",
         ),
-        FieldPanel("dirigeants"),
         MultiFieldPanel(
             [
                 FieldPanel("adresse"),
@@ -69,6 +52,11 @@ class ClubPage(Page):
         verbose_name = "Page du Club"
 
     parent_page_types = ["home.HomePage"]
+
+    def get_context(self, request):
+        context = super().get_context(request)
+        context["dirigeants_list"] = Dirigeant.objects.all()
+        return context
 
 
 class TarifsPage(Page):
@@ -197,6 +185,39 @@ class Equipe(models.Model):
 
     def __str__(self):
         return self.nom
+
+
+class Dirigeant(models.Model):
+    """Membre de l'équipe dirigeante du club."""
+
+    nom = models.CharField(max_length=100)
+    role = models.CharField(max_length=100, help_text="Ex: Président, Trésorier…")
+    photo = models.ForeignKey(
+        "wagtailimages.Image",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="+",
+    )
+    ordre = models.PositiveIntegerField(
+        default=0,
+        help_text="Position dans la liste (plus petit = plus haut)",
+    )
+
+    panels = [
+        FieldPanel("nom"),
+        FieldPanel("role"),
+        FieldPanel("photo"),
+        FieldPanel("ordre"),
+    ]
+
+    class Meta:
+        verbose_name = "Dirigeant"
+        verbose_name_plural = "Équipe dirigeante"
+        ordering = ["ordre", "nom"]
+
+    def __str__(self):
+        return f"{self.nom} — {self.role}"
 
 
 class Competition(ClusterableModel):
